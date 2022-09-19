@@ -1,0 +1,9 @@
+aws*config
+.git/
+.nextflow*
+.idea*
+work/
+output/*
+input/*
+/config-gen/nbproject/private/
+/config-gen/build/
