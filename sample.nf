@@ -92,7 +92,9 @@ bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
      input:
         tuple sample, file(bam), file(bai) from bams
      output:
-        stdout 
+        stdout
+     script:
+       "srun hostname"
 }
 
 output.subscribe { print "Done!" }
