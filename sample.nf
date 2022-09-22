@@ -77,9 +77,9 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 
-bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
-	      .map { [it[0],it[1][0], it[1][1]] }
-        .randomSample(1000)
+// bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
+//	      .map { [it[0],it[1][0], it[1][1]] }
+//        .randomSample(1000)
         
 
 
