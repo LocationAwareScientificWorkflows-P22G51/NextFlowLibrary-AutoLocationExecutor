@@ -90,7 +90,8 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
  process sample {
      clusterOptions { node_suggestion[bam.getName()] }
      input:
-        tuple sample, file(bam), file(bai) from bams
+        tuple sample
+        // , file(bam), file(bai) from bams
      output:
         stdout
      script:
