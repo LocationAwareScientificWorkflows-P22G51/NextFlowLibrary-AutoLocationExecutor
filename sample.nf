@@ -94,6 +94,7 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
         // , file(bam), file(bai) from bams
      output:
         stdout
+        "srun hostname"
      script:
        "srun hostname"
 }
