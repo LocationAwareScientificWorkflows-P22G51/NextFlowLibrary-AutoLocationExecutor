@@ -4,13 +4,10 @@
 
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
-key_fnames = file("/external/diskC/22P63/*.bim")
+key_fnames = file("/external/diskC/22P63/11.bim")
 
 
 node_suggestion = [:]
-
-
-
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
@@ -88,7 +85,7 @@ bams = Channel.fromFilePairs("/external/diskC/22P63/*{.bim,.bim.bai}", size:2)
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
-     clusterOptions { node_suggestion[bam.getName()] }
+     clusterOptions { node_suggestion[bim.getName()] }
      input:
         tuple sample, file(bim), file(bai) from bams
      output:
