@@ -77,7 +77,7 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 
-bams = Channel.fromFilePairs("$src/*{.bim,.bim.bai}", size:2)
+bams = Channel.fromFilePairs("/external/diskC/22P63/*{.bim,.bim.bai}", size:2)
 	      .map { [it[0],it[1][0], it[1][1]] }
         .randomSample(1000)
         
@@ -91,12 +91,12 @@ bams = Channel.fromFilePairs("$src/*{.bim,.bim.bai}", size:2)
      clusterOptions { node_suggestion[bam.getName()] }
      input:
         tuple sample, file(bim), file(bai) from bams
-  output:
-  file  'finishSulrm.txt' into nodes_ch
-
-  """
-  echo "SLLLUURRMM" > finishSulrm.txt
-  """
+     output:
+        file  'finishSulrm.txt' into nodes_ch
+     script:
+        """
+        echo "SLLLUURRMM" > finishSulrm.txt
+        """
 }
 
 
