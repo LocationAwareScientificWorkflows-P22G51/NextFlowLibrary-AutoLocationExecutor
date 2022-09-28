@@ -93,9 +93,8 @@ bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
         tuple sample, file(bam), file(bai) from bams
      output:
         file "example.txt" into output
-     script:
-        " " "
+        """
         echo "slurm gluster ran" > example.txt
-        " " "
+        """
 
 output.subscribe { print "Done!" }
