@@ -1,6 +1,4 @@
 
-
-
 input_ch = Channel.fromPath("/external/diskC/22P63/11.bim")
 
 process getIDs {

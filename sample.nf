@@ -1,10 +1,53 @@
+// Cealn duplicatews code
+input_ch = Channel.fromPath("/external/diskC/22P63/11.bim")
+
+process getIDs {
+    input:
+       file input from input_ch
+       path result
+    output:
+       file "ids" into id_ch
+       file "11.bim" into orig_ch
+    script:
+       " cut -f 2 $input | sort > ids "
+}
+
+process getDups {
+    input:
+       file input from id_ch
+    output:
+       file "dups" into dups_ch
+    script:
+       """
+       uniq -d $input > dups 
+       touch ignore
+       """
+}
+
+
+process removeDups {
+    input:
+       file badids  from dups_ch
+       file orig    from orig_ch
+    output:
+       file "clean.bim" into output
+    script:
+       "grep -v -f $badids $orig > clean.bim "
+}
+
+
+output.subscribe { print "Done!" }
+
+
+
+
 // common code that must be included starts here
 
 
 
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
-key_fnames = file("/external/diskC/build38/datasets/*/bam/*.bam")
+key_fnames = file("/external/diskC/22P63/*.bim")
 
 
 node_suggestion = [:]
@@ -77,7 +120,7 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 
-bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
+bams = Channel.fromFilePairs("$src/*{.bim,.bim.bai}", size:2)
 	      .map { [it[0],it[1][0], it[1][1]] }
         .randomSample(1000)
         
@@ -91,11 +134,12 @@ bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
      clusterOptions { node_suggestion[bam.getName()] }
      input:
         tuple sample, file(bam), file(bai) from bams
-     output:
-        file "example.txt" into output
-        """
-        echo "slurm gluster ran" > example.txt
-        """
+  output:
+  path 'finishSulrm.txt' 
+
+  """
+  echo "SLLLUURRMM" > finishSulrm.txt
+  """
 }
 
 output.subscribe { print "Done!" }
