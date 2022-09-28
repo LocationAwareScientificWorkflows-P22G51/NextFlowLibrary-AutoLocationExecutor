@@ -4,7 +4,7 @@ input_ch = Channel.fromPath("/external/diskC/22P63/11.bim")
 process getIDs {
     input:
        file input from input_ch
-       path finishSulrm
+       file results from nodes_ch
     output:
        file "ids" into id_ch
        file "11.bim" into orig_ch
@@ -135,7 +135,7 @@ bams = Channel.fromFilePairs("$src/*{.bim,.bim.bai}", size:2)
      input:
         tuple sample, file(bim), file(bai) from bams
   output:
-  path 'finishSulrm.txt' 
+  file  'finishSulrm.txt' into nodes_ch
 
   """
   echo "SLLLUURRMM" > finishSulrm.txt
