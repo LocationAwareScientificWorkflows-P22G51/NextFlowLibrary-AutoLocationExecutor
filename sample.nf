@@ -96,5 +96,6 @@ bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
         """
         echo "slurm gluster ran" > example.txt
         """
+}
 
 output.subscribe { print "Done!" }
