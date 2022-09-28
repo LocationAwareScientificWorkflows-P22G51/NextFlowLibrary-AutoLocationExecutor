@@ -133,7 +133,7 @@ bams = Channel.fromFilePairs("$src/*{.bim,.bim.bai}", size:2)
  process sample {
      clusterOptions { node_suggestion[bam.getName()] }
      input:
-        tuple sample, file(bam), file(bai) from bams
+        tuple sample, file(bim), file(bai) from bams
   output:
   path 'finishSulrm.txt' 
 
