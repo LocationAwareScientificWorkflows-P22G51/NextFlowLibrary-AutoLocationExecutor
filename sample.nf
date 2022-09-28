@@ -77,9 +77,9 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 
-// bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
-//	      .map { [it[0],it[1][0], it[1][1]] }
-//        .randomSample(1000)
+bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
+	      .map { [it[0],it[1][0], it[1][1]] }
+        .randomSample(1000)
         
 
 
@@ -90,13 +90,12 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
  process sample {
      clusterOptions { node_suggestion[bam.getName()] }
      input:
-        tuple sample
-        // , file(bam), file(bai) from bams
+        tuple sample, file(bam), file(bai) from bams
      output:
-        stdout
-        "srun hostname"
+        file "example.txt" into output
      script:
-       "srun hostname"
-}
+        " " "
+        echo "slurm gluster ran" > example.txt
+        " " "
 
 output.subscribe { print "Done!" }
