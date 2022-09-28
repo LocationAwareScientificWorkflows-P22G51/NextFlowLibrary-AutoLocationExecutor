@@ -4,7 +4,7 @@ input_ch = Channel.fromPath("/external/diskC/22P63/11.bim")
 process getIDs {
     input:
        file input from input_ch
-       path result
+       path finishSulrm
     output:
        file "ids" into id_ch
        file "11.bim" into orig_ch
