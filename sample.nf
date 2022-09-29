@@ -71,16 +71,16 @@ println node_suggestion
 
 // sample code that you should use as a template
 
-filelocaion = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
+filelocaion_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
 params.str = 'Hello world!'
 
 // use the node_suggestion hash map to find where the process should run
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
-     clusterOptions { node_suggestion[filelocaion.getName()] }
+     clusterOptions { node_suggestion[filelocaion_ch.getName()] }
      input:
-        file filelocaion
+        file filelocaion_ch
      output:
     path 'chunk_*'
 
