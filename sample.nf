@@ -78,9 +78,9 @@ params.str = 'Hello world!'
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
-     clusterOptions { node_suggestion[bim.getName()] }
+     clusterOptions { node_suggestion[bams.getName()] }
      input:
-        path bim from bams
+        path bams
      output:
     path 'chunk_*'
 
