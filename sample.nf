@@ -71,7 +71,7 @@ println node_suggestion
 
 // sample code that you should use as a template
 
-bams = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
+filelocaion = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
 params.str = 'Hello world!'
 
 // use the node_suggestion hash map to find where the process should run
@@ -80,7 +80,7 @@ params.str = 'Hello world!'
  process sample {
      //clusterOptions { node_suggestion[bams.getName()] }
      input:
-        //path bams
+        path filelocaion
      output:
     path 'chunk_*'
 
