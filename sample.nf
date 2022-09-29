@@ -71,14 +71,14 @@ println node_suggestion
 
 // sample code that you should use as a template
 
-filelocaion_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
+
 params.str = 'Hello world!'
 
 // use the node_suggestion hash map to find where the process should run
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
-     //clusterOptions { node_suggestion[bams.getName()] }
+     clusterOptions { node_suggestion[filelocaion_ch[0].getName()] }
      input:
       path filelocaion_ch
      output:
@@ -104,7 +104,7 @@ process convertToUpper {
 
 
 workflow {
-  sample | flatten | convertToUpper | view { it.trim() }
+   Channel.fromPath("/external/diskC/22P63/data1/*.bim") | sample | flatten | convertToUpper | view { it.trim() }
 }
 
 
