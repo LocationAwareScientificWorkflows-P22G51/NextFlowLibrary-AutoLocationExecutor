@@ -67,7 +67,7 @@ def nodeOption(fname,aggression=1,other="") {
 }
 
 key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
-
+println node_suggestion
 
 // sample code that you should use as a template
 
