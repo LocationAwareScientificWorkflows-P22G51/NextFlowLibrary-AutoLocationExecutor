@@ -78,9 +78,9 @@ params.str = 'Hello world!'
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
-     clusterOptions { node_suggestion[filelocaion_ch.getName()] }
+     clusterOptions { node_suggestion[location.getName()] }
      input:
-        file filelocaion_ch
+        file location from key_fnames
      output:
     path 'chunk_*'
 
