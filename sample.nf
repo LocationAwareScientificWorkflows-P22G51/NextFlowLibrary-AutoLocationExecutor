@@ -104,7 +104,7 @@ process convertToUpper {
 
 
 workflow {
-  sample | splitLetters | flatten | convertToUpper | view { it.trim() }
+  sample | flatten | convertToUpper | view { it.trim() }
 }
 
 
