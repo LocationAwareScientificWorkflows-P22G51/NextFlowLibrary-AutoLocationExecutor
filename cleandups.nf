@@ -1,8 +1,10 @@
 #!/usr/bin/env nextflow
 
+
 params.data_dir = "/external/diskC/22P63/data1"
 
 input_ch = Channel.fromPath("${params.data_dir}/*.bim")
+
 
 process getIDs {
     input:
