@@ -85,7 +85,7 @@ params.str = 'Hello world!'
       path 'chunk_*'
 
   """
-  printf '${params.str} and ${filelocaion_ch}' | split -b 6 - chunk_
+  printf '${params.str}' | split -b 6 - chunk_
   """
 }
 
