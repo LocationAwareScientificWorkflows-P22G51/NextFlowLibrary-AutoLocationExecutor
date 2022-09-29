@@ -78,9 +78,9 @@ params.str = 'Hello world!'
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
-     clusterOptions { node_suggestion[bams.getName()] }
+     //clusterOptions { node_suggestion[bams.getName()] }
      input:
-        path bams
+        //path bams
      output:
     path 'chunk_*'
 
@@ -90,9 +90,9 @@ params.str = 'Hello world!'
 }
 
 process convertToUpper {
-   clusterOptions { node_suggestion[bams.getName()] }
+   //clusterOptions { node_suggestion[bams.getName()] }
   input:
-   path bams
+   //path bams
     file x
   output:
     stdout
@@ -100,6 +100,11 @@ process convertToUpper {
   """
   cat $x | tr '[a-z]' '[A-Z]'
   """
+}
+
+
+workflow {
+  sample | flatten | convertToUpper | view { it.trim() }
 }
 
 
