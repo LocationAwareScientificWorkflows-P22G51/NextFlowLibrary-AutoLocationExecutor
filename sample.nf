@@ -90,9 +90,9 @@ params.str = 'Hello world!'
 }
 
 process convertToUpper {
-   clusterOptions { node_suggestion[bim.getName()] }
+   clusterOptions { node_suggestion[bams.getName()] }
   input:
-   path bim from bams
+   path bams
     file x
   output:
     stdout
