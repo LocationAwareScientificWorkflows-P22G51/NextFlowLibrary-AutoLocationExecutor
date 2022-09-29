@@ -78,14 +78,14 @@ params.str = 'Hello world!'
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
-     clusterOptions { node_suggestion[key_fnames[0].getName()] }
+     //clusterOptions { node_suggestion[bams.getName()] }
      input:
-        file key_fnames
+      path filelocaion_ch
      output:
-    path 'chunk_*'
+      path 'chunk_*'
 
   """
-  printf '${params.str}' | split -b 6 - chunk_
+  printf '${params.str} and ${filelocaion_ch}' | split -b 6 - chunk_
   """
 }
 
