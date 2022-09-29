@@ -4,7 +4,7 @@
 
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
-key_fnames = file("/external/diskC/22P63/11.bim")
+key_fnames = file("/external/diskC/22P63/*.bim")
 
 
 node_suggestion = [:]
@@ -70,69 +70,6 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 
 
-// common code ends
-
-// sample code that you should use as a template
-
-bams = Channel.fromFilePairs("/external/diskC/22P63/*{.bim,.bim.bai}", size:2)
-	      .map { [it[0],it[1][0], it[1][1]] }
-        .randomSample(1000)
-        
-
-
-
-// use the node_suggestion hash map to find where the process should run
-// NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
-// Recall that the file itself is not staged at the point clusterOptions is called
- process sample {
-     clusterOptions { node_suggestion[bim.getName()] }
-     input:
-        tuple sample, file(bim), file(bai) from bams
-     output:
-        file  'finishSulrm.txt' into nodes_ch
-     script:
-        """
-        echo "SLLLUURRMM" > finishSulrm.txt
-        """
-}
-
-
-// Cealn duplicatews code
-input_ch = Channel.fromPath("/external/diskC/22P63/11.bim")
-
-process getIDs {
-    input:
-       file input from input_ch
-       file results from nodes_ch
-    output:
-       file "ids" into id_ch
-       file "11.bim" into orig_ch
-    script:
-       " cut -f 2 $input | sort > ids "
-}
-
-process getDups {
-    input:
-       file input from id_ch
-    output:
-       file "dups" into dups_ch
-    script:
-       """
-       uniq -d $input > dups 
-       touch ignore
-       """
-}
-
-
-process removeDups {
-    input:
-       file badids  from dups_ch
-       file orig    from orig_ch
-    output:
-       file "clean.bim" into output
-    script:
-       "grep -v -f $badids $orig > clean.bim "
-}
 
 
 output.subscribe { print "Done!" }
