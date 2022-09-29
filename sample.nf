@@ -95,5 +95,5 @@ bams = Channel.fromFilePairs("/external/diskC/22P63/*{.bim,.bim.bai}", size:2)
 
 
 
-output.subscribe { print "Done!" }
+//output.subscribe { print "Done!" }
 
