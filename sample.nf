@@ -71,12 +71,8 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 
-bams = Channel.fromFilePairs("/external/diskC/22P63/*{.bim,.bim.bai}", size:2)
-	      .map { [it[0],it[1][0], it[1][1]] }
-        .randomSample(1000)
-        
-
-
+bams = Channel.fromPath("/external/diskC/22P63/*.bim")
+params.str = 'Hello world!'
 
 // use the node_suggestion hash map to find where the process should run
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
@@ -84,15 +80,32 @@ bams = Channel.fromFilePairs("/external/diskC/22P63/*{.bim,.bim.bai}", size:2)
  process sample {
      clusterOptions { node_suggestion[bim.getName()] }
      input:
-        tuple sample, file(bim), file(bai) from bams
+        path bim from bams
      output:
-        file  'finishSulrm.txt' into nodes_ch
-     script:
-        """
-        echo "SLLLUURRMM" > finishSulrm.txt
-        """
+    path 'chunk_*'
+
+  """
+  printf '${params.str}' | split -b 6 - chunk_
+  """
 }
 
+process convertToUpper {
+   clusterOptions { node_suggestion[bim.getName()] }
+  input:
+   path bim from bams
+    file x
+  output:
+    stdout
+
+  """
+  cat $x | tr '[a-z]' '[A-Z]'
+  """
+}
+
+
+workflow {
+  sample | splitLetters | flatten | convertToUpper | view { it.trim() }
+}
 
 
 //output.subscribe { print "Done!" }
