@@ -71,7 +71,7 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 
-bams = Channel.fromPath("/external/diskC/22P63/data1/11.bim")
+bams = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
 params.str = 'Hello world!'
 
 // use the node_suggestion hash map to find where the process should run
@@ -100,11 +100,6 @@ process convertToUpper {
   """
   cat $x | tr '[a-z]' '[A-Z]'
   """
-}
-
-
-workflow {
-  sample | flatten | convertToUpper | view { it.trim() }
 }
 
 
