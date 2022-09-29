@@ -4,7 +4,7 @@
 
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
-key_fnames = file("/external/diskC/22P63/*.bim")
+key_fnames = file("/external/diskC/22P63/data1/*.bim")
 
 
 node_suggestion = [:]
@@ -71,7 +71,7 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 
-bams = Channel.fromPath("/external/diskC/22P63/*.bim")
+bams = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
 params.str = 'Hello world!'
 
 // use the node_suggestion hash map to find where the process should run
