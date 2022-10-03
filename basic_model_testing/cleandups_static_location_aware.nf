@@ -131,5 +131,5 @@ process splitIDs  {
 
 
 workflow {
-   input_ch |  getIDs | getDups 
+   Channel.fromPath("/external/diskC/22P63/data1/*.bim") |  getIDs | getDups 
 }
