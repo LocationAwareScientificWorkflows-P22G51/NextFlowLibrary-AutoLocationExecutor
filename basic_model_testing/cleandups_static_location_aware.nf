@@ -89,9 +89,9 @@ process getIDs {
 
 process getDups {
     input:
-       file input
+       path input
     output:
-       file "${input.baseName}.dups" , emit: dups_ch
+       path "${input.baseName}.dups" , emit: dups_ch
     script:
        out = "${input.baseName}.dups"
        """
