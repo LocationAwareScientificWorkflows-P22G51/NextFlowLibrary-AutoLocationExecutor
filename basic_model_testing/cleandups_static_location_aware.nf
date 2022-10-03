@@ -81,17 +81,17 @@ process getIDs {
     input:
        path input_ch
     output:
-       file "${input.baseName}.ids" into id_ch
-       file "$input" into orig_ch
+       path "${input.baseName}.ids", emit:  id_ch
+       path "$input", emit: orig_ch
     script:
        " cut -f 2 $input | sort > ${input.baseName}.ids "
 }
 
 process getDups {
     input:
-       file input from id_ch
+       file input
     output:
-       file "${input.baseName}.dups" into dups_ch
+       file "${input.baseName}.dups" , emit: dups_ch
     script:
        out = "${input.baseName}.dups"
        """
@@ -100,7 +100,7 @@ process getDups {
        """
 }
 
-
+/*
 process removeDups {
     input:
        file badids  from dups_ch
@@ -127,7 +127,11 @@ process splitIDs  {
     "split -l $split $bim ${bim.baseName}-$split- "
 }
 
+*/
+
 
 workflow {
-   input_ch | getIDs | getDups | removeDups | splitIDs 
+   input_ch = Channel.fromPath("${params.data_dir}/*.bim")
+   getIDs(input_ch) 
+   getDups(getIDs.out.id_ch) 
 }
