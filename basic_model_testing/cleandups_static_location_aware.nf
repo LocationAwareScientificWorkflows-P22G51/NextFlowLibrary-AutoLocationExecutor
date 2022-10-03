@@ -100,13 +100,13 @@ process getDups {
        """
 }
 
-/*
+
 process removeDups {
     input:
-       file badids  from dups_ch
-       file "orig.bim"    from orig_ch
+       path badids 
+       path "orig.bim" 
     output:
-       file "${badids.baseName}.bim" into cleaned_ch
+       file "${badids.baseName}.bim"
     publishDir "output", pattern: "${badids.baseName}.bim",\
                   overwrite:true, mode:'copy'
 
@@ -118,18 +118,18 @@ splits = [400,500,600]
 
 process splitIDs  {
     input:
-       file bim from cleaned_ch
+       path bim
     each split from splits
     output:
-       file ("*-$split-*") into output_ch;
+       file ("*-$split-*") 
 
     script:
     "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-*/
+
 
 
 workflow {
-   Channel.fromPath("/external/diskC/22P63/data1/*.bim") |  getIDs | getDups 
+   Channel.fromPath("/external/diskC/22P63/data1/*.bim") |  getIDs | getDups | removeDups | splitIDs
 }
