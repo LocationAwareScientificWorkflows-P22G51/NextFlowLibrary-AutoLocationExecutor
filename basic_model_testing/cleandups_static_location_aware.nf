@@ -119,7 +119,7 @@ splits = [400,500,600]
 process splitIDs  {
     input:
        path bim
-    each split from splits
+    each split
     output:
        file ("*-$split-*") 
 
