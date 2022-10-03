@@ -1,5 +1,3 @@
-#!/usr/bin/env nextflow
-//------------------------------------------------------------------------------------------------------
 
 // common code that must be included starts here
 
@@ -95,35 +93,4 @@ bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
      input:
         tuple sample, file(bam), file(bai) from bams
      output:
-        ...  
-
-//------------------------------------------------------------------------------------------------------
-params.str = 'hello world!'
-
-process splitLetters {
-        output:
-        path 'chunk_*'
-
-        """
-        printf '${params.str}' | split -b 6 - chunk_
-        """
-}
-
-process convertToUpper {
-        input:
-        file x
-        output:
-        stdout
-        """
-        cat $x | tr '[a-z]' '[A-Z]'
-        """
-}
-
-
-
-
-
-
-workflow{
-        splitLetters | flatten | convertToUpper | view {it.trim()}
-}
+        ...   
