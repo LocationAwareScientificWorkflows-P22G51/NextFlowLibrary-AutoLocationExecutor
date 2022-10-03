@@ -127,7 +127,6 @@ process splitIDs  {
     "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-/*
 
 workflow {
    input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
@@ -137,10 +136,10 @@ workflow {
    splitIDs(removeDups.out.cleaned_ch)
 }
 
-*/
 
-
+/*
 workflow {
    Channel.fromPath("/external/diskC/22P63/data1/*.bim") |  getIDs
    getDups(getIDs.out.id_ch)
 }
+*/
