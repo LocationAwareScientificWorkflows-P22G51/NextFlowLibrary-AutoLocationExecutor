@@ -77,14 +77,14 @@ println node_suggestion
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-    //clusterOptions {node_suggestion[input_ch.getName()] }
+    clusterOptions {node_suggestion[input_ch.getName()] }
     input:
        path input_ch
     output:
-       path "${input.baseName}.ids", emit:  id_ch
-       path "$input", emit: orig_ch
+       path "${input_ch.baseName}.ids", emit:  id_ch
+       path "$input_ch", emit: orig_ch
     script:
-       " cut -f 2 $input | sort > ${input.baseName}.ids "
+       " cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids "
 }
 
 process getDups {
