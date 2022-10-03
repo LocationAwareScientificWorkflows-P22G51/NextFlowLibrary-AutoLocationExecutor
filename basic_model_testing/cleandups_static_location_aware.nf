@@ -141,5 +141,6 @@ workflow {
 
 
 workflow {
-   Channel.fromPath("/external/diskC/22P63/data1/*.bim") |  getIDs | (getDups & removeDups)
+   Channel.fromPath("/external/diskC/22P63/data1/*.bim") |  getIDs
+   getDups(getIDs.out.id_ch)
 }
