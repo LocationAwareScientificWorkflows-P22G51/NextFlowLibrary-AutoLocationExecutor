@@ -77,7 +77,7 @@ println node_suggestion
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-    clusterOptions {node_suggestion[input_ch.getName()] }
+    //clusterOptions {node_suggestion[input_ch.getName()] }
     input:
        path input_ch
     output:
