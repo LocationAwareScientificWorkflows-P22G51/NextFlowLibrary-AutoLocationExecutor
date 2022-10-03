@@ -106,7 +106,7 @@ process removeDups {
        path badids 
        path "orig.bim" 
     output:
-       file "${badids.baseName}.bim"
+       path "${badids.baseName}.bim", emit: cleaned_ch
     publishDir "output", pattern: "${badids.baseName}.bim",\
                   overwrite:true, mode:'copy'
 
@@ -128,8 +128,16 @@ process splitIDs  {
 }
 
 
+workflow {
+   input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
+   getIDs(input_ch)
+   getDups(getIDs.out.id_ch)
+   removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
+   splitIDs(removeDups.out.cleaned_ch)
+}
 
-
+/*
 workflow {
    Channel.fromPath("/external/diskC/22P63/data1/*.bim") |  getIDs | getDups | removeDups | splitIDs
 }
+*/
