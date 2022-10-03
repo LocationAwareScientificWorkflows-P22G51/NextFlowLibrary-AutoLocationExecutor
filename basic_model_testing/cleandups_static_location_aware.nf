@@ -114,7 +114,7 @@ process removeDups {
        "grep -v -f $badids orig.bim > ${badids.baseName}.bim "
 }
 
-/*
+
 splits = [400,500,600]
 
 process splitIDs  {
@@ -127,14 +127,15 @@ process splitIDs  {
     script:
     "split -l $split $bim ${bim.baseName}-$split- "
 }
-*/
+
 
 workflow {
+   splits = [400,500,600]
    input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
    getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
-   //splitIDs(removeDups.out.cleaned_ch, splits)
+   splitIDs(removeDups.out.cleaned_ch, splits)
 }
 
 
