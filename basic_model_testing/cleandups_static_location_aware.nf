@@ -131,7 +131,5 @@ process splitIDs  {
 
 
 workflow {
-   input_ch = Channel.fromPath("${params.data_dir}/*.bim")
-   getIDs(input_ch) 
-   getDups(getIDs.out.id_ch) 
+   input_ch |  getIDs | getDups 
 }
