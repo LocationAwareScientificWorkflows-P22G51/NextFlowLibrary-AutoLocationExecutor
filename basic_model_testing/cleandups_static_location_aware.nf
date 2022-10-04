@@ -26,8 +26,8 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
-  println "The following data file and its storage nodes will be analysed: " + fname "\n\n"
-  println "Data from that file is stored on the following nodes: "+nodes + "\n"
+  println "The following data file and its storage nodes will be analysed: " + fname + "\n\n"
+  println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
 
@@ -64,13 +64,13 @@ def nodeOption(fname,aggression=1,other="") {
   possible=state[1]
   if ((possible.intersect(nodes)).size()<aggression)
   {
-    println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + aggression "\n"
+    println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + aggression + "\n"
     return "${other}"
   }
   else {
     possible=possible - nodes;
     options="--exclude="+possible.join(',')+" ${other}"
-    println "Job execution can occur on the available storage nodes. The following nodes should be excluded during execution: " + options "\n"
+    println "Job execution can occur on the available storage nodes. The following nodes should be excluded during execution: " + options + "\n"
     return options
   }
 }
