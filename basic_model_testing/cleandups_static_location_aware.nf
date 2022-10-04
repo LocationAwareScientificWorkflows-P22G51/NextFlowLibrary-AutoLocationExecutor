@@ -92,6 +92,8 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
+       #!/usr/bin/python
+       
        x = 'Hello'
        y = 'world!'
        print "%s - %s" % (x,y)
