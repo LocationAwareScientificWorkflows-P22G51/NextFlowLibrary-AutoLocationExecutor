@@ -62,8 +62,10 @@ def nodeOption(fname,aggression=1,other="") {
   state = getStatus(nodes)
   possible=state[1]
   if ((possible.intersect(nodes)).size()<aggression)
+  {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + aggression
     return "${other}"
+  }
   else {
     possible=possible - nodes;
     options="--exclude="+possible.join(',')+" ${other}"
