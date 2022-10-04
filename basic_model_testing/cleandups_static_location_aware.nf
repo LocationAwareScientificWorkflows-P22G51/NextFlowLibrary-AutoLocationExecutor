@@ -92,7 +92,7 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
-       println "The current input channel that is given to node_suggestion is: " + input_ch.getName() + "\n"
+       getIDs.collect().view()
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """
        
