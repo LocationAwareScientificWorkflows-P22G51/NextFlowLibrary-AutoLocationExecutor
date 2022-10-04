@@ -1,13 +1,17 @@
+
 // common code that must be included starts here
 
 
 
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
-key_fnames = file("/external/diskC/22P63/data1/*.bim")
+key_fnames = file("/external/diskC/build38/datasets/*/bam/*.bam")
 
 
 node_suggestion = [:]
+
+
+
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
@@ -67,46 +71,26 @@ def nodeOption(fname,aggression=1,other="") {
 }
 
 key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
-println node_suggestion
+
+
+
+// common code ends
 
 // sample code that you should use as a template
 
+bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
+	      .map { [it[0],it[1][0], it[1][1]] }
+        .randomSample(1000)
+        
 
-params.str = 'Hello world!'
+
 
 // use the node_suggestion hash map to find where the process should run
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
-     clusterOptions { node_suggestion[filelocaion_ch[0].getName()] }
+     clusterOptions { node_suggestion[bam.getName()] }
      input:
-      path filelocaion_ch
+        tuple sample, file(bam), file(bai) from bams
      output:
-      path 'chunk_*'
-
-  """
-  printf '${params.str}' | split -b 6 - chunk_
-  """
-}
-
-process convertToUpper {
-   //clusterOptions { node_suggestion[bams.getName()] }
-  input:
-   //path bams
-    file x
-  output:
-    stdout
-
-  """
-  cat $x | tr '[a-z]' '[A-Z]'
-  """
-}
-
-
-workflow {
-   Channel.fromPath("/external/diskC/22P63/data1/*.bim") | sample | flatten | convertToUpper | view { it.trim() }
-}
-
-
-//output.subscribe { print "Done!" }
-
+        ...   

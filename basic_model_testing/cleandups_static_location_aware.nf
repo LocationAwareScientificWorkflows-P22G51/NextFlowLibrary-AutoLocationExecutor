@@ -1,19 +1,15 @@
 #!/usr/bin/env nextflow
-//------------------------------------------------------------------------------------------------------
 
 // common code that must be included starts here
-
-
-
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
-key_fnames = file("/external/diskC/build38/datasets/*/bam/*.bam")
+
+params.data_dir = "/external/diskC/22P63/data1"
+input_ch = Channel.fromPath("${params.data_dir}/*.bim")
+key_fnames = file("/external/diskC/22P63/data1/*.bim")
 
 
 node_suggestion = [:]
-
-
-
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
@@ -73,57 +69,76 @@ def nodeOption(fname,aggression=1,other="") {
 }
 
 key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
-
-
-
-// common code ends
+println node_suggestion
 
 // sample code that you should use as a template
-
-bams = Channel.fromFilePairs("$src/*{.bam,.bam.bai}", size:2)
-	      .map { [it[0],it[1][0], it[1][1]] }
-        .randomSample(1000)
-        
-
-
-
 // use the node_suggestion hash map to find where the process should run
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
- process sample {
-     clusterOptions { node_suggestion[bam.getName()] }
-     input:
-        tuple sample, file(bam), file(bai) from bams
-     output:
-        ...  
 
-//------------------------------------------------------------------------------------------------------
-params.str = 'hello world!'
-
-process splitLetters {
-        output:
-        path 'chunk_*'
-
-        """
-        printf '${params.str}' | split -b 6 - chunk_
-        """
+process getIDs {
+    clusterOptions {node_suggestion[input_ch.getName()] }
+    input:
+       path input_ch
+    output:
+       path "${input_ch.baseName}.ids", emit:  id_ch
+       path "$input_ch", emit: orig_ch
+    script:
+       " cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids "
 }
 
-process convertToUpper {
-        input:
-        file x
-        output:
-        stdout
-        """
-        cat $x | tr '[a-z]' '[A-Z]'
-        """
+process getDups {
+    input:
+       path input
+    output:
+       path "${input.baseName}.dups" , emit: dups_ch
+    script:
+       out = "${input.baseName}.dups"
+       """
+       uniq -d $input > $out
+       touch ignore
+       """
 }
 
 
+process removeDups {
+    input:
+       path badids 
+       path "orig.bim" 
+    output:
+       path "${badids.baseName}.bim", emit: cleaned_ch
+    publishDir "output", pattern: "${badids.baseName}.bim",\
+                  overwrite:true, mode:'copy'
 
-
-
-
-workflow{
-        splitLetters | flatten | convertToUpper | view {it.trim()}
+    script:
+       "grep -v -f $badids orig.bim > ${badids.baseName}.bim "
 }
+
+process splitIDs  {
+    input:
+       path bim
+    each split
+    output:
+       path ("*-$split-*") 
+
+    script:
+    "split -l $split $bim ${bim.baseName}-$split- "
+}
+
+
+workflow {
+   split = [400,500,600]
+   input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
+   getIDs(input_ch)
+   getDups(getIDs.out.id_ch)
+   removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
+   splitIDs(removeDups.out.cleaned_ch, split)
+}
+
+
+/*
+workflow {
+   Channel.fromPath("/external/diskC/22P63/data1/*.bim") |  getIDs
+   getDups(getIDs.out.id_ch)
+}
+*/

@@ -1,30 +1,31 @@
 The code review checklist is a document used for the review of pull requests.
 
 # Related Issues
-#10
+All issues affected by the pull request.
+
 # Necessary changes
 
-none
+Changes that need to be implemented before pull can be confirmed.
 
 # Proposed changes
 
-none
+Any other propsed changes that could improve the code. These changes could also become new user stories and need not be completed for the pull to be merged.
 
 # Additional Information
 
-Code is adopted from shaze/slurmgluster
+Any other comments.
 
 # Checklist:
 
 The basic checklist to see if the code is up to standard.
 
-- [x] The code follows the project style guidelines
-- [x] Complex code blocks are well commented
-- [x] The code is commented only where necessary
+- [ ] The code follows the project style guidelines
+- [ ] Complex code blocks are well commented
+- [ ] The code is commented only where necessary
 - [ ] Testing has been implemented
-- [x] New and existing unit tests pass locally with changes
-- [x] The code does not violate the DRY principles
-- [x] Separation of concerns followed
-- [x] The code is easy to follow
-- [x] SRS has been followed
+- [ ] New and existing unit tests pass locally with changes
+- [ ] The code does not violate the DRY principles
+- [ ] Separation of concerns followed
+- [ ] The code is easy to follow
+- [ ] SRS has been followed
 
