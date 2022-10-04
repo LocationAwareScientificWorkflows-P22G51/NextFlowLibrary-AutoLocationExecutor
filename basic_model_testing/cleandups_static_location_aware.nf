@@ -26,6 +26,7 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
+  println "Data of " + fname + " is stored on the following nodes: "+nodes
   return nodes
 }
 
@@ -49,6 +50,7 @@ def getStatus(nodes) {
     if  ( !(the_node in nodes)) continue;
     if  (the_state in free_states) num_free++;
   }
+  println "Out of the given storage nodes there are " + num_free + " available. They are nodes: " + possible
   return [num_free,possible]
 }
 
@@ -60,16 +62,17 @@ def nodeOption(fname,aggression=1,other="") {
   state = getStatus(nodes)
   possible=state[1]
   if ((possible.intersect(nodes)).size()<aggression)
+    println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + aggression
     return "${other}"
   else {
     possible=possible - nodes;
     options="--exclude="+possible.join(',')+" ${other}"
+    println "Job execution can occur on the available storage nodes. The following nodes should be excluded during execution: " + options
     return options
   }
 }
 
 key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
-println node_suggestion
 
 // sample code that you should use as a template
 // use the node_suggestion hash map to find where the process should run
