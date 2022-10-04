@@ -93,13 +93,14 @@ process getIDs {
     script:
        """
        #!/usr/bin/python
-       print "${input_ch.getName()}"
+       print "${node_suggestion[input_ch.getName()]}"
        """
 
+}
 /*    
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """
-*/       
+       
 }
 
 process getDups {
@@ -149,11 +150,11 @@ workflow {
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
 }
-
-
-/*
-workflow {
-   Channel.fromPath("/external/diskC/22P63/data1/*.bim") |  getIDs
-   getDups(getIDs.out.id_ch)
-}
 */
+
+
+workflow {
+   input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
+   getIDs(input_ch)
+}
+
