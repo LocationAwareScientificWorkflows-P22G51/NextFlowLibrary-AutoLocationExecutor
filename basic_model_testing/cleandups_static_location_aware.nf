@@ -92,11 +92,7 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
-       #!/usr/bin/python
-       
-       x = 'Hello'
-       y = 'world!'
-       print "%s - %s" % (x,y)
+       print $input_ch
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """
        
