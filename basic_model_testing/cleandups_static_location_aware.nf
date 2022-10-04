@@ -26,7 +26,7 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
-  println "The following data file and its storage nodes will be analysed: " + fname + "\n\n"
+  println "\n The following data file and its storage nodes will be analysed: " + fname + "\n"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
@@ -83,6 +83,7 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
+    println "The current input channel that is given to node_suggestion is: " + input_ch.getName() + "\n"
     clusterOptions {node_suggestion[input_ch.getName()] }
     input:
        path input_ch
