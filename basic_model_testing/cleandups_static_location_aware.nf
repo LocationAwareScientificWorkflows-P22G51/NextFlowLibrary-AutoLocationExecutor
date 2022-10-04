@@ -83,7 +83,7 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-    println "The current input channel that is given to node_suggestion is: " + input_ch.getName() + "\n"
+    
     clusterOptions {node_suggestion[input_ch.getName()] }
     input:
        path input_ch
@@ -91,7 +91,11 @@ process getIDs {
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
     script:
-       " cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids "
+       """
+       println "The current input channel that is given to node_suggestion is: " + input_ch.getName() + "\n"
+       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
+       """
+       
 }
 
 process getDups {
