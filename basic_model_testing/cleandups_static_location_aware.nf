@@ -91,16 +91,7 @@ process getIDs {
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
     script:
-       """
-       #!/usr/bin/python
-       print "${node_suggestion[input_ch.getName()]}"
-       """
-
-}
-/*    
-       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
-       """
-       
+       "cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids"     
 }
 
 process getDups {
@@ -150,11 +141,11 @@ workflow {
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
 }
-*/
 
 
+/*
 workflow {
    input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
    getIDs(input_ch)
 }
-
+*/
