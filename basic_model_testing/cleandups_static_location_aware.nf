@@ -92,7 +92,9 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
-       getIDs.collect().view()
+       x = 'Hello'
+       y = 'world!'
+       print "%s - %s" % (x,y)
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """
        
