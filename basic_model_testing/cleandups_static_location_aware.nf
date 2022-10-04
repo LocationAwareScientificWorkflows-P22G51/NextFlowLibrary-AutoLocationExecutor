@@ -114,13 +114,10 @@ process removeDups {
        "grep -v -f $badids orig.bim > ${badids.baseName}.bim "
 }
 
-
-splits = [400,500,600]
-
 process splitIDs  {
     input:
        path bim
-    each splits
+       val splits
     output:
        path ("*-$split-*") 
 
