@@ -122,7 +122,7 @@ process splitIDs  {
        path bim
     each splits
     output:
-       file ("*-$split-*") 
+       path ("*-$split-*") 
 
     script:
     "split -l $split $bim ${bim.baseName}-$split- "
