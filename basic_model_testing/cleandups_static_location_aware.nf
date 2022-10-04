@@ -94,9 +94,12 @@ process getIDs {
        """
        #!/usr/bin/python
        print "${input_ch.getName()}"
+       """
+
+/*    
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """
-       
+*/       
 }
 
 process getDups {
