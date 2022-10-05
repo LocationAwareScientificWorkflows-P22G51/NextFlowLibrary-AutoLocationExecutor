@@ -83,9 +83,10 @@ def nodeOption(fname,aggression=1,other="") {
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-    clusterOptions {nodeOption(input_ch)}
+    clusterOptions {nodeOption}
     input:
        path input_ch
+       val nodeOption
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
@@ -94,7 +95,6 @@ process getIDs {
 }
 
 process getDups {
-    //clusterOptions {nodeOption(input)}
     input:
        path input
     output:
@@ -136,7 +136,7 @@ process splitIDs  {
 workflow {
    split = [400,500,600]
    input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
-   getIDs(input_ch)
+   getIDs(input_ch,nodeOption(input_ch))
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
