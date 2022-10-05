@@ -58,7 +58,7 @@ def getStatus(nodes) {
 
 
 
-def nodeOption(fname,aggression=2,other="") {
+def nodeOption(fname,aggression=1,other="") {
   nodes = getNodesOfBricks(fname)
   state = getStatus(nodes)
   possible=state[1]
@@ -92,7 +92,7 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
       """
-      srun hostname
+      echo srun hostname
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """
 }
