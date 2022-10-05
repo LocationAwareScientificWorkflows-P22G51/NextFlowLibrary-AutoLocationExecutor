@@ -26,7 +26,7 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
-  println "\n The following data file and its storage nodes will be analysed: " + fname + "\n"
+  println "\nThe following data file and its storage nodes will be analysed: " + fname + "\n"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
@@ -92,7 +92,6 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
       """
-      scontrol -a NodeList
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """
 }
