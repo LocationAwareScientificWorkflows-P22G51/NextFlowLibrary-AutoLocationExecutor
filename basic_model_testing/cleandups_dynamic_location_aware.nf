@@ -133,7 +133,7 @@ process splitIDs  {
 }
 
 
-input_ch.subscribe {nodeOption(it)}
+input_ch.subscribe {nodeSuggestion = Channel.value(nodeOption(it))}
 
 workflow {
    split = [400,500,600]
