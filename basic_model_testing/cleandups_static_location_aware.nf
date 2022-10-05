@@ -98,12 +98,14 @@ process getIDs {
       echo sstat -j $SLURM_NODELIST
       echo sstat -j $SLURM_JOB_NODELIST
       echo sstat -j $SLURM_LOCALID
+      echo sstat -j $SLURM_ARRAY_TASK_COUNT
+      echo sstat -j $SLURM_NNODES
+      echo sstat -j $SLURMD_NODENAME
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """
 }
 
 process getDups {
-    echo true
     input:
        path input
     output:
@@ -111,10 +113,6 @@ process getDups {
     script:
        out = "${input.baseName}.dups"
        """
-       echo sstat -j $SLURM_JOB_ID
-       echo sstat -j $SLURM_NODELIST
-       echo sstat -j $SLURM_JOB_NODELIST
-       echo sstat -j $SLURM_LOCALID
        uniq -d $input > $out
        touch ignore
        """
@@ -122,7 +120,6 @@ process getDups {
 
 
 process removeDups {
-    echo true
     input:
        path badids 
        path "orig.bim" 
@@ -133,16 +130,11 @@ process removeDups {
 
     script:
        """
-       echo sstat -j $SLURM_JOB_ID
-       echo sstat -j $SLURM_NODELIST
-       echo sstat -j $SLURM_JOB_NODELIST
-       echo sstat -j $SLURM_LOCALID
        grep -v -f $badids orig.bim > ${badids.baseName}.bim
        """
 }
 
 process splitIDs  {
-    echo true
     input:
        path bim
     each split
@@ -151,10 +143,6 @@ process splitIDs  {
 
     script:
     """
-    echo sstat -j $SLURM_JOB_ID
-    echo sstat -j $SLURM_NODELIST
-    echo sstat -j $SLURM_JOB_NODELIST
-    echo sstat -j $SLURM_LOCALID
     split -l $split $bim ${bim.baseName}-$split- 
     """
 }
