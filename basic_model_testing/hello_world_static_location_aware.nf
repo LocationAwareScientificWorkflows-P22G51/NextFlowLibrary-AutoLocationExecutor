@@ -87,10 +87,11 @@ params.str = 'Hello world!'
  process sample {
      echo true
      clusterOptions {--exclude=n07,n12,n13,n24,n30,n03,n04,n05,n11,n16,n17,n18,n19,n20,n23,n25,n26,n27,n31,n33,n34,n35,n36,n37,n41 }
-     input:
-      path filelocaion_ch
+    // input:
+      //path filelocaion_ch
      output:
       path 'chunk_*'
+     script:
 
   """
   echo sstat -j $SLURM_JOB_ID
@@ -106,6 +107,7 @@ process convertToUpper {
     file x
   output:
     stdout
+  script:
 
   """
   cat $x | tr '[a-z]' '[A-Z]'
@@ -114,7 +116,8 @@ process convertToUpper {
 
 
 workflow {
-   Channel.fromPath("11.bim") | sample | flatten | convertToUpper | view { it.trim() }
+   //Channel.fromPath("/11.bim") | 
+   sample | flatten | convertToUpper | view { it.trim() }
 }
 
 
