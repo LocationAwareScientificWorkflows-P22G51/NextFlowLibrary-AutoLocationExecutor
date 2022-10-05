@@ -84,6 +84,7 @@ def nodeOption(fname,aggression=1,other="") {
 
 process getIDs {
     input:
+       val nodeSuggestion
        file input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
@@ -94,7 +95,6 @@ process getIDs {
 
 process getDups {
     input:
-       val nodeSuggestion
        path input
     output:
        path "${input.baseName}.dups" , emit: dups_ch
