@@ -114,7 +114,7 @@ process convertToUpper {
 
 
 workflow {
-   Channel.fromPath("*.bim") | sample | flatten | convertToUpper | view { it.trim() }
+   Channel.fromPath("11.bim") | sample | flatten | convertToUpper | view { it.trim() }
 }
 
 
