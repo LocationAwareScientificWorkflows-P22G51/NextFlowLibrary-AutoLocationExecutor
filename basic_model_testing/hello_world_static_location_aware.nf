@@ -1,6 +1,6 @@
 // common code that must be included starts here
 
-/*
+
 
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
@@ -77,7 +77,7 @@ def nodeOption(fname,aggression=1,other="") {
 //println node_suggestion
 
 // sample code that you should use as a template
-*/
+
 
 params.str = 'Hello world!'
 
