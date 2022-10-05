@@ -133,7 +133,7 @@ process splitIDs  {
     "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-
+nodeSuggestion
 input_ch.subscribe {nodeSuggestion = Channel.value(nodeOption(it))}
 
 workflow {
