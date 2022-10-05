@@ -5,7 +5,7 @@
 // penalty but only minor but should contain all that you want
 
 params.data_dir = "/external/diskC/22P63/data1"
-input_ch = Channel.fromPath("${params.data_dir}/*.bim", type 'file')
+input_ch = Channel.fromPath("${params.data_dir}/*.bim")
 key_fnames = file("/external/diskC/22P63/data1/*.bim")
 
 
@@ -83,7 +83,7 @@ def nodeOption(fname,aggression=1,other="") {
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-   jeff = nodeOption(file(input_ch))
+   input_ch.each {jeff = nodeOption(input_ch)}
    clusterOptions {jeff}
     input:
        path input_ch
