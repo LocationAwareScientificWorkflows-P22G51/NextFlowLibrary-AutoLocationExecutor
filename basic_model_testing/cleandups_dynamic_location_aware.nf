@@ -145,7 +145,7 @@ input_ch.subscribe {node_suggestion[it.getName()] = nodeOption(it)}
 
 workflow {
    split = [400,500,600]
-   sample(input_ch)
+   //sample(input_ch)
    getIDs(node_suggestion, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
