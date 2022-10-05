@@ -96,6 +96,8 @@ process getIDs {
       """
       echo sstat -j $SLURM_JOB_ID
       echo sstat -j $SLURM_NODELIST
+      echo sstat -j $SLURM_JOB_NODELIST
+      echo sstat -j $SLURM_LOCALID
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """
 }
