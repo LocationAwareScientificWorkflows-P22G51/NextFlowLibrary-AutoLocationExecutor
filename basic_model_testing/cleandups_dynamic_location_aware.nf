@@ -84,8 +84,9 @@ def nodeOption(fname,aggression=1,other="") {
 
 process getIDs {
      //nodeOption(input_ch.getDir)
-    //clusterOptions {gibberish}
+    clusterOptions {nodeSuggestion}
     input:
+       val nodeSuggestion
        path input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
@@ -137,7 +138,7 @@ input_ch.subscribe {nodeSuggestion = Channel.value(nodeOption(it))}
 
 workflow {
    split = [400,500,600]
-   getIDs(input_ch)
+   getIDs(nodeSuggestion, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
