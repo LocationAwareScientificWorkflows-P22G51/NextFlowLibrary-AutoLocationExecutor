@@ -96,7 +96,7 @@ process getIDs {
       """
       echo sstat -j $SLURM_JOB_ID
       echo sstat -j $SLURM_NODELIST
-      echo sstat -j $SLURM_NODE_ALIASES
+      echo sstat -j $SLURM_PROCID
       echo sstat -j $SLURM_NODEID
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """
