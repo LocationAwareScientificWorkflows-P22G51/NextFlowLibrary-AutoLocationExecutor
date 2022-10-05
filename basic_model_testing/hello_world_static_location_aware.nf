@@ -4,8 +4,8 @@
 
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
-key_fnames = file("/external/diskC/22P63/data1/*.bim")
-
+//key_fnames = file("/external/diskC/22P63/data1/*.bim")
+key_fnames = file("*.bim")
 
 node_suggestion = [:]
 
@@ -24,6 +24,8 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
+  println "\nThe following data file and its storage nodes will be analysed: " + fname + "\n"
+  println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
 
@@ -47,6 +49,7 @@ def getStatus(nodes) {
     if  ( !(the_node in nodes)) continue;
     if  (the_state in free_states) num_free++;
   }
+  println "The following nodes are currently available for execution: " + possible + "\n"
   return [num_free,possible]
 }
 
@@ -58,16 +61,20 @@ def nodeOption(fname,aggression=1,other="") {
   state = getStatus(nodes)
   possible=state[1]
   if ((possible.intersect(nodes)).size()<aggression)
+  {
+    println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + aggression + "\n"
     return "${other}"
+  }
   else {
     possible=possible - nodes;
     options="--exclude="+possible.join(',')+" ${other}"
+    println "Job execution can occur on the available storage nodes. The following nodes should be excluded during execution: " + options + "\n"
     return options
   }
 }
 
 key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
-println node_suggestion
+//println node_suggestion
 
 // sample code that you should use as a template
 
@@ -78,6 +85,7 @@ params.str = 'Hello world!'
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
+     echo true
      clusterOptions { node_suggestion[filelocaion_ch[0].getName()] }
      input:
       path filelocaion_ch
@@ -85,6 +93,8 @@ params.str = 'Hello world!'
       path 'chunk_*'
 
   """
+  echo sstat -j $SLURM_JOB_ID
+  echo sstat -j $SLURM_NODELIST
   printf '${params.str}' | split -b 6 - chunk_
   """
 }
@@ -104,7 +114,7 @@ process convertToUpper {
 
 
 workflow {
-   Channel.fromPath("/external/diskC/22P63/data1/*.bim") | sample | flatten | convertToUpper | view { it.trim() }
+   Channel.fromPath("*.bim") | sample | flatten | convertToUpper | view { it.trim() }
 }
 
 
