@@ -6,6 +6,8 @@
 
 params.data_dir = "/external/diskC/22P63/data1"
 key_fnames = file("/external/diskC/22P63/data1/*.bim")
+node_suggestion = Channel.fromList()
+input_ch = Channel.fromPath("${params.data_dir}/*.bim")
 
 
 
@@ -148,8 +150,7 @@ input_ch.subscribe {node_suggestion << nodeOption(it)}
 node_suggestion.subscribe {println it}
 
 
-node_suggestion = Channel.fromList()
-input_ch = Channel.fromPath("${params.data_dir}/*.bim")
+
 
 workflow {
    split = [400,500,600]
