@@ -1,5 +1,3 @@
-// common code that must be included starts here
-
 #!/usr/bin/env nextflow
 
 params.str = 'hello world!'
