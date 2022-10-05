@@ -83,6 +83,8 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
+
+    echo true
     
     clusterOptions {node_suggestion[input_ch.getName()] }
     input:
