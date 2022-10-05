@@ -5,7 +5,7 @@
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
 //key_fnames = file("/external/diskC/22P63/data1/*.bim")
-key_fnames = file("*.bim")
+//key_fnames = file("*.bim")
 
 node_suggestion = [:]
 
@@ -73,7 +73,7 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
+//key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 //println node_suggestion
 
 // sample code that you should use as a template
@@ -86,9 +86,9 @@ params.str = 'Hello world!'
 // Recall that the file itself is not staged at the point clusterOptions is called
  process sample {
      echo true
-     clusterOptions { node_suggestion[filelocaion_ch[0].getName()] }
-     input:
-      path filelocaion_ch
+     clusterOptions {--exclude=n07,n12,n13,n24,n30,n03,n04,n05,n11,n16,n17,n18,n19,n20,n23,n25,n26,n27,n31,n33,n34,n35,n36,n37,n41 }
+     //input:
+     // path filelocaion_ch
      output:
       path 'chunk_*'
 
@@ -114,7 +114,8 @@ process convertToUpper {
 
 
 workflow {
-   Channel.fromPath("*.bim") | sample | flatten | convertToUpper | view { it.trim() }
+   //Channel.fromPath("*.bim") | 
+   sample | flatten | convertToUpper | view { it.trim() }
 }
 
 
