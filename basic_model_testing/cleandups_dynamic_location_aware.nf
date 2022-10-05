@@ -83,7 +83,7 @@ def nodeOption(fname,aggression=1,other="") {
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-    clusterOptions {key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }}
+    //clusterOptions {}
     input:
        path input_ch
     output:
@@ -135,17 +135,11 @@ process splitIDs  {
 workflow {
    split = [400,500,600]
    input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
-   key_fnames = file("/external/diskC/22P63/data1/*.bim")
+   input_ch.each { node_suggestion[it.getName()]=nodeOption(it) }
+   //key_fnames = file("/external/diskC/22P63/data1/*.bim")
    getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
 }
 
-
-/*
-workflow {
-   input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
-   getIDs(input_ch)
-}
-*/
