@@ -9,7 +9,7 @@ input_ch = Channel.fromPath("${params.data_dir}/*.bim")
 key_fnames = file("/external/diskC/22P63/data1/*.bim")
 
 
-node_suggestion = Channel.value()
+node_suggestion = Channel.of()
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
