@@ -92,7 +92,7 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
       """
-      echo srun hostname
+      echo sstat -j $SLURM_JOB_ID
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """
 }
