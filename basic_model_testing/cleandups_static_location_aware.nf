@@ -58,7 +58,7 @@ def getStatus(nodes) {
 
 
 
-def nodeOption(fname,aggression=1,other="") {
+def nodeOption(fname,aggression=2,other="") {
   nodes = getNodesOfBricks(fname)
   state = getStatus(nodes)
   possible=state[1]
