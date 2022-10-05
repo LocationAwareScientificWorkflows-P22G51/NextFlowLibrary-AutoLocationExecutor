@@ -83,9 +83,10 @@ def nodeOption(fname,aggression=1,other="") {
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-    clusterOptions {nodeOption}
+    clusterOptions {nodeSelection}
     input:
-       tuple path(input_ch), val(nodeSelection)
+       path input_ch
+       val nodeSelection
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
