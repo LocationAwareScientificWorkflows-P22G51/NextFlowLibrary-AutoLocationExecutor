@@ -144,7 +144,7 @@ process splitIDs  {
 */
 
 //input_ch.subscribe {node_suggestion[it.getName()] = nodeOption(it)}
-input_ch.subscribe {println it.getName()}
+input_ch.subscribe {node_suggestion = it.getName()}
 
 workflow {
    split = [400,500,600]
