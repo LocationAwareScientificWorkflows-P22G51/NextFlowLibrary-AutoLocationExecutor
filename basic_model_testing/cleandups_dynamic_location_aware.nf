@@ -94,7 +94,7 @@ process getIDs {
 }
 
 process getDups {
-    clusterOptions {nodeOption(input)}
+    //clusterOptions {nodeOption(input)}
     input:
        path input
     output:
