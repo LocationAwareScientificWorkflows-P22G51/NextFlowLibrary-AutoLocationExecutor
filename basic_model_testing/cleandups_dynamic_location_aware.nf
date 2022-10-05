@@ -133,12 +133,20 @@ process splitIDs  {
     "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-nodeSuggestion = Channel.value()
-input_ch.subscribe {nodeSuggestion = Channel.value(nodeOption(it))}
+process nodeSuggestion {
+    input:
+       path input_ch
+    output:
+       value nodeOption(input_ch) , emit nodeSuggestion_ch
+}
+
+//nodeSuggestion = Channel.value()
+//input_ch.subscribe {nodeSuggestion = Channel.value(nodeOption(it))}
 
 workflow {
    split = [400,500,600]
-   getIDs(nodeSuggestion, input_ch)
+   input_ch | nodeSuggestion
+   getIDs(nodeSuggestion_ch, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
