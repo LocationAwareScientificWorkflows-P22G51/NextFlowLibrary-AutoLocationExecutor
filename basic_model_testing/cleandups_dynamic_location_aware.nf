@@ -5,11 +5,10 @@
 // penalty but only minor but should contain all that you want
 
 params.data_dir = "/external/diskC/22P63/data1"
-input_ch = Channel.fromPath("${params.data_dir}/*.bim")
 key_fnames = file("/external/diskC/22P63/data1/*.bim")
 
 
-node_suggestion = Channel.of()
+
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
@@ -148,6 +147,9 @@ input_ch.subscribe {node_suggestion << nodeOption(it)}
 
 node_suggestion.subscribe {println it}
 
+
+node_suggestion = Channel.fromList()
+input_ch = Channel.fromPath("${params.data_dir}/*.bim")
 
 workflow {
    split = [400,500,600]
