@@ -83,8 +83,8 @@ def nodeOption(fname,aggression=1,other="") {
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-   nodeOption(file("/external/diskC/22P63/data1/11.bim"))
-   //clusterOptions {nodeOption(file("/external/diskC/22P63/data1/11.bim"))}
+   jeff = nodeOption(file("/external/diskC/22P63/data1/11.bim"))
+   clusterOptions {jeff}
     input:
        path input_ch
     output:
