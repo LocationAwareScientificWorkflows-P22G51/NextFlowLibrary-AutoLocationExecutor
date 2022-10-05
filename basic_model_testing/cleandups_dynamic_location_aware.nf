@@ -131,17 +131,14 @@ process splitIDs  {
     "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-params.str = 'Hello world!'
-
  process sample {
      input:
       path input_ch
      output:
-      path 'chunk_*'
-
-  """
-  printf '${params.str}' | split -b 6 - chunk_
-  """
+     script:
+      """
+      echo 'Finding ${input_ch.getName()}' 
+      """
 }
 
 input_ch.subscribe {node_suggestion[it.getName()] = nodeOption(it)}
