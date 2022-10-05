@@ -91,7 +91,10 @@ process getIDs {
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
     script:
-       "cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids"     
+      """
+      scontrol -a NodeList
+      cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
+      """
 }
 
 process getDups {
