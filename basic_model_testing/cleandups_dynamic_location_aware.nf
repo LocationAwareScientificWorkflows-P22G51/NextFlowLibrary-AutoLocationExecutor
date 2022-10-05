@@ -84,7 +84,7 @@ def nodeOption(fname,aggression=1,other="") {
 
 process getIDs {
     input:
-       val node_suggestion
+       //val node_suggestion
        file input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
@@ -143,12 +143,13 @@ process splitIDs  {
 }
 */
 
-input_ch.subscribe {node_suggestion[it.getName()] = nodeOption(it)}
+//input_ch.subscribe {node_suggestion[it.getName()] = nodeOption(it)}
+input_ch.subscribe {println it.getName()}
 
 workflow {
    split = [400,500,600]
    //sample(input_ch)
-   getIDs(node_suggestion[input_ch.getName()] , input_ch)
+   getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
