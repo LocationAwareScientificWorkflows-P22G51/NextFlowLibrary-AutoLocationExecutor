@@ -85,7 +85,7 @@ def nodeOption(fname,aggression=1,other="") {
 process getIDs {
     //clusterOptions {nodeOption(key_fnames)}
     input:
-       file input_ch
+       path input_ch
        file key_fnames
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
