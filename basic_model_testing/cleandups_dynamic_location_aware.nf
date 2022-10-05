@@ -83,7 +83,7 @@ def nodeOption(fname,aggression=1,other="") {
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-     nodeOption(it)
+     nodeOption(input_ch)
     clusterOptions {gibberish}
     input:
        path input_ch
