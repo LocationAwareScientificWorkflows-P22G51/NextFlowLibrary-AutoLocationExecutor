@@ -98,7 +98,6 @@ process getIDs {
       echo sstat -j $SLURM_NODELIST
       echo sstat -j $SLURM_JOB_NODELIST
       echo sstat -j $SLURM_LOCALID
-      echo sstat -j $SLURM_ARRAY_TASK_COUNT
       echo sstat -j $SLURM_NNODES
       echo sstat -j $SLURMD_NODENAME
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
