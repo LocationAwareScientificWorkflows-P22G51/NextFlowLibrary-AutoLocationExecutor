@@ -131,7 +131,7 @@ process splitIDs  {
     "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-
+/*
  process sample {
      input:
       path input_ch
@@ -141,7 +141,7 @@ process splitIDs  {
       echo 'Finding ${input_ch.getName()}' 
       """
 }
-
+*/
 
 //input_ch.subscribe {node_suggestion[it.getName()] = nodeOption(it)}
 input_ch.subscribe {println it.getName()}
@@ -151,7 +151,7 @@ node_suggestion.subscribe {println it}
 
 workflow {
    split = [400,500,600]
-   sample(input_ch)
+   //sample(input_ch)
    getIDs(node_suggestion, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
