@@ -135,7 +135,7 @@ process splitIDs  {
 workflow {
    split = [400,500,600]
    input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
-   key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
+   input_ch.each { node_suggestion[it.getName()]=nodeOption(it) }
    getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
