@@ -143,8 +143,8 @@ process splitIDs  {
 }
 */
 
-//input_ch.subscribe {node_suggestion[it.getName()] = nodeOption(it)}
-input_ch.subscribe {println it.getName()}
+input_ch.subscribe {node_suggestion << nodeOption(it)}
+//input_ch.subscribe {println it.getName()}
 
 node_suggestion.subscribe {println it}
 
