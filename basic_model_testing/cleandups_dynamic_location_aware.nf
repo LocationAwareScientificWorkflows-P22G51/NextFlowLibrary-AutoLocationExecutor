@@ -137,7 +137,7 @@ input_ch.subscribe {nodeOption(it)}
 workflow {
    split = [400,500,600]
    key_fnames = file("/external/diskC/22P63/data1/11.bim")
-   nodeSuggestion = nodeOption(key_fnames)
+   //nodeSuggestion = nodeOption(key_fnames)
    getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
