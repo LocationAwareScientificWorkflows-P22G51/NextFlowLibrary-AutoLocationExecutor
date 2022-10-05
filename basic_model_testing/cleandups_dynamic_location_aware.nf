@@ -75,7 +75,7 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
+//key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 // use the node_suggestion hash map to find where the process should run
