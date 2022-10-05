@@ -83,8 +83,6 @@ def nodeOption(fname,aggression=1,other="") {
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-   input_ch.each {jeff = nodeOption(it)}
-   clusterOptions {jeff}
     input:
        file input_ch
     output:
@@ -96,6 +94,7 @@ process getIDs {
 
 process getDups {
     input:
+       val nodeSuggestion
        path input
     output:
        path "${input.baseName}.dups" , emit: dups_ch
@@ -132,12 +131,26 @@ process splitIDs  {
     "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-//nodeSuggestion = Channel.value()
-//input_ch.subscribe {nodeSuggestion = Channel.value(nodeOption(it))}
+params.str = 'Hello world!'
+
+ process sample {
+     input:
+      path input_ch
+     output:
+      path 'chunk_*'
+
+  """
+  printf '${params.str}' | split -b 6 - chunk_
+  """
+}
+
+nodeSuggestion = Channel.value()
+input_ch.subscribe {nodeSuggestion = Channel.value(nodeOption(it))}
 
 workflow {
    split = [400,500,600]
-   getIDs(input_ch)
+   sample(input_ch)
+   getIDs(nodeSuggestion, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
