@@ -84,7 +84,7 @@ def nodeOption(fname,aggression=1,other="") {
 
 process getIDs {
     
-    clusterOptions {nodeOption(input_ch)}
+    //clusterOptions {nodeOption(input_ch)}
     input:
        path input_ch
     output:
