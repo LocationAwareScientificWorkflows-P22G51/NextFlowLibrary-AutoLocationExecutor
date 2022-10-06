@@ -5,12 +5,13 @@
 // penalty but only minor but should contain all that you want
 
 params.data_dir = "/external/diskC/22P63/data1"
-key_fnames = file("/external/diskC/22P63/data1/*.bim")
 node_suggestion = [:]
-//input_ch = Channel.fromPath("${params.data_dir}/*.bim")
-
-
-
+input_ch = Channel
+        .fromPath("${params.data_dir}/*.bim")        
+        .randomSample(1000)
+        .distinct()
+        .subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onComplete: { println 'Done' }
+key_fnames = file("${params.data_dir}/*.bim")
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
@@ -32,9 +33,6 @@ def getNodesOfBricks(fname) {
   return nodes
 }
 
-
-
-
 possible_states = ['idle','alloc','mix' ]
 free_states = ['idle','mix']
 
@@ -55,9 +53,6 @@ def getStatus(nodes) {
   println "The following nodes are currently available for execution: " + possible + "\n"
   return [num_free,possible]
 }
-
-
-
 
 def nodeOption(fname,aggression=1,other="") {
   nodes = getNodesOfBricks(fname)
@@ -83,12 +78,8 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
 
-input_ch = Channel
-        .fromPath("/external/diskC/22P63/data1/*.bim")        
-        .randomSample(1000)
-input_ch.subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onComplete: { println 'Done' }
-
 process getIDs {
+    clusterOptions {node_suggestion[input_ch.getName()] }
     input:
        val node_suggestion
        file input_ch
@@ -111,7 +102,6 @@ process getDups {
        touch ignore
        """
 }
-
 
 process removeDups {
     input:
@@ -137,16 +127,6 @@ process splitIDs  {
     "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-
-
-//input_ch.subscribe {node_suggestion << nodeOption(it)}
-//input_ch.subscribe {println it.getName()}
-
-//node_suggestion.subscribe {println it}
-
-
-
-
 workflow {
    split = [400,500,600]
    getIDs(node_suggestion, input_ch)
@@ -154,4 +134,3 @@ workflow {
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
 }
-
