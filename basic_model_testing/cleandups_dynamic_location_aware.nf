@@ -6,7 +6,7 @@
 
 params.data_dir = "/external/diskC/22P63/data1"
 key_fnames = file("/external/diskC/22P63/data1/11.bim")
-node_suggestion = Channel.fromList()
+node_suggestion = [:]
 //input_ch = Channel.fromPath("${params.data_dir}/*.bim")
 
 
@@ -86,7 +86,7 @@ def nodeOption(fname,aggression=1,other="") {
 input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
         .randomSample(1000)
 
-input_ch.subscribe onNext: { println "Got: $it" }, onComplete: { println 'Done' }
+input_ch.subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onComplete: { println 'Done' }
 
 process getIDs {
     input:
@@ -149,7 +149,7 @@ process splitIDs  {
 
 workflow {
    split = [400,500,600]
-   getIDs(input_ch)
+   getIDs(node_suggestion[input_ch.getName()], input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
