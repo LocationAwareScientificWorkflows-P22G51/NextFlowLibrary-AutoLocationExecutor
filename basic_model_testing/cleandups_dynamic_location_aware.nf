@@ -62,20 +62,16 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-def updateNodeSuggestions(file) {
-    node_suggestion[file.getName()]=nodeOption(file)
-}
-
 params.data_dir = "/external/diskC/22P63/data1"
 node_suggestion = [:]
 input_ch = Channel
         .fromPath("${params.data_dir}/*.bim")        
         .randomSample(1000)
-        .subscribe onNext: { updateNodeSuggestions(it) }, onComplete: { println 'Done' }
+        .subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onComplete: { println 'Done' }
 key_fnames = file("${params.data_dir}/*.bim")
 
 // Find initial node suggestions on script run
-key_fnames.each { updateNodeSuggestions(it) }
+key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 // use the node_suggestion hash map to find where the process should run
@@ -86,7 +82,6 @@ process getIDs {
     echo true
     clusterOptions {node_suggestion[input_ch.getName()] }
     input:
-       val node_suggestion
        file input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
@@ -138,7 +133,7 @@ process splitIDs  {
 
 workflow {
    split = [400,500,600]
-   getIDs(node_suggestion, input_ch)
+   getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
