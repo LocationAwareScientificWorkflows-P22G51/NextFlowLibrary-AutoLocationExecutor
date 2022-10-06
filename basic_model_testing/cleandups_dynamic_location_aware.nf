@@ -85,8 +85,9 @@ def nodeOption(fname,aggression=1,other="") {
 
 input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
         .randomSample(1000)
-
-input_ch.subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onComplete: { println 'Done' }
+        .first(node_suggestion[it.getName()]=nodeOption(it))
+//onNext: { node_suggestion[it.getName()]=nodeOption(it) }, 
+input_ch.subscribe onComplete: { println 'Done' }
 
 process getIDs {
     input:
