@@ -85,9 +85,8 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 input_ch = Channel
         .fromPath("/external/diskC/22P63/data1/*.bim")        
-        .first(node_suggestion[it.getName()]=nodeOption(it))
-//onNext: { node_suggestion[it.getName()]=nodeOption(it) }, .randomSample(1000)
-input_ch.subscribe onNext: { println it }, onComplete: { println 'Done' }
+        .randomSample(1000)
+input_ch.subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onComplete: { println 'Done' }
 
 process getIDs {
     input:
