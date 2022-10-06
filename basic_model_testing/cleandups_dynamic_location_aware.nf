@@ -69,7 +69,7 @@ node_suggestion = Channel
 input_ch = Channel
         .fromPath("${params.data_dir}")        
         .randomSample(1000)
-        .subscribe onNext: { node_suggestion << nodeOption(it) }, onComplete: { println 'Done' }
+        .subscribe onNext: { node_suggestion.bind(nodeOption(it)) }, onComplete: { println 'Done' }
 //key_fnames = file("${params.data_dir}")
 
 // Find initial node suggestions on script run
