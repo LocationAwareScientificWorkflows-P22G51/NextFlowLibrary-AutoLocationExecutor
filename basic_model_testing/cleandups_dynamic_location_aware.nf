@@ -7,7 +7,7 @@
 params.data_dir = "/external/diskC/22P63/data1"
 key_fnames = file("/external/diskC/22P63/data1/11.bim")
 node_suggestion = Channel.fromList()
-input_ch = Channel.fromPath("${params.data_dir}/*.bim")
+//input_ch = Channel.fromPath("${params.data_dir}/*.bim")
 
 
 
@@ -83,6 +83,11 @@ def nodeOption(fname,aggression=1,other="") {
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
 
+input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
+        .randomSample(1000)
+
+input_ch.subscribe onNext: { println "Got: $it" }, onComplete: { println 'Done' }
+
 process getIDs {
     input:
        //stdin node_suggestion
@@ -133,18 +138,6 @@ process splitIDs  {
 }
 
 
- process sample {
-     input:
-      path input_ch
-     output:
-      //val nodeSuggestion, emit: nodeSuggestion
-     script:
-     //nodeSuggestion  = nodeOption(key_fnames)
-      """
-      echo 'Finding ${input_ch.getName()}' 
-      """
-}
-
 
 //input_ch.subscribe {node_suggestion << nodeOption(it)}
 //input_ch.subscribe {println it.getName()}
@@ -156,7 +149,6 @@ process splitIDs  {
 
 workflow {
    split = [400,500,600]
-   sample(input_ch)
    getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
