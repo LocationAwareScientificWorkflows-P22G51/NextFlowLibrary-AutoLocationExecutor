@@ -75,9 +75,8 @@ input_ch = Channel
 
 process getIDs {
     echo true
-    clusterOptions { node_suggestion }
+    clusterOptions { node_suggestion[input_ch.getName()] }
     input:
-       val node_suggestion
        file input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
