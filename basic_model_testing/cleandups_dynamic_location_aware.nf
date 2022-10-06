@@ -137,7 +137,7 @@ process splitIDs  {
      input:
       path input_ch
      output:
-      val nodeSuggestion, emit nodeSuggestion
+      val nodeSuggestion, emit: nodeSuggestion
      script:
      nodeSuggestion  = nodeOption(input_ch)
       """
