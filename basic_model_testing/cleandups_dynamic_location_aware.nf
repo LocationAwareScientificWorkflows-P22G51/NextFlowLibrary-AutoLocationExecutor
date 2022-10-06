@@ -135,13 +135,13 @@ process splitIDs  {
 
  process sample {
      input:
-      each key_fnames
+      path input_ch
      output:
       val nodeSuggestion, emit: nodeSuggestion
      script:
-     nodeSuggestion  = nodeOption(key_fnames)
+     //nodeSuggestion  = nodeOption(key_fnames)
       """
-      echo 'Finding ${key_fnames.getName()}' 
+      echo 'Finding ${input_ch.getName()}' 
       """
 }
 
@@ -156,7 +156,7 @@ process splitIDs  {
 
 workflow {
    split = [400,500,600]
-   sample(key_fnames)
+   sample(input_ch)
    getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
