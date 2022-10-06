@@ -135,11 +135,11 @@ process splitIDs  {
 
  process sample {
      input:
-      file key_fnames
+      each key_fnames
      output:
       val nodeSuggestion, emit: nodeSuggestion
      script:
-     nodeSuggestion  = nodeOption(file("/external/diskC/22P63/data1/11.bim"))
+     nodeSuggestion  = nodeOption(key_fnames)
       """
       echo 'Finding ${key_fnames.getName()}' 
       """
