@@ -26,7 +26,7 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
-  println "\n The following data file and its storage nodes will be analysed: " + fname + "\n"
+  println "\nThe following data file and its storage nodes will be analysed: " + fname + "\n"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
@@ -83,6 +83,8 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
+
+    echo true
     
     clusterOptions {node_suggestion[input_ch.getName()] }
     input:
@@ -91,7 +93,11 @@ process getIDs {
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
     script:
-       "cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids"     
+      """
+      echo sstat -j $SLURM_JOB_ID
+      echo sstat -j $SLURM_NODELIST
+      cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
+      """
 }
 
 process getDups {
@@ -118,7 +124,9 @@ process removeDups {
                   overwrite:true, mode:'copy'
 
     script:
-       "grep -v -f $badids orig.bim > ${badids.baseName}.bim "
+       """
+       grep -v -f $badids orig.bim > ${badids.baseName}.bim
+       """
 }
 
 process splitIDs  {
@@ -129,7 +137,9 @@ process splitIDs  {
        path ("*-$split-*") 
 
     script:
-    "split -l $split $bim ${bim.baseName}-$split- "
+    """
+    split -l $split $bim ${bim.baseName}-$split- 
+    """
 }
 
 
