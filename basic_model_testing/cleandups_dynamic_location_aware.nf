@@ -9,7 +9,6 @@ node_suggestion = [:]
 input_ch = Channel
         .fromPath("${params.data_dir}/*.bim")        
         .randomSample(1000)
-        .distinct()
         .subscribe onNext: { updateNodeSuggestions(it) }, onComplete: { println 'Done' }
 key_fnames = file("${params.data_dir}/*.bim")
 
