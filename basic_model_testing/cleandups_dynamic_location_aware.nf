@@ -70,7 +70,6 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 input_ch = Channel
         .fromPath("${params.data_dir}")        
-        .randomSample(1000)
         .subscribe onNext: { updateNodes(it) }, onComplete: { println 'Done' }
 
 process getIDs {
