@@ -65,6 +65,9 @@ def updateNodes(it) {
 
 params.data_dir = "/external/diskC/22P63/data1/11.bim"
 node_suggestion = [:] 
+key_fnames = file("${params.data_dir}")
+key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
+
 input_ch = Channel
         .fromPath("${params.data_dir}")        
         .randomSample(1000)
