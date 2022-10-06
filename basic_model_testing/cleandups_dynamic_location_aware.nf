@@ -60,7 +60,7 @@ def nodeOption(fname,aggression=1,other="") {
 
 def updateNodes(it) {
     println "Updating node suggestion for: $it"
-    node_suggestion.bind(nodeOption(it))  
+    node_suggestion[it.getName()]=nodeOption(it)  
 }
 
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
