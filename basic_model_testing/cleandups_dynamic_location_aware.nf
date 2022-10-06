@@ -134,6 +134,7 @@ process splitIDs  {
 
 
  process sample {
+     echo true
      input:
       path input_ch
      output:
