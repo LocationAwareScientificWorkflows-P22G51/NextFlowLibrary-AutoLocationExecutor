@@ -7,7 +7,7 @@
 params.data_dir = "/external/diskC/22P63/data1"
 key_fnames = file("/external/diskC/22P63/data1/*.bim")
 node_suggestion = Channel.fromList()
-input_ch = Channel.fromPath("${params.data_dir}/11.bim")
+input_ch = Channel.fromPath("${params.data_dir}/*.bim")
 
 
 
@@ -156,7 +156,7 @@ node_suggestion.subscribe {println it}
 
 workflow {
    split = [400,500,600]
-   sample(input_ch)
+   sample(key_fnames)
    getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
