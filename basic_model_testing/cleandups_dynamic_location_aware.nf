@@ -68,7 +68,6 @@ def updateNodeSuggestions(file) {
 
 params.data_dir = "/external/diskC/22P63/data1"
 node_suggestion = [:]
-node_suggestion.subscribe {println it}
 input_ch = Channel
         .fromPath("${params.data_dir}/*.bim")        
         .randomSample(1000)
@@ -84,6 +83,7 @@ key_fnames.each { updateNodeSuggestions(it) }
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
+    echo true
     clusterOptions {node_suggestion[input_ch.getName()] }
     input:
        val node_suggestion
@@ -92,7 +92,11 @@ process getIDs {
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
     script:
-       "cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids"     
+       """
+      echo sstat -j $SLURM_JOB_ID
+      echo sstat -j $SLURM_NODELIST
+      cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
+      """    
 }
 
 process getDups {
