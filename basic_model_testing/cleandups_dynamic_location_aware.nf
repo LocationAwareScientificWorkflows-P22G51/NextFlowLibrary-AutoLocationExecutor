@@ -5,7 +5,7 @@
 // penalty but only minor but should contain all that you want
 
 params.data_dir = "/external/diskC/22P63/data1"
-key_fnames = file("/external/diskC/22P63/data1/11.bim")
+key_fnames = file("/external/diskC/22P63/data1/*.bim")
 node_suggestion = [:]
 //input_ch = Channel.fromPath("${params.data_dir}/*.bim")
 
