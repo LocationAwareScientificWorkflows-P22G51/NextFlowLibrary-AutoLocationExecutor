@@ -68,6 +68,7 @@ def updateNodeSuggestions(file) {
 
 params.data_dir = "/external/diskC/22P63/data1"
 node_suggestion = [:]
+node_suggestion.subscribe {println it}
 input_ch = Channel
         .fromPath("${params.data_dir}/*.bim")        
         .randomSample(1000)
