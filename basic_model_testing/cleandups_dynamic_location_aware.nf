@@ -62,14 +62,14 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-params.data_dir = "/external/diskC/22P63/data1"
+params.data_dir = "/external/diskC/22P63/data1/11.bim"
 node_suggestion = Channel
         .subscribe onNext: { println 'Suggestion set' }, onComplete: { println 'Done' }
 input_ch = Channel
-        .fromPath("${params.data_dir}/*.bim")        
+        .fromPath("${params.data_dir}")        
         .randomSample(1000)
         .subscribe onNext: { node_suggestion << nodeOption(it) }, onComplete: { println 'Done' }
-//key_fnames = file("${params.data_dir}/*.bim")
+//key_fnames = file("${params.data_dir}")
 
 // Find initial node suggestions on script run
 //key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
