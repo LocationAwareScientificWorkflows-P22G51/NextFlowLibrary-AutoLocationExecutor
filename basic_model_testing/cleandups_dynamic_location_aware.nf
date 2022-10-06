@@ -65,9 +65,7 @@ def nodeOption(fname,aggression=1,other="") {
 params.data_dir = "/external/diskC/22P63/data1/11.bim"
 node_suggestion = Channel
         .fromList()
-        .bind(nodeOption("${params.data_dir}"))
-        .subscribe onNext: { println 'Suggestion set' }, onComplete: { println 'Done' }
-        
+        .bind(nodeOption("${params.data_dir}"))   
 input_ch = Channel
         .fromPath("${params.data_dir}")        
         .randomSample(1000)
