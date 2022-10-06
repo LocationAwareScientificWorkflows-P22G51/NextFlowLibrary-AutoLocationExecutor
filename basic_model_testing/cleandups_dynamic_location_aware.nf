@@ -1,9 +1,5 @@
 #!/usr/bin/env nextflow
 
-// common code that must be included starts here
-// This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
-// penalty but only minor but should contain all that you want
-
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
   msg=cmd.execute().text;
@@ -62,23 +58,17 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
+def updateNodes(it) {
+    //node_suggestion.bind(nodeOption(it))
+    println "Got: $it"
+}
+
 params.data_dir = "/external/diskC/22P63/data1/11.bim"
-node_suggestion = Channel
-        .fromList()
-        .bind(nodeOption("${params.data_dir}"))   
+node_suggestion = [:] 
 input_ch = Channel
         .fromPath("${params.data_dir}")        
         .randomSample(1000)
-        .subscribe onNext: { node_suggestion.bind(nodeOption(it)) }, onComplete: { println 'Done' }
-//key_fnames = file("${params.data_dir}")
-
-// Find initial node suggestions on script run
-//key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
-
-// sample code that you should use as a template
-// use the node_suggestion hash map to find where the process should run
-// NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
-// Recall that the file itself is not staged at the point clusterOptions is called
+        .subscribe onNext: { updateNodes(it) }, onComplete: { println 'Done' }
 
 process getIDs {
     echo true
