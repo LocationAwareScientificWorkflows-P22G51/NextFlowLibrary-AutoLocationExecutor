@@ -10,8 +10,11 @@ input_ch = Channel
         .fromPath("${params.data_dir}/*.bim")        
         .randomSample(1000)
         .distinct()
-        .subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onComplete: { println 'Done' }
+        .subscribe onNext: { updateNodeSuggestions(it) }, onComplete: { println 'Done' }
 key_fnames = file("${params.data_dir}/*.bim")
+
+// Find initial node suggestions on script run
+key_fnames.each { updateNodeSuggestions(it) }
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
@@ -71,7 +74,9 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
+def updateNodeSuggestions(file) {
+    node_suggestion[file.getName()]=nodeOption(file)
+}
 
 // sample code that you should use as a template
 // use the node_suggestion hash map to find where the process should run
