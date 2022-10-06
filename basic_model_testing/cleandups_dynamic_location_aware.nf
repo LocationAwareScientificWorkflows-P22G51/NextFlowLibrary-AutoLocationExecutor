@@ -83,10 +83,9 @@ def nodeOption(fname,aggression=1,other="") {
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
 
-input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim")
-        .randomSample(1000)
+input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim")        
         .first(node_suggestion[it.getName()]=nodeOption(it))
-//onNext: { node_suggestion[it.getName()]=nodeOption(it) }, 
+//onNext: { node_suggestion[it.getName()]=nodeOption(it) }, .randomSample(1000)
 input_ch.subscribe onComplete: { println 'Done' }
 
 process getIDs {
