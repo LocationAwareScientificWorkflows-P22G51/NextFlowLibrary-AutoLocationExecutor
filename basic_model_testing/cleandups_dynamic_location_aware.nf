@@ -141,7 +141,7 @@ process splitIDs  {
      script:
      nodeSuggestion  = nodeOption(key_fnames)
       """
-      echo 'Finding ${input_ch.getName()}' 
+      echo 'Finding ${key_fnames.getName()}' 
       """
 }
 
