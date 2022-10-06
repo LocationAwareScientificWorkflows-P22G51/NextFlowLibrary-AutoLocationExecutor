@@ -135,21 +135,21 @@ process splitIDs  {
 
  process sample {
      input:
-      path input_ch
+      file key_fnames
      output:
       val nodeSuggestion, emit: nodeSuggestion
      script:
-     nodeSuggestion  = nodeOption(input_ch)
+     nodeSuggestion  = nodeOption(key_fnames)
       """
       echo 'Finding ${input_ch.getName()}' 
       """
 }
 
 
-input_ch.subscribe {node_suggestion << nodeOption(it)}
+//input_ch.subscribe {node_suggestion << nodeOption(it)}
 //input_ch.subscribe {println it.getName()}
 
-node_suggestion.subscribe {println it}
+//node_suggestion.subscribe {println it}
 
 
 
