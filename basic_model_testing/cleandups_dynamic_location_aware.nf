@@ -90,7 +90,7 @@ input_ch.subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onC
 
 process getIDs {
     input:
-       //stdin node_suggestion
+       val node_suggestion
        file input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
