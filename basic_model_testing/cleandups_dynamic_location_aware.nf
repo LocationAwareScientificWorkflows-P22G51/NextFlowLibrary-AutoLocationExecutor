@@ -64,7 +64,7 @@ def nodeOption(fname,aggression=1,other="") {
 
 params.data_dir = "/external/diskC/22P63/data1"
 node_suggestion = Channel
-        .subscribe { println "Got: $it" }
+        .subscribe onNext: { println 'Suggestion set' }, onComplete: { println 'Done' }
 input_ch = Channel
         .fromPath("${params.data_dir}/*.bim")        
         .randomSample(1000)
