@@ -59,7 +59,9 @@ def getStatus(nodes) {
 
 def nodeOption(fname,other="") {
   //aggression = setAggression(fname) 
-  [nodes, aggression] = getNodesOfBricks(fname)
+  info = getNodesOfBricks(fname)
+  nodes = info[0]
+  aggression = info[1]
   state = getStatus(nodes)
   possible=state[1]
   if ((possible.intersect(nodes)).size()<aggression)
