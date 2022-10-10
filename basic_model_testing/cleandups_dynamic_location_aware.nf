@@ -10,12 +10,10 @@ input_ch = Channel
         
 input_ch.subscribe { updateNodes(it) }
 
-def setAggression(fname) {
-   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
-   msg=cmd.execute().text;
-   println "The file ${fname} has ${fname.size()} bytes"
-   return aggression=1
-}
+// def setAggression(fname) {
+//    println "The file ${fname} has ${fname.size()} bytes"
+//    return aggression=1
+// }
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
@@ -32,6 +30,7 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
+  println "The file ${fname} has ${fname.size()} bytes"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
@@ -57,8 +56,8 @@ def getStatus(nodes) {
   return [num_free,possible]
 }
 
-def nodeOption(fname,other="") {
-  aggression = setAggression(fname) 
+def nodeOption(fname,aggression=1,other="") {
+  //aggression = setAggression(fname) 
   nodes = getNodesOfBricks(fname)
   state = getStatus(nodes)
   possible=state[1]
