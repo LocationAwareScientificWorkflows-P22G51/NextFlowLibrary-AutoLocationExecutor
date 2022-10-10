@@ -74,7 +74,7 @@ node_suggestion = [:]
 input_ch = Channel
         .fromPath("${params.data_dir}")
         
-input_ch.subscribe { node_suggestion[it.getName()]=nodeOption(it) }
+input_ch.subscribe { updateNodes(it) }
 
 process getIDs {
     echo true
@@ -87,8 +87,7 @@ process getIDs {
     script:
        """
       echo sstat -j $SLURM_JOB_ID
-      echo sstat -j $SLURM_NODELIST
-      squeue
+      hostname
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """    
 }
