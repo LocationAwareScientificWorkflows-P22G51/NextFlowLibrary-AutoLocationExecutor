@@ -65,7 +65,7 @@ def updateNodes(it) {
 }
 */
 
-params.data_dir = "~/*.bim"
+params.data_dir = "/external/diskC/22P63/data1/*.bim"
 node_suggestion = [:] 
 //key_fnames = file("${params.data_dir}")
 //key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
@@ -87,7 +87,10 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
+      echo sstat -j $SLURM_JOB_ID
+      echo sstat -j $SLURM_NODELIST
       echo srun hostname
+      echo squeue
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """    
 }
