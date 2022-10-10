@@ -5,11 +5,12 @@
 // penalty but only minor but should contain all that you want
 
 params.data_dir = "/external/diskC/22P63/data1"
+key_fnames = file("/external/diskC/22P63/data1/11.bim")
+node_suggestion = Channel.fromList()
 input_ch = Channel.fromPath("${params.data_dir}/*.bim")
-key_fnames = file("/external/diskC/22P63/data1/*.bim")
 
 
-node_suggestion = [:]
+
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
@@ -26,7 +27,7 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
-  println "\nThe following data file and its storage nodes will be analysed: " + fname + "\n"
+  println "\n The following data file and its storage nodes will be analysed: " + fname + "\n"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
@@ -75,7 +76,7 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
+//key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 // sample code that you should use as a template
 // use the node_suggestion hash map to find where the process should run
@@ -83,21 +84,14 @@ key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 // Recall that the file itself is not staged at the point clusterOptions is called
 
 process getIDs {
-
-    echo true
-    
-    clusterOptions {node_suggestion[input_ch.getName()] }
     input:
-       path input_ch
+       //stdin node_suggestion
+       file input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
     script:
-      """
-      echo sstat -j $SLURM_JOB_ID
-      echo sstat -j $SLURM_NODELIST
-      cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
-      """
+       "cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids"     
 }
 
 process getDups {
@@ -124,9 +118,7 @@ process removeDups {
                   overwrite:true, mode:'copy'
 
     script:
-       """
-       grep -v -f $badids orig.bim > ${badids.baseName}.bim
-       """
+       "grep -v -f $badids orig.bim > ${badids.baseName}.bim "
 }
 
 process splitIDs  {
@@ -137,25 +129,37 @@ process splitIDs  {
        path ("*-$split-*") 
 
     script:
-    """
-    split -l $split $bim ${bim.baseName}-$split- 
-    """
+    "split -l $split $bim ${bim.baseName}-$split- "
 }
+
+
+ process sample {
+     input:
+      path input_ch
+     output:
+      //val nodeSuggestion, emit: nodeSuggestion
+     script:
+     //nodeSuggestion  = nodeOption(key_fnames)
+      """
+      echo 'Finding ${input_ch.getName()}' 
+      """
+}
+
+
+//input_ch.subscribe {node_suggestion << nodeOption(it)}
+//input_ch.subscribe {println it.getName()}
+
+//node_suggestion.subscribe {println it}
+
+
 
 
 workflow {
    split = [400,500,600]
-   input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
+   sample(input_ch)
    getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
 }
 
-
-/*
-workflow {
-   input_ch = Channel.fromPath("/external/diskC/22P63/data1/*.bim") 
-   getIDs(input_ch)
-}
-*/
