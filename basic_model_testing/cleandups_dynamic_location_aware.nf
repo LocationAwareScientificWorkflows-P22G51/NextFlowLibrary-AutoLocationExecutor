@@ -10,12 +10,22 @@ input_ch = Channel
         
 input_ch.subscribe { updateNodes(it) }
 
-def getNodesOfBricks(fname) {
-  println "The file ${fname} has ${fname.size()} bytes" 
+def getNodesInfo(fname) {
+
+  // file configuration
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
   msg=cmd.execute().text;
   def matcher = msg =~ /(<POSIX.*)/;
   def bricks = matcher[0][0].tokenize(" ")
+
+  // aggression setting
+  fsize = fname.size()
+  aggression = 1
+  if (fsize > 100000)   // example where range is 100 kb is the limiter
+     aggression += 1
+  println "The file ${fname} has ${fsize} bytes, thus the node aggression is set ${aggression}" 
+
+  // data storage identification
   nodes = []
   for (b : bricks ) {
     if (b =~ /.*arbiter.*/) continue
@@ -27,6 +37,7 @@ def getNodesOfBricks(fname) {
     nodes << node
   }
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
+  
   return [nodes,aggression]
 }
 
@@ -53,7 +64,7 @@ def getStatus(nodes) {
 
 def nodeOption(fname,other="") {
   //aggression = setAggression(fname) 
-  info = getNodesOfBricks(fname)
+  info = getNodesInfo(fname)
   nodes = info[0]
   aggression = info[1]
   state = getStatus(nodes)
