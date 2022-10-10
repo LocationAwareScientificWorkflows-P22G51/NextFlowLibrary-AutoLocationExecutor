@@ -11,9 +11,10 @@ process splitLetters {
         output:
         path 'chunk_*'
 //echo sstat -j $SLURM_JOB_ID
+//echo sstat -j $SLURM_NODELIST
         """
         
-        echo sstat -j $SLURM_NODELIST
+        
         echo hostname
         printf '${params.str}' | split -b 6 - chunk_
         """
