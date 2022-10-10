@@ -10,7 +10,7 @@ input_ch = Channel
         
 input_ch.subscribe { updateNodes(it) }
 
-def setAggression(fsize) {
+def setAggression(fname) {
    println "The file ${fname} has ${fname.size()} bytes"
    return aggression=1
 }
