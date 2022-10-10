@@ -1,4 +1,3 @@
-//clusterOptions {"--exclude=n07,n12,n13,n24,n30,n03,n04,n05,n11,n16,n17,n18,n19,n20,n23,n25,n26,n27,n31,n33,n34,n35,n36,n37,n41" }
 // common code that must be included starts here
 
 
@@ -85,17 +84,17 @@ params.str = 'Hello world!'
 // use the node_suggestion hash map to find where the process should run
 // NB: node_suggestion takes a string as an input type so we need to run .getName() on the input file
 // Recall that the file itself is not staged at the point clusterOptions is called
+//node_suggestion[filelocaion_ch[0].getName()]
  process sample {
      echo true
-     clusterOptions { node_suggestion[filelocaion_ch[0].getName()] }
+     clusterOptions { "--exclude=n07,n12,n13,n24,n30,n03,n04,n05,n11,n16,n17,n18,n19,n20,n23,n25,n26,n27,n31,n33,n34,n35,n36,n37,n41" }
      input:
       path filelocaion_ch
      output:
       path 'chunk_*'
 
   """
-  echo sstat -j $SLURM_JOB_ID
-  echo sstat -j $SLURM_NODELIST
+  hostname
   printf '${params.str}' | split -b 6 - chunk_
   """
 }
