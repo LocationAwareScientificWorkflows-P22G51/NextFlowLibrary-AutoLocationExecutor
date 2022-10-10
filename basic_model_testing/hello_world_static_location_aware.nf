@@ -14,6 +14,7 @@ process splitLetters {
         """
         
         echo sstat -j $SLURM_NODELIST
+        echo hostname
         printf '${params.str}' | split -b 6 - chunk_
         """
 }
