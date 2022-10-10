@@ -26,7 +26,7 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
-  println "\nThe file ${fname.absolutePath} has ${fname.length()} bytes"
+  println "\nThe file ${fname} has ${fname.length()} bytes"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
