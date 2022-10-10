@@ -12,7 +12,7 @@ input_ch.subscribe { updateNodes(it) }
 
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
-
+  File file = new File(fname)
   msg=cmd.execute().text;
   def matcher = msg =~ /(<POSIX.*)/;
   def bricks = matcher[0][0].tokenize(" ")
