@@ -89,7 +89,7 @@ process getIDs {
        """
       echo sstat -j $SLURM_JOB_ID
       echo sstat -j $SLURM_NODELIST
-      srun hostname
+      
       squeue
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """    
