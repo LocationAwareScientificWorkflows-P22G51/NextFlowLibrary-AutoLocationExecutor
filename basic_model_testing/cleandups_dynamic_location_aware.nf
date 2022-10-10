@@ -30,9 +30,10 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
+  aggression = 1
   println "The file ${fname} has ${fname.size()} bytes"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
-  return nodes
+  return nodes,aggression
 }
 
 possible_states = ['idle','alloc','mix' ]
@@ -52,13 +53,13 @@ def getStatus(nodes) {
     if  ( !(the_node in nodes)) continue;
     if  (the_state in free_states) num_free++;
   }
-  println "The following nodes are currently available for execution: " + possible + "\n\n"
+  println "The following nodes are currently available for execution: " + possible + "\n"
   return [num_free,possible]
 }
 
-def nodeOption(fname,aggression=1,other="") {
+def nodeOption(fname,other="") {
   //aggression = setAggression(fname) 
-  nodes = getNodesOfBricks(fname)
+  nodes, aggression = getNodesOfBricks(fname)
   state = getStatus(nodes)
   possible=state[1]
   if ((possible.intersect(nodes)).size()<aggression)
@@ -75,7 +76,7 @@ def nodeOption(fname,aggression=1,other="") {
 }
 
 def updateNodes(it) {
-   println "Updating node suggestion for: $it"
+   println "\nUpdating node suggestion for: $it"
    node_suggestion[it.getName()]=nodeOption(it)  
 }
 
