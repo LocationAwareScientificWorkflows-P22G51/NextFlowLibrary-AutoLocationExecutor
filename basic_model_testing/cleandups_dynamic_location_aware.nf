@@ -11,6 +11,8 @@ input_ch = Channel
 input_ch.subscribe { updateNodes(it) }
 
 def setAggression(fname) {
+   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
+   msg=cmd.execute().text;
    println "The file ${fname} has ${fname.size()} bytes"
    return aggression=1
 }
