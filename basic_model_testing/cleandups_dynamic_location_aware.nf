@@ -26,7 +26,7 @@ def getNodesInfo(fname) {
   weighting = 1
   if (fsize > 100000)   // example where range of 100 kb is the limiter
      weighting += 1
-  println "The file ${fname} has ${fsize} bytes, thus the node weighting is set ${aggression}" 
+  println "The file ${fname} has ${fsize} bytes, thus the node weighting is set ${weighting}" 
 
   // data storage identification
   nodes = []
@@ -78,7 +78,7 @@ def nodeOption(fname,other="") {
   possible=state[1]
   if ((possible.intersect(nodes)).size()<weighting)
   {
-    println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + aggression + "\n"
+    println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
     return "${other}"
   }
   else {
