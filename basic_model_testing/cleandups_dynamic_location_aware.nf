@@ -67,12 +67,13 @@ def updateNodes(it) {
 
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
 node_suggestion = [:] 
-key_fnames = file("${params.data_dir}")
-key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
+//key_fnames = file("${params.data_dir}")
+//key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
+//println "Updating node suggestion for: $it"
 input_ch = Channel
         .fromPath("${params.data_dir}")        
-        .subscribe onNext: { println "Updating node suggestion for: $it" }, onComplete: { println 'Done' }
+        .subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onComplete: { println 'Done' }
 
 process getIDs {
     echo true
