@@ -10,6 +10,7 @@ input_ch = Channel
         
 input_ch.subscribe { updateNodes(it) }
 
+
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
 // The weighting coefficient is used later to determine if its viable to execute on the storage nodes or not
 
@@ -114,7 +115,7 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
-      echo sstat -j $SLURM_JOB_ID
+      echo job_id: $SLURM_JOB_ID
       hostname
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """    
