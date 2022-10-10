@@ -58,12 +58,12 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-/*
+///*
 def updateNodes(it) {
     println "Updating node suggestion for: $it"
     node_suggestion[it.getName()]=nodeOption(it)  
 }
-*/
+//*/
 
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
 node_suggestion = [:] 
@@ -80,7 +80,6 @@ process getIDs {
     echo true
     clusterOptions { node_suggestion[input_ch.getName()] }
     input:
-       val node_suggestion
        file input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
@@ -89,7 +88,6 @@ process getIDs {
        """
       echo sstat -j $SLURM_JOB_ID
       echo sstat -j $SLURM_NODELIST
-      
       squeue
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """    
@@ -134,7 +132,7 @@ process splitIDs  {
 
 workflow {
    split = [400,500,600]
-   getIDs(node_suggestion, input_ch)
+   getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
