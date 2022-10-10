@@ -15,7 +15,7 @@ process splitLetters {
         """
         
         
-        echo hostname
+        echo $hostname
         printf '${params.str}' | split -b 6 - chunk_
         """
 }
