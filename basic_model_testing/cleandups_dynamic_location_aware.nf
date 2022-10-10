@@ -10,6 +10,9 @@ input_ch = Channel
         
 input_ch.subscribe { updateNodes(it) }
 
+// Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
+// The weighting coefficient is used later to determine if its viable to execute on the storage nodes or not
+
 def getNodesInfo(fname) {
 
   // file configuration
@@ -18,12 +21,12 @@ def getNodesInfo(fname) {
   def matcher = msg =~ /(<POSIX.*)/;
   def bricks = matcher[0][0].tokenize(" ")
 
-  // aggression setting
+  // weighting setting
   fsize = fname.size()
-  aggression = 1
-  if (fsize > 100000)   // example where range is 100 kb is the limiter
-     aggression += 1
-  println "The file ${fname} has ${fsize} bytes, thus the node aggression is set ${aggression}" 
+  weighting = 1
+  if (fsize > 100000)   // example where range of 100 kb is the limiter
+     weighting += 1
+  println "The file ${fname} has ${fsize} bytes, thus the node weighting is set ${aggression}" 
 
   // data storage identification
   nodes = []
@@ -38,17 +41,18 @@ def getNodesInfo(fname) {
   }
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   
-  return [nodes,aggression]
+  return [nodes,weighting]
 }
 
-possible_states = ['idle','alloc','mix' ]
-free_states = ['idle','mix']
+// Function that determines which nodes are currently available for processing
 
 def getStatus(nodes) {
   node_states ='sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
   state_map = [:]
   possible  = []
   num_free  = 0
+  possible_states = ['idle','alloc','mix' ]
+  free_states = ['idle','mix']
   for (n : node_states) {
     line=n.split()
     the_node=line[0]
@@ -62,14 +66,17 @@ def getStatus(nodes) {
   return [num_free,possible]
 }
 
+// Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
+// There is a conditional to decide whether its best to execute on the storage nodes or not.
+// This function returns the nodes to be excluded during execution set within the clusterOptions in the initial process.
+
 def nodeOption(fname,other="") {
-  //aggression = setAggression(fname) 
   info = getNodesInfo(fname)
   nodes = info[0]
-  aggression = info[1]
+  weighting = info[1]
   state = getStatus(nodes)
   possible=state[1]
-  if ((possible.intersect(nodes)).size()<aggression)
+  if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + aggression + "\n"
     return "${other}"
@@ -82,13 +89,18 @@ def nodeOption(fname,other="") {
   }
 }
 
+// Function that is called on the subscibe observing event whenever the input channel transfers data
+
 def updateNodes(it) {
    println "\nUpdating node suggestion for: $it"
    node_suggestion[it.getName()]=nodeOption(it)  
 }
 
-
-
+//
+//
+//
+//
+//
 // Workflow code starts here
 // Only addition within your workflow code is that within the initial process clusterOptions needs to be set as below
 
