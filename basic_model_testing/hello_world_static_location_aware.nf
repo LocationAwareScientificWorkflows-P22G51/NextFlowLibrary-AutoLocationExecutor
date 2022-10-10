@@ -95,6 +95,9 @@ params.str = 'Hello world!'
 
   """
   hostname
+  squeue
+  echo sstat -j $SLURM_JOB_ID
+  echo sstat -j $SLURM_NODELIST
   printf '${params.str}' | split -b 6 - chunk_
   """
 }
