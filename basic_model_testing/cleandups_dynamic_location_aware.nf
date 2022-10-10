@@ -33,7 +33,7 @@ def getNodesOfBricks(fname) {
   aggression = 1
   println "The file ${fname} has ${fname.size()} bytes"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
-  return nodes,aggression
+  return [nodes,aggression]
 }
 
 possible_states = ['idle','alloc','mix' ]
@@ -59,7 +59,7 @@ def getStatus(nodes) {
 
 def nodeOption(fname,other="") {
   //aggression = setAggression(fname) 
-  nodes, aggression = getNodesOfBricks(fname)
+  [nodes, aggression] = getNodesOfBricks(fname)
   state = getStatus(nodes)
   possible=state[1]
   if ((possible.intersect(nodes)).size()<aggression)
