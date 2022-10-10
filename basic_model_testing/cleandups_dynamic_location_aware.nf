@@ -72,8 +72,9 @@ node_suggestion = [:]
 
 //println "Updating node suggestion for: $it"
 input_ch = Channel
-        .fromPath("${params.data_dir}")        
-        .subscribe onNext: { node_suggestion[it.getName()]=nodeOption(it) }, onComplete: { println 'Done' }
+        .fromPath("${params.data_dir}")
+        
+input_ch.subscribe { node_suggestion[it.getName()]=nodeOption(it) }
 
 process getIDs {
     echo true
