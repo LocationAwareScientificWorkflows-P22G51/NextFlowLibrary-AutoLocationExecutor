@@ -10,6 +10,11 @@ input_ch = Channel
         
 input_ch.subscribe { updateNodes(it) }
 
+def setAggression(fsize) {
+   println "The file ${fname} has ${fname.size()} bytes"
+   return aggression=1
+}
+
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
   msg=cmd.execute().text;
@@ -25,7 +30,6 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
-  println "\nThe file ${fname} has ${fname.size()} bytes"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
@@ -47,11 +51,12 @@ def getStatus(nodes) {
     if  ( !(the_node in nodes)) continue;
     if  (the_state in free_states) num_free++;
   }
-  println "The following nodes are currently available for execution: " + possible + "\n"
+  println "The following nodes are currently available for execution: " + possible + "\n\n"
   return [num_free,possible]
 }
 
-def nodeOption(fname,aggression=1,other="") {
+def nodeOption(fname,other="") {
+  aggression = setAggression(fname) 
   nodes = getNodesOfBricks(fname)
   state = getStatus(nodes)
   possible=state[1]
@@ -69,9 +74,11 @@ def nodeOption(fname,aggression=1,other="") {
 }
 
 def updateNodes(it) {
-    println "Updating node suggestion for: $it"
-    node_suggestion[it.getName()]=nodeOption(it)  
+   println "Updating node suggestion for: $it"
+   node_suggestion[it.getName()]=nodeOption(it)  
 }
+
+
 
 // Workflow code starts here
 // Only addition within your workflow code is that within the initial process clusterOptions needs to be set as below
