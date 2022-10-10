@@ -95,7 +95,6 @@ params.str = 'Hello world!'
 
   """
   hostname
-  squeue
   printf '${params.str}' | split -b 6 - chunk_
   """
 }
