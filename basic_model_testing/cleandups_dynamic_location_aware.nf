@@ -1,7 +1,18 @@
 #!/usr/bin/env nextflow
 
+// Set the path directory to your data files as shown in the example below
+// input_ch is the Channel that will input the data into the workflow processes.
+
+params.data_dir = "/external/diskC/22P63/data1/*.bim"
+node_suggestion = [:] 
+input_ch = Channel
+        .fromPath("${params.data_dir}")
+        
+input_ch.subscribe { updateNodes(it) }
+
 def getNodesOfBricks(fname) {
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
+
   msg=cmd.execute().text;
   def matcher = msg =~ /(<POSIX.*)/;
   def bricks = matcher[0][0].tokenize(" ")
@@ -15,7 +26,7 @@ def getNodesOfBricks(fname) {
       node=matcher[0][1]
     nodes << node
   }
-  println "\n The following data file and its storage nodes will be analysed: " + fname + "\n"
+  println "\nThe file ${fname.absolutePath} has ${fname.length()} bytes"
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
@@ -58,23 +69,13 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-///*
 def updateNodes(it) {
     println "Updating node suggestion for: $it"
     node_suggestion[it.getName()]=nodeOption(it)  
 }
-//*/
 
-params.data_dir = "/external/diskC/22P63/data1/*.bim"
-node_suggestion = [:] 
-//key_fnames = file("${params.data_dir}")
-//key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
-
-//println "Updating node suggestion for: $it"
-input_ch = Channel
-        .fromPath("${params.data_dir}")
-        
-input_ch.subscribe { updateNodes(it) }
+// Workflow code starts here
+// Only addition within your workflow code is that within the initial process clusterOptions needs to be set as below
 
 process getIDs {
     echo true
