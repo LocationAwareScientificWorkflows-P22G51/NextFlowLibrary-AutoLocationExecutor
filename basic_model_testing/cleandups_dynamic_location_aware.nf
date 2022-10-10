@@ -65,7 +65,7 @@ def updateNodes(it) {
 }
 */
 
-params.data_dir = "/external/diskC/22P63/data1/*.bim"
+params.data_dir = "~/*.bim"
 node_suggestion = [:] 
 //key_fnames = file("${params.data_dir}")
 //key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
