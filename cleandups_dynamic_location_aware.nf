@@ -89,17 +89,21 @@ def nodeOption(fname,other="") {
   weighting = info[1]
   possible=state[1]
   state_map=state[2]
-  //best_node = getBestNode(nodes,state_map)
-  best_node = 'n42'
+  best_node = getBestNode(nodes,state_map)
+  best_node_ = 'n42'
+  if (best_node == best_node_)
+  {
+   println "they are the same!!!"
+  }
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
     return "${other}"
   }
   else {
-    possible=possible - best_node;
+    possible=possible - best_node_;
     println nodes
-    println best_node
+    println best_node_
     options="--exclude="+possible.join(',')+" ${other}"
     println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
     return options
