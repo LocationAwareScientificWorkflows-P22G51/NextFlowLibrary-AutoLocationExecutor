@@ -183,13 +183,14 @@ workflow {
    input_ch.subscribe {
    cluster_option = Channel.of(nodeOption(it) )
    getIDs(cluster_option, it)
+      getDups(getIDs.out.id_ch)
+   removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
+   splitIDs(removeDups.out.cleaned_ch, split)
    //updateNodes(it)
    //println "Subscribing_______________________________________"
    }
    //cluster_option = Channel.of()
    
-   getDups(getIDs.out.id_ch)
-   removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
-   splitIDs(removeDups.out.cleaned_ch, split)
+
    //cluster_option << nodeOption('/external/diskC/22P63/data1/11.bim')
 }
