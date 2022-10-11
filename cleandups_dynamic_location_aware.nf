@@ -8,7 +8,9 @@ node_suggestion = [:]
 input_ch = Channel
         .fromPath("${params.data_dir}")
         
-input_ch.subscribe { //updateNodes(it)
+input_ch.subscribe { 
+   println it.getName()
+   //updateNodes(it)
     println "Subscribing_______________________________________"
 }
 
@@ -109,7 +111,7 @@ def updateNodes(it) {
 
 process getIDs {
     echo true
-    //clusterOptions { node_suggestion[input_ch.getName()] }
+    clusterOptions { node_suggestion[input_ch.getName()] }
     input:
        file input_ch
     output:
