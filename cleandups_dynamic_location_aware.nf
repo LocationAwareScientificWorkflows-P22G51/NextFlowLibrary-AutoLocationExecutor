@@ -6,11 +6,9 @@
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
 node_suggestion = [:] 
 input_ch = Channel.fromPath("${params.data_dir}")
-cluster_option = Channel.of()
         
 input_ch.subscribe { 
-   //updateNodes(it)
-   cluster_option << (nodeOption(it))
+   updateNodes(it)
    println "Subscribing_______________________________________"
 }
 
@@ -113,7 +111,6 @@ process getIDs {
     echo true
     clusterOptions { node_suggestion[input_ch.getName()] }
     input:
-       val cluster_option
        file input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
@@ -168,7 +165,7 @@ process splitIDs  {
 
 workflow {
    split = [400,500,600]
-   getIDs(cluster_option, input_ch)
+   getIDs(input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
