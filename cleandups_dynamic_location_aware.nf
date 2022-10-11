@@ -72,17 +72,13 @@ def getStatus(nodes) {
 // Function to identify which of the nodes that have the data stored on them are the best suited to execute on
 
 def getBestNode(nodes,state_map) {
-   possible_states = ['idle','mix','alloc']
    idles = []
    mixes = []
    allocs = []
-   for (state : possible_states) {
-      for (n : nodes) {
-         if (state_map[n] = state)
-            if (state == 'idle') idles.add(n)
-            if (state == 'mix') mixes.add(n)
-            if (state == 'alloc') allocs.add(n)
-      }
+   for (n : nodes) {
+      if (state_map[n] == 'idle') idles.add(n)
+      if (state_map[n] == 'mix') mixes.add(n)
+      if (state_map[n] == 'alloc') allocs.add(n)
    }
    if (idles.size() > 0) {
       println "Best node/s for execution is: " + idles + ". They are idle."
