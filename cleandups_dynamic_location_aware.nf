@@ -182,11 +182,12 @@ workflow {
    //input_ch.first().view()
    input_ch.subscribe {
    cluster_option = Channel.of(nodeOption(it) )
+   getIDs(cluster_option, it)
    //updateNodes(it)
    //println "Subscribing_______________________________________"
    }
    //cluster_option = Channel.of()
-   getIDs(cluster_option, input_ch)
+   
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
