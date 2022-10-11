@@ -183,7 +183,7 @@ workflow {
    cluster_option = Channel.empty()
    sample(input_ch)
    input_ch.subscribe {
-   cluster_option = Channel.of(nodeOption(it) 
+   cluster_option = Channel.of(nodeOption(it) )
    //updateNodes(it)
    //println "Subscribing_______________________________________"
    }
