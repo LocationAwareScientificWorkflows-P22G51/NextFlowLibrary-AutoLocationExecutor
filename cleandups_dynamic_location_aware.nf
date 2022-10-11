@@ -67,6 +67,11 @@ def getStatus(nodes) {
   return [num_free,possible]
 }
 
+def getBestNode(nodes) {
+   
+   return nodes
+}
+
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
 // There is a conditional to decide whether its best to execute on the storage nodes or not.
 // This function returns the nodes to be excluded during execution set within the clusterOptions in the initial process.
@@ -74,6 +79,7 @@ def getStatus(nodes) {
 def nodeOption(fname,other="") {
   info = getNodesInfo(fname)
   nodes = info[0]
+  best_node = getBestNode(nodes)
   weighting = info[1]
   state = getStatus(nodes)
   possible=state[1]
@@ -83,7 +89,7 @@ def nodeOption(fname,other="") {
     return "${other}"
   }
   else {
-    possible=possible - nodes;
+    possible=possible - best_node;
     options="--exclude="+possible.join(',')+" ${other}"
     println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
     return options
