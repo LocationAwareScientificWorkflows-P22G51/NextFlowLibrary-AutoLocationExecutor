@@ -160,11 +160,8 @@ process splitIDs  {
        "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-lookUpPath
-
 input_ch.subscribe { 
    //updateNodes(it)
-   lookUpPath = it
    println "Subscribing_______________________________________"
 }
 
