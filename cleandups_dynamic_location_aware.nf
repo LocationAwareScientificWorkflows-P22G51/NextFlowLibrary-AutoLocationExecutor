@@ -3,7 +3,7 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-params.data_dir = "/external/diskC/22P63/data1/20.bim"
+params.data_dir = "/external/diskC/22P63/data1/*.bim"
 node_suggestion = [:] 
 input_ch = Channel
         .fromPath("${params.data_dir}")
@@ -25,7 +25,9 @@ def getNodesInfo(fname) {
   // weighting setting
   fsize = fname.size()
   weighting = 1
-  if (fsize > 100000)   // example where range of 100 kb is the limiter
+  cluster_speed = 100000   // 100kbs transfer speed
+  time_limit = 1           // time limit of 1 second for data transfer
+  if (fsize > cluster_speed * time_limit )   // example where range of 100 kb is the limiter
      weighting += 1
   println "The file ${fname} has ${fsize} bytes, thus the node weighting is set ${weighting}" 
 
