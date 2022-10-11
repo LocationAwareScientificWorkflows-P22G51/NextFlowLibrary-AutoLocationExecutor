@@ -124,6 +124,7 @@ process getIDs {
 
 process getDups {
    echo true
+   clusterOptions { node_suggestion[input.getName()] }
     input:
        path input
     output:
@@ -161,6 +162,8 @@ process splitIDs  {
     script:
        "split -l $split $bim ${bim.baseName}-$split- "
 }
+
+getIDs.out.id_ch.subscibe(updateNodes(it))
 
 workflow {
    split = [400,500,600]
