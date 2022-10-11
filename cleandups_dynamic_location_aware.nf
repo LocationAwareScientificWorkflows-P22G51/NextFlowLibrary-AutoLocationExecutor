@@ -123,6 +123,7 @@ process getIDs {
 }
 
 process getDups {
+
     input:
        path input
     output:
@@ -132,6 +133,7 @@ process getDups {
        """
        uniq -d $input > $out
        touch ignore
+       process executed on hostname
        """
 }
 
