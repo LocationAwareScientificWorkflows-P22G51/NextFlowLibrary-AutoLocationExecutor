@@ -105,7 +105,7 @@ def updateNodes(it) {
 
 process getIDs {
     echo true
-    clusterOptions {cluster_option}
+    clusterOptions {nodeOption(cluster_option)}
     input:
        val cluster_option
        file input_ch
@@ -179,7 +179,7 @@ process sample {
 
 workflow {
    split = [400,500,600]
-   cluster_option = Channel.of(nodeOption("/external/diskC/22P63/data1/20.bim") )
+   cluster_option = Channel.of("/external/diskC/22P63/data1/20.bim" )
    getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
