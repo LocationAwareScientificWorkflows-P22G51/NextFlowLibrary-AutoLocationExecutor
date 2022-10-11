@@ -49,8 +49,6 @@ def getNodesInfo(fname) {
 
 def getStatus(nodes) {
   node_states ='sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
-  println "Testing...start"
-  //println node_states
   state_map = [:]
   possible  = []
   num_free  = 0
@@ -74,6 +72,7 @@ def getStatus(nodes) {
 
 def getBestNode(nodes,state_map) {
    for (n : nodes) {
+      println n
       println state_map[n]
    }
    return nodes
