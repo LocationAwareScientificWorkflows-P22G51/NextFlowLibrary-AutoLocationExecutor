@@ -63,7 +63,7 @@ def getStatus(nodes) {
     if  ( !(the_node in nodes)) continue;
     if  (the_state in free_states) num_free++;
   }
-  println "The following nodes are currently available for execution: " + possible + "\n"
+  println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
   return [num_free,possible]
 }
 
@@ -77,17 +77,15 @@ def nodeOption(fname,other="") {
   weighting = info[1]
   state = getStatus(nodes)
   possible=state[1]
-  println "Current possible nodes: " + possible + "\n"
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
-    println "When regardless of location, clusterOptions gets this" + other + "\n"
     return "${other}"
   }
   else {
     possible=possible - nodes;
     options="--exclude="+possible.join(',')+" ${other}"
-    println "Job execution can occur on the available storage nodes. The following nodes should be excluded during execution: " + options + "\n"
+    println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
     return options
   }
 }
@@ -118,6 +116,7 @@ process getIDs {
     script:
        """
       echo job_id: $SLURM_JOB_ID
+      echo job_nodelist: $SLURM_JOB_NODELIST
       hostname
       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
       """    
