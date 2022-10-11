@@ -85,12 +85,15 @@ def getBestNode(nodes,state_map) {
       }
    }
    if (idles.size() > 0) {
+      println "Best node/s for execution is: " + idles + ". They are idle."
       return idles
    } 
    else if (mixes.size() > 0) {
+      println "Best node/s for execution is: " + mixes ". They are mix."
       return mixes
    } 
    else {
+      println "Best node/s for execution is: " + allocs ". They are allocs."
       return allocs
    } 
 }
