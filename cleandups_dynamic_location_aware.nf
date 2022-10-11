@@ -166,7 +166,7 @@ input_ch.subscribe {
 }
 
 
-process sample{
+process sample {
     echo true
     input:
        file input_ch
@@ -181,7 +181,6 @@ workflow {
    split = [400,500,600]
    //input_ch.first().view()
    cluster_option = Channel.empty()
-   sample(input_ch)
    input_ch.subscribe {
    cluster_option = Channel.of(nodeOption(it) )
    //updateNodes(it)
