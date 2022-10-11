@@ -5,12 +5,8 @@
 
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
 node_suggestion = [:] 
-input_ch = Channel.fromPath("${params.data_dir}")
+
         
-input_ch.subscribe { 
-   //updateNodes(it)
-   println "Subscribing_______________________________________"
-}
 
 
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
@@ -164,9 +160,19 @@ process splitIDs  {
        "split -l $split $bim ${bim.baseName}-$split- "
 }
 
+lookUpPath
+
+input_ch.subscribe { 
+   //updateNodes(it)
+   lookUpPath = it
+   println "Subscribing_______________________________________"
+}
+
+
 workflow {
    split = [400,500,600]
-   cluster_option = Channel.of(nodeOption("/external/diskC/22P63/data1/20.bim"))
+   input_ch = Channel.fromPath("${params.data_dir}")
+   cluster_option = Channel.of(nodeOption(input_ch.first()))
    getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
