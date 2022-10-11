@@ -97,6 +97,8 @@ def nodeOption(fname,other="") {
   }
   else {
     possible=possible - best_node;
+    println nodes
+    println best_node
     options="--exclude="+possible.join(',')+" ${other}"
     println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
     return options
