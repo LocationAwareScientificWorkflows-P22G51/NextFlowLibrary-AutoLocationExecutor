@@ -8,7 +8,7 @@ node_suggestion = [:]
 input_ch = Channel.fromPath("${params.data_dir}")
         
 input_ch.subscribe { 
-   updateNodes(it)
+   //updateNodes(it)
    println "Subscribing_______________________________________"
 }
 
@@ -117,6 +117,7 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
+       print $input_ch
        echo job_id: $SLURM_JOB_ID
        echo Login_Node: $SLURM_JOB_NODELIST
        hostname
