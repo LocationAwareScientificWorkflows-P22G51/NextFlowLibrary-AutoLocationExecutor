@@ -169,7 +169,7 @@ input_ch.subscribe {
 workflow {
    split = [400,500,600]
    //input_ch.first().view()
-   cluster_option = Channel.of()
+   cluster_option = Channel.empty()
    input_ch.subscribe {
    cluster_option << nodeOption(it) 
    //updateNodes(it)
