@@ -115,11 +115,11 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
-      echo job_id: $SLURM_JOB_ID
-      echo job_nodelist: $SLURM_JOB_NODELIST
-      hostname
-      cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
-      """    
+       echo job_id: $SLURM_JOB_ID
+       echo job_node: $SLURM_JOB_NODELIST
+       process executed on hostname
+       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
+       """    
 }
 
 process getDups {
@@ -156,7 +156,7 @@ process splitIDs  {
        path ("*-$split-*") 
 
     script:
-    "split -l $split $bim ${bim.baseName}-$split- "
+       "split -l $split $bim ${bim.baseName}-$split- "
 }
 
 workflow {
