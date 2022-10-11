@@ -81,6 +81,7 @@ def nodeOption(fname,other="") {
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
+    println "When regardless of location, clusterOptions gets this" + other + "\n"
     return "${other}"
   }
   else {
