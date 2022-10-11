@@ -162,7 +162,7 @@ process splitIDs  {
 
 input_ch.subscribe { 
    //updateNodes(it)
-   println "Subscribing_______________________________________"
+   //println "Subscribing_______________________________________"
 }
 
 
