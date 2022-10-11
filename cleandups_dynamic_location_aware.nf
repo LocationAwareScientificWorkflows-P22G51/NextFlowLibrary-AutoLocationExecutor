@@ -179,11 +179,13 @@ process sample {
 
 workflow {
    split = [400,500,600]
-   cluster_option = Channel.of("/external/diskC/22P63/data1/11.bim", "/external/diskC/22P63/data1/20.bim" , "/external/diskC/22P63/data1/20B.bim")
+   cluster_option = Channel.of("/external/diskC/22P63/data1/11.bim")
+   cluster_option << nodeOption("/external/diskC/22P63/data1/20.bim")
+   cluster_option << nodeOption("/external/diskC/22P63/data1/20B.bim")
    getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
 
-   //cluster_option << nodeOption('/external/diskC/22P63/data1/11.bim')
+   
 }
