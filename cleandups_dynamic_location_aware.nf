@@ -166,7 +166,7 @@ process splitIDs  {
 
 workflow {
    split = [400,500,600]
-   cluster_option = Channel.of("--exclude=n03,n04,n05,n07,n11,n12,n13,n16,n17,n19,n20,n24,n25,n26,n27,n31,n32,n33,n34,n41,n42,n18,n23,n35,n36,n37")
+   cluster_option = Channel.of(nodeOption(input_ch))
    getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
