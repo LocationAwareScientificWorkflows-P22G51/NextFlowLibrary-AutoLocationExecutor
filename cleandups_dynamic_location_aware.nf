@@ -8,9 +8,7 @@ node_suggestion = [:]
 input_ch = Channel
         .fromPath("${params.data_dir}")
         
-input_ch.subscribe { updateNodes(it) 
-   println 'Subscribing'
-}
+input_ch.subscribe { updateNodes(it)}
 
 
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
