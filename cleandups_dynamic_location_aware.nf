@@ -45,7 +45,7 @@ def getNodesInfo(fname) {
   return [nodes,weighting]
 }
 
-// Function that determines which nodes are currently available for processing
+// Function that determines which nodes are currently available for processing and their respective states
 
 def getStatus(nodes) {
   node_states ='sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
@@ -66,6 +66,8 @@ def getStatus(nodes) {
   println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
   return [num_free,possible,state_map]
 }
+
+// Function to identify which of the nodes that have the data stored on them are the best suited to execute on
 
 def getBestNode(nodes,state_map) {
    possible_states = ['idle','mix','alloc']
@@ -90,7 +92,6 @@ def nodeOption(fname,other="") {
   possible=state[1]
   state_map=state[2]
   best_node = getBestNode(nodes,state_map)
-  //best_node = 'n40'
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
