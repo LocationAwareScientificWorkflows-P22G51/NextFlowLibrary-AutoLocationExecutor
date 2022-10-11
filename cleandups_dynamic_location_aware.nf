@@ -8,7 +8,9 @@ node_suggestion = [:]
 input_ch = Channel
         .fromPath("${params.data_dir}")
         
-input_ch.subscribe { updateNodes(it)}
+input_ch.subscribe { updateNodes(it)
+    println "Subscribing_______________________________________"
+}
 
 
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
@@ -116,7 +118,7 @@ process getIDs {
     script:
        """
        echo job_id: $SLURM_JOB_ID
-       echo job_node: $SLURM_JOB_NODELIST
+       echo Login_Node: $SLURM_JOB_NODELIST
        hostname
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """    
@@ -131,6 +133,7 @@ process getDups {
     script:
        out = "${input.baseName}.dups"
        """
+       hostname
        uniq -d $input > $out
        touch ignore
        """
