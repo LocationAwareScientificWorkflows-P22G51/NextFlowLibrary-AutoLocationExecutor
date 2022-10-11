@@ -117,7 +117,7 @@ process getIDs {
        """
        echo job_id: $SLURM_JOB_ID
        echo job_node: $SLURM_JOB_NODELIST
-       process executed on hostname
+       hostname
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """    
 }
@@ -133,7 +133,7 @@ process getDups {
        """
        uniq -d $input > $out
        touch ignore
-       process executed on hostname
+       hostname
        """
 }
 
