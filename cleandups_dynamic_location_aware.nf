@@ -3,7 +3,7 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-params.data_dir = "/external/diskC/22P63/data1/*.bim"
+params.data_dir = "/external/diskC/22P63/data1/11.bim"
 node_suggestion = [:] 
 input_ch = Channel
         .fromPath("${params.data_dir}")
@@ -49,6 +49,8 @@ def getNodesInfo(fname) {
 
 def getStatus(nodes) {
   node_states ='sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
+  println "Testing...start"
+  println node_states
   state_map = [:]
   possible  = []
   num_free  = 0
@@ -57,7 +59,9 @@ def getStatus(nodes) {
   for (n : node_states) {
     line=n.split()
     the_node=line[0]
+    println the_node
     the_state=line[1]
+    println the_state
     state_map[the_node]=the_state
     if  (the_state in possible_states) possible << the_node
     if  ( !(the_node in nodes)) continue;
