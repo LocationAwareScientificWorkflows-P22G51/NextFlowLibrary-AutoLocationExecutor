@@ -123,7 +123,7 @@ process getIDs {
 }
 
 process getDups {
-
+   echo true
     input:
        path input
     output:
@@ -133,6 +133,7 @@ process getDups {
        """
        uniq -d $input > $out
        touch ignore
+       echo getDups: $SLURM_JOB_ID
        hostname
        """
 }
