@@ -180,5 +180,5 @@ workflow {
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
-   cluster_option << nodeOption('/external/diskC/22P63/data1/11.bim')
+   //cluster_option << nodeOption('/external/diskC/22P63/data1/11.bim')
 }
