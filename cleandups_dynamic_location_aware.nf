@@ -109,7 +109,7 @@ def updateNodes(it) {
 
 process getIDs {
     echo true
-    clusterOptions { node_suggestion[input_ch.getName()] }
+    //clusterOptions { node_suggestion[input_ch.getName()] }
     input:
        file input_ch
     output:
