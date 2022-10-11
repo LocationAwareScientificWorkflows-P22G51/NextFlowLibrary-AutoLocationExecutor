@@ -63,7 +63,7 @@ def getStatus(nodes) {
     if  ( !(the_node in nodes)) continue;
     if  (the_state in free_states) num_free++;
   }
-  println "The following nodes are currently available for execution: " + possible + "\n"
+  println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
   return [num_free,possible]
 }
 
@@ -85,7 +85,7 @@ def nodeOption(fname,other="") {
   else {
     possible=possible - nodes;
     options="--exclude="+possible.join(',')+" ${other}"
-    println "Job execution can occur on the available storage nodes. The following nodes should be excluded during execution: " + options + "\n"
+    println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
     return options
   }
 }
@@ -115,13 +115,15 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
-      echo job_id: $SLURM_JOB_ID
-      hostname
-      cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
-      """    
+       echo job_id: $SLURM_JOB_ID
+       echo job_node: $SLURM_JOB_NODELIST
+       process executed on hostname
+       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
+       """    
 }
 
 process getDups {
+
     input:
        path input
     output:
@@ -131,6 +133,7 @@ process getDups {
        """
        uniq -d $input > $out
        touch ignore
+       process executed on hostname
        """
 }
 
@@ -155,7 +158,7 @@ process splitIDs  {
        path ("*-$split-*") 
 
     script:
-    "split -l $split $bim ${bim.baseName}-$split- "
+       "split -l $split $bim ${bim.baseName}-$split- "
 }
 
 workflow {
