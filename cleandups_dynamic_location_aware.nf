@@ -71,7 +71,7 @@ def getStatus(nodes) {
 // There is a conditional to decide whether its best to execute on the storage nodes or not.
 // This function returns the nodes to be excluded during execution set within the clusterOptions in the initial process.
 
-def nodeOption(fname,other="") {
+def nodeOption(fname) {
   info = getNodesInfo(fname)
   nodes = info[0]
   weighting = info[1]
@@ -81,13 +81,14 @@ def nodeOption(fname,other="") {
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
-    println "When regardless of location, clusterOptions gets this" + other + "\n"
-    return "${other}"
+    options="--nodelist="+possible.join(',')
+    return options
   }
   else {
-    possible=possible - nodes;
-    options="--exclude="+possible.join(',')+" ${other}"
-    println "Job execution can occur on the available storage nodes. The following nodes should be excluded during execution: " + options + "\n"
+    //possible=possible - nodes;
+    //options="--exclude="+possible.join(',')
+    options="--nodelist="+nodes.join(',')
+    println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
     return options
   }
 }
