@@ -5,7 +5,7 @@
 
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
 node_suggestion = [:] 
-
+input_ch = Channel.fromPath("${params.data_dir}")
         
 
 
@@ -168,7 +168,6 @@ input_ch.subscribe {
 
 workflow {
    split = [400,500,600]
-   input_ch = Channel.fromPath("${params.data_dir}")
    cluster_option = Channel.of(nodeOption(input_ch.first()))
    getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
