@@ -50,7 +50,7 @@ def getNodesInfo(fname) {
 def getStatus(nodes) {
   node_states ='sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
   println "Testing...start"
-  println node_states
+  //println node_states
   state_map = [:]
   possible  = []
   num_free  = 0
@@ -67,6 +67,7 @@ def getStatus(nodes) {
     if  ( !(the_node in nodes)) continue;
     if  (the_state in free_states) num_free++;
   }
+  println state_map
   println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
   return [num_free,possible]
 }
