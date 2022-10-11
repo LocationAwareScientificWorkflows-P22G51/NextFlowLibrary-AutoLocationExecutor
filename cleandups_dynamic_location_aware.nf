@@ -117,7 +117,7 @@ process getIDs {
     input:
        file input_ch
     output:
-       path "${input_ch.baseName}.ids".subscibe(updateNodes(it)), emit:  id_ch
+       path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
     script:
        """
@@ -129,8 +129,6 @@ process getIDs {
 }
 
 process getDups {
-   echo true
-   clusterOptions { node_suggestion[input.getName()] }
     input:
        path input
     output:
@@ -140,8 +138,6 @@ process getDups {
        """
        uniq -d $input > $out
        touch ignore
-       echo getDups: $SLURM_JOB_ID
-       hostname
        """
 }
 
