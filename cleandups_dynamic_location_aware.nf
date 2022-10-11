@@ -179,18 +179,11 @@ process sample {
 
 workflow {
    split = [400,500,600]
-   //input_ch.first().view()
-   input_ch.subscribe {
-   cluster_option = Channel.of(nodeOption(it) )
+   cluster_option = Channel.of(nodeOption("/external/diskC/22P63/data1/20.bim") )
    getIDs(cluster_option, it)
-      getDups(getIDs.out.id_ch)
+   getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
-   //updateNodes(it)
-   //println "Subscribing_______________________________________"
-   }
-   //cluster_option = Channel.of()
-   
 
    //cluster_option << nodeOption('/external/diskC/22P63/data1/11.bim')
 }
