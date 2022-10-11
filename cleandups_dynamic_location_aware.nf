@@ -8,7 +8,7 @@ node_suggestion = [:]
 input_ch = Channel
         .fromPath("${params.data_dir}")
         
-input_ch.subscribe { updateNodes(it)
+input_ch.subscribe { //updateNodes(it)
     println "Subscribing_______________________________________"
 }
 
