@@ -73,13 +73,26 @@ def getStatus(nodes) {
 
 def getBestNode(nodes,state_map) {
    possible_states = ['idle','mix','alloc']
+   idles = []
+   mixes = []
+   allocs = []
    for (state : possible_states) {
       for (n : nodes) {
          if (state_map[n] = state)
-            println n + " is the best available node with status " + state_map[n]
-            return n
+            if (state == 'idle') idles.add(n)
+            if (state == 'mix') mixes.add(n)
+            if (state == 'alloc') allocs.add(n)
       }
    }
+   if (idles.size() > 0) {
+      return idles
+   } 
+   else if (mixes.size() > 0) {
+      return mixes
+   } 
+   else {
+      return allocs
+   } 
 }
 
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
