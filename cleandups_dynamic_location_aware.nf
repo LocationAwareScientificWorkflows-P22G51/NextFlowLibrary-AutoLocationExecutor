@@ -91,6 +91,8 @@ def nodeOption(fname,other="") {
   state_map=state[2]
   best_node = getBestNode(nodes,state_map)
   best_node_ = 'n42'
+  println best_node
+  println best_node_
   if (best_node == best_node_)
   {
    println "they are the same!!!"
@@ -101,9 +103,7 @@ def nodeOption(fname,other="") {
     return "${other}"
   }
   else {
-    possible=possible - best_node_;
-    println nodes
-    println best_node_
+    possible=possible - best_node;
     options="--exclude="+possible.join(',')+" ${other}"
     println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
     return options
