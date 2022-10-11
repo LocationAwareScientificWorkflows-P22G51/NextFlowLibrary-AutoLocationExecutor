@@ -111,7 +111,7 @@ process getIDs {
     input:
        file input_ch
     output:
-       path "${input_ch.baseName}.ids", emit:  id_ch
+       path "${input_ch.baseName}.ids".subscibe(updateNodes(it)), emit:  id_ch
        path "$input_ch", emit: orig_ch
     script:
        """
@@ -163,7 +163,7 @@ process splitIDs  {
        "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-getIDs.out.id_ch.subscibe(updateNodes(it))
+
 
 workflow {
    split = [400,500,600]
