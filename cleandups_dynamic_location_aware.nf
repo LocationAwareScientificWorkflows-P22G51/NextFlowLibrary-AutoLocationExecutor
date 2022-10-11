@@ -69,11 +69,13 @@ def getStatus(nodes) {
   }
   println state_map
   println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
-  return [num_free,possible]
+  return [num_free,possible,state_map]
 }
 
-def getBestNode(nodes) {
-   
+def getBestNode(nodes,state_map) {
+   for (n : nodes) {
+      println state_map[n]
+   }
    return nodes
 }
 
@@ -83,11 +85,12 @@ def getBestNode(nodes) {
 
 def nodeOption(fname,other="") {
   info = getNodesInfo(fname)
-  nodes = info[0]
-  best_node = getBestNode(nodes)
-  weighting = info[1]
   state = getStatus(nodes)
+  nodes = info[0]
+  weighting = info[1]
   possible=state[1]
+  state_map=state[2]
+  best_node = getBestNode(nodes,state_map)
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
