@@ -170,7 +170,7 @@ workflow {
    input_ch = Channel.fromPath("${params.data_dir}")
    split = [400,500,600]
    cluster_option = Channel.of(nodeOption(input_ch))
-   getIDs(cluster_option, input_ch)
+   getIDs(input_ch.map{nodeOption(it)}, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
