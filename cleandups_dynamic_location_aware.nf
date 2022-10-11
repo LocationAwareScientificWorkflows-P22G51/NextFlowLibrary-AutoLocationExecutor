@@ -73,7 +73,7 @@ def getBestNode(nodes,state_map) {
       for (n : nodes) {
          if (state_map[n] = state)
             println n + " is the best available node with status " + state_map[n]
-            return state_map[n]
+            return n
       }
    }
 }
