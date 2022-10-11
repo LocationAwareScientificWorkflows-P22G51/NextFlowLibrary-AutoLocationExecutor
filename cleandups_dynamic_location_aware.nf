@@ -57,25 +57,25 @@ def getStatus(nodes) {
   for (n : node_states) {
     line=n.split()
     the_node=line[0]
-    println the_node
     the_state=line[1]
-    println the_state
     state_map[the_node]=the_state
     if  (the_state in possible_states) possible << the_node
     if  ( !(the_node in nodes)) continue;
     if  (the_state in free_states) num_free++;
   }
-  println state_map
   println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
   return [num_free,possible,state_map]
 }
 
 def getBestNode(nodes,state_map) {
-   for (n : nodes) {
-      println n
-      println state_map[n]
+   possible_states = ['idle','mix','alloc']
+   for state : possible_states {
+      for (n : nodes) {
+         if (state_map[n] = state)
+            println n + " is the best available node with status " + state_map[n]
+            return state_map[n]
+      }
    }
-   return nodes
 }
 
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
