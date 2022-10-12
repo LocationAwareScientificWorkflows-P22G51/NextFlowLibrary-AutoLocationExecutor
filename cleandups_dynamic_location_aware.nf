@@ -4,7 +4,7 @@
 // input_ch is the Channel that will input the data into the workflow processes.
 
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
-input_ch = Channel.fromPath("${params.data_dir}")
+input_ch = Channel.fromPath("${params.data_dir}").view()
 node_suggestion = [:]      
 
 
@@ -155,7 +155,7 @@ workflow {
                            .map{it.toAbsolutePath() }
                            .view()
 
-   getIDs(cluster_option , input_ch)
+   getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
