@@ -3,7 +3,7 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-params.data_dir = "/external/diskC/22P63/data1/*.bim"
+params.data_dir = "/external/diskC/22P63/data1/11.bim"
 node_suggestion = [:] 
 input_ch = Channel.fromPath("${params.data_dir}")
         
@@ -179,8 +179,8 @@ process sample {
 
 workflow {
    split = [400,500,600]
-   cluster_option = Channel.of("/external/diskC/22P63/data1/20B.bim")
-   getIDs(input_ch.toString(), input_ch)
+   cluster_option = Channel.of(input_ch.toString())
+   getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
