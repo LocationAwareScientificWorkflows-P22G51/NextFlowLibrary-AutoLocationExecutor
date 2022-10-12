@@ -120,14 +120,20 @@ process getIDs {
 }
 
 process getDups {
+    echo true
+    clusterOptions {nodeOption(cluster_option)}
     input:
+       val cluster_option
        path input
     output:
        path "${input.baseName}.dups" , emit: dups_ch
     script:
        out = "${input.baseName}.dups"
        """
+       echo ________________________________________________
+       echo File_path: $cluster_option
        hostname
+       echo ________________________________________________
        uniq -d $input > $out
        touch ignore
        """
@@ -158,7 +164,7 @@ process splitIDs  {
 workflow {
    split = [400,500,600]
    getIDs(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath() }, input_ch)
-   getDups(getIDs.out.id_ch)
+   getDups(getIDs.out.id_ch.map{it.toAbsolutePath() }, getIDs.out.id_ch.map{it.toAbsolutePath() })
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
 
