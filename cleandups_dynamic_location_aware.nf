@@ -4,7 +4,7 @@
 // input_ch is the Channel that will input the data into the workflow processes.
 
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
-input_ch = Channel.fromPath("${params.data_dir}").view()
+input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:]      
 
 
@@ -100,7 +100,7 @@ process getIDs {
     clusterOptions {nodeOption(cluster_option)}
     input:
        val cluster_option
-       file input_ch
+       path input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
