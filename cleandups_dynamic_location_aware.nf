@@ -3,10 +3,10 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-params.data_dir = "/external/diskC/22P63/data1/11.bim"
-node_suggestion = [:] 
-input_ch = Channel.fromPath("${params.data_dir}")
-        
+params.data_dir = "/external/diskC/22P63/data1/"
+params.data_type = "*.bim"
+input_ch = Channel.fromPath("${params.data_dir}" + "${params.data_type}")
+node_suggestion = [:]      
 
 
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
@@ -179,7 +179,7 @@ process sample {
 
 workflow {
    split = [400,500,600]
-   cluster_option = Channel.of(input_ch.toString()).view()
+   cluster_option = Channel.of('/external/diskC/22P63/data1/*.bim')
    getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
