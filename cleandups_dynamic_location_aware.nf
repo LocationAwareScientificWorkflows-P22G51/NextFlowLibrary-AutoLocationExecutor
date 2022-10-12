@@ -87,12 +87,6 @@ def nodeOption(fname,other="") {
   }
 }
 
-// Function that is called on the subscibe observing event whenever the input channel transfers data
-
-def updateNodes(it) {
-   println "\nUpdating node suggestion for: $it"
-   node_suggestion[it.getName()]=nodeOption(it)  
-}
 
 //
 //
@@ -121,7 +115,6 @@ process getIDs {
 }
 
 process getDups {
-
     input:
        path input
     output:
