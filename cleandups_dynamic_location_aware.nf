@@ -4,13 +4,9 @@
 // input_ch is the Channel that will input the data into the workflow processes.
 
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
+input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:] 
-input_ch = Channel
-        .fromPath("${params.data_dir}")
-        
-input_ch.subscribe { updateNodes(it) }
-
-
+    
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
 // The weighting coefficient is used later to determine if its viable to execute on the storage nodes or not
 
@@ -123,7 +119,7 @@ def nodeOption(fname,other="") {
 
 def updateNodes(it) {
    println "\nUpdating node suggestion for: $it"
-   node_suggestion[it.getName()]=nodeOption(it)  
+   node_suggestion[it.getName()]=nodeOption(it)   
 }
 
 //
@@ -136,9 +132,10 @@ def updateNodes(it) {
 
 process getIDs {
     echo true
-    clusterOptions { node_suggestion[input_ch.getName()] }
+    clusterOptions {nodeOption(cluster_option)}
     input:
-       file input_ch
+       val cluster_option
+       path input_ch
     output:
        path "${input_ch.baseName}.ids", emit:  id_ch
        path "$input_ch", emit: orig_ch
@@ -149,12 +146,14 @@ process getIDs {
        echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
        echo SLURM_JOB_NUM_NODES: $SLURM_JOB_NUM_NODES
        echo SLURM_CLUSTER_NAME: $SLURM_CLUSTER_NAME
+       echo File_path: $cluster_option
        hostname
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """    
 }
 
 process getDups {
+    echo true
     input:
        path input
     output:
@@ -162,6 +161,9 @@ process getDups {
     script:
        out = "${input.baseName}.dups"
        """
+       echo ________________________________________________
+       hostname
+       echo ________________________________________________
        uniq -d $input > $out
        touch ignore
        """
@@ -175,7 +177,6 @@ process removeDups {
        path "${badids.baseName}.bim", emit: cleaned_ch
     publishDir "output", pattern: "${badids.baseName}.bim",\
                   overwrite:true, mode:'copy'
-
     script:
        "grep -v -f $badids orig.bim > ${badids.baseName}.bim "
 }
@@ -186,17 +187,16 @@ process splitIDs  {
     each split
     output:
        path ("*-$split-*") 
-
     script:
        "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-
-
 workflow {
    split = [400,500,600]
-   getIDs(input_ch)
+   getIDs(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
+
+   
 }
