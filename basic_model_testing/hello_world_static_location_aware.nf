@@ -1,7 +1,5 @@
 // common code that must be included starts here
 
-
-
 // This should be the files you want to use as determining the node allocations. Can contain other files (a small performance
 // penalty but only minor but should contain all that you want
 //key_fnames = file("/external/diskC/22P63/data1/*.bim")
@@ -28,8 +26,6 @@ def getNodesOfBricks(fname) {
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
   return nodes
 }
-
-
 
 
 possible_states = ['idle','alloc','mix' ]
@@ -87,15 +83,14 @@ params.str = 'Hello world!'
 //node_suggestion[filelocaion_ch[0].getName()]\
 //"--exclude=n07,n12,n13,n24,n30,n03,n04,n05,n11,n16,n17,n18,n19,n20,n23,n25,n26,n27,n31,n33,n34,n35,n36"
  process sample {
-     echo true
-     //clusterOptions {  }
+     clusterOptions { node_suggestion[filelocaion_ch[0].getName()] }
      input:
       path filelocaion_ch
      output:
       path 'chunk_*'
 
   """
-  
+  hostname
   printf '${params.str}' | split -b 6 - chunk_
   """
 }
