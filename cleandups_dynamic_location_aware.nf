@@ -123,7 +123,6 @@ process getDups {
     echo true
     clusterOptions {nodeOption(cluster_option)}
     input:
-       val cluster_option
        path input
     output:
        path "${input.baseName}.dups" , emit: dups_ch
@@ -164,8 +163,7 @@ process splitIDs  {
 workflow {
    split = [400,500,600]
    getIDs(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
-   cluster_option = Channel.of('/home/tlilford/work/41/089117f2430f4661d880dc954e4e62/20B.ids')
-   getDups(cluster_option, getIDs.out.id_ch)
+   getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
 
