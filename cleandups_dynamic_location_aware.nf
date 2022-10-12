@@ -178,7 +178,7 @@ process sample {
 
 workflow {
    split = [400,500,600]
-   cluster_option = Channel.fromPath("${params.data_dir}" + "${params.data_type}")
+   cluster_option = Channel.fromPath("${params.data_dir}")
                            .map{it.toAbsolutePath() }
                            .view()
    //cluster_option = Channel.of("$params.data_dir" + "$input_ch.first().getName()")
