@@ -157,11 +157,6 @@ process splitIDs  {
        "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-input_ch.subscribe { 
-   //updateNodes(it)
-   //println "Subscribing_______________________________________"
-}
-
 workflow {
    split = [400,500,600]
    getIDs(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath() }, input_ch)
