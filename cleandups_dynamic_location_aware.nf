@@ -86,7 +86,9 @@ def nodeOption(fname,other="") {
 }
 
 // Function that is called on the subscibe observing event whenever the input channel transfers data
+def helloWorld(){
 
+}
 
 //
 //
