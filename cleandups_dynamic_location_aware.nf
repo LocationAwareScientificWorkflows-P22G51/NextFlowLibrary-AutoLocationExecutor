@@ -121,7 +121,6 @@ process getIDs {
 
 process getDups {
     echo true
-    clusterOptions {nodeOption(cluster_option)}
     input:
        path input
     output:
