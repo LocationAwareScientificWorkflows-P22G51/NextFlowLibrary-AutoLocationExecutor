@@ -87,13 +87,6 @@ def nodeOption(fname,other="") {
   }
 }
 
-// Function that is called on the subscibe observing event whenever the input channel transfers data
-
-def updateNodes(it) {
-   println "\nUpdating node suggestion for: $it"
-   node_suggestion[it.getName()]=nodeOption(it)  
-}
-
 //
 //
 //
@@ -121,7 +114,6 @@ process getIDs {
 }
 
 process getDups {
-
     input:
        path input
     output:
@@ -159,31 +151,14 @@ process splitIDs  {
        "split -l $split $bim ${bim.baseName}-$split- "
 }
 
-input_ch.subscribe { 
-   //updateNodes(it)
-   //println "Subscribing_______________________________________"
-}
-
-
-process sample {
-    echo true
-    input:
-       file input_ch
-    script:
-       """
-       echo SAMPLE: $SLURM_JOB_ID
-       hostname
-       """    
-}
-
 workflow {
    split = [400,500,600]
-   cluster_option = Channel.fromPath("${params.data_dir}")
-                           .map{it.toAbsolutePath() }
-                           .view()
+   //cluster_option = Channel.fromPath("${params.data_dir}")
+                          // .map{it.toAbsolutePath() }
+                          // .view()
    //cluster_option = Channel.of("$params.data_dir" + "$input_ch.first().getName()")
    //cluster_option = Channel.of('/external/diskC/22P63/data1/11.bim')
-   getIDs(cluster_option, input_ch)
+   getIDs(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath() }, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
