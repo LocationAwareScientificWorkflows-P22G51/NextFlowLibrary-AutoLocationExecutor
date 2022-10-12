@@ -91,7 +91,7 @@ def nodeOption(fname,other="") {
 
 def updateNodes(it) {
    println "\nUpdating node suggestion for: $it"
-   node_suggestion[it.getName()]=nodeOption(it)  
+   //node_suggestion[it.getName()]=nodeOption(it)  
 }
 
 //
