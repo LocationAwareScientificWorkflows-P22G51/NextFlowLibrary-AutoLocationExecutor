@@ -113,6 +113,7 @@ process getIDs {
        """
        echo job_id: $SLURM_JOB_ID
        echo Login_Node: $SLURM_JOB_NODELIST
+       echo File_path: $cluster_option
        hostname
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """    
