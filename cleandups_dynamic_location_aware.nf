@@ -151,7 +151,8 @@ process splitIDs  {
 
 workflow {
    split = [400,500,600]
-   getIDs(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
+   cluster_option = Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}
+   getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
