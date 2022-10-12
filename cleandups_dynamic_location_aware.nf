@@ -62,6 +62,11 @@ def getStatus(nodes) {
   return [num_free,possible]
 }
 
+def updateNodes(it) {
+   println "\nUpdating node suggestion for: $it"
+   //node_suggestion[it.getName()]=nodeOption(it)  
+}
+
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
 // There is a conditional to decide whether its best to execute on the storage nodes or not.
 // This function returns the nodes to be excluded during execution set within the clusterOptions in the initial process.
@@ -86,6 +91,7 @@ def nodeOption(fname,other="") {
 }
 
 // Function that is called on the subscibe observing event whenever the input channel transfers data
+
 
 //
 //
