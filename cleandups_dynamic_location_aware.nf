@@ -179,7 +179,7 @@ process sample {
 
 workflow {
    split = [400,500,600]
-   cluster_option = (params.data_dir + "11.bim")
+   cluster_option = Chanel.of(params.data_dir + "11.bim")
    //cluster_option = Channel.of('/external/diskC/22P63/data1/11.bim')
    getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
