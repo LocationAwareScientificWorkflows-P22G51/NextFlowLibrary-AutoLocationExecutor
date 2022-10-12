@@ -148,7 +148,7 @@ process getIDs {
        echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
        echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
        echo SLURM_JOB_NUM_NODES: $SLURM_JOB_NUM_NODES
-       echo SLURM_MEM_PER_CPU: $SLURM_MEM_PER_CPU
+       echo SLURM_CLUSTER_NAME: $SLURM_CLUSTER_NAME
        hostname
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """    
