@@ -21,7 +21,9 @@ def getNodesInfo(fname) {
   // weighting setting
   fsize = fname.size()
   weighting = 1
-  if (fsize > 100000)   // example where range of 100 kb is the limiter
+  cluster_speed = 100000   // 100kbs transfer speed
+  time_limit = 1           // time limit of 1 second for data transfer
+  if (fsize > cluster_speed * time_limit )   // example where range of 100 kb is the limiter
      weighting += 1
   println "The file ${fname} has ${fsize} bytes, thus the node weighting is set ${weighting}" 
 
@@ -41,7 +43,7 @@ def getNodesInfo(fname) {
   return [nodes,weighting]
 }
 
-// Function that determines which nodes are currently available for processing
+// Function that determines which nodes are currently available for processing and their respective states
 
 def getStatus(nodes) {
   node_states ='sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
@@ -60,7 +62,32 @@ def getStatus(nodes) {
     if  (the_state in free_states) num_free++;
   }
   println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
-  return [num_free,possible]
+  return [num_free,possible,state_map]
+}
+
+// Function to identify which of the nodes that have the data stored on them are the best suited to execute on
+
+def getBestNode(nodes,state_map) {
+   idles = []
+   mixes = []
+   allocs = []
+   for (n : nodes) {
+      if (state_map[n] == 'idle') idles.add(n)
+      if (state_map[n] == 'mix') mixes.add(n)
+      if (state_map[n] == 'alloc') allocs.add(n)
+   }
+   if (idles.size() > 0) {
+      println "Best node/s for execution is: " + idles + ". They are idle."
+      return idles
+   } 
+   else if (mixes.size() > 0) {
+      println "Best node/s for execution is: " + mixes ". They are mix."
+      return mixes
+   } 
+   else {
+      println "Best node/s for execution is: " + allocs ". They are allocs."
+      return allocs
+   } 
 }
 
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
@@ -69,10 +96,12 @@ def getStatus(nodes) {
 
 def nodeOption(fname,other="") {
   info = getNodesInfo(fname)
+  state = getStatus(nodes)
   nodes = info[0]
   weighting = info[1]
-  state = getStatus(nodes)
   possible=state[1]
+  state_map=state[2]
+  best_node = getBestNode(nodes,state_map)
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
@@ -87,6 +116,7 @@ def nodeOption(fname,other="") {
 }
 
 // Function that is called on the subscibe observing event whenever the input channel transfers data
+
 def updateNodes(it) {
    println "\nUpdating node suggestion for: $it"
    node_suggestion[it.getName()]=nodeOption(it)   
@@ -111,8 +141,11 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
-       echo job_id: $SLURM_JOB_ID
-       echo Login_Node: $SLURM_JOB_NODELIST
+       echo SLURM_JOB_ID: $SLURM_JOB_ID
+       echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
+       echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
+       echo SLURM_JOB_NUM_NODES: $SLURM_JOB_NUM_NODES
+       echo SLURM_CLUSTER_NAME: $SLURM_CLUSTER_NAME
        echo File_path: $cluster_option
        hostname
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
