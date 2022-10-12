@@ -130,7 +130,6 @@ process getDups {
        out = "${input.baseName}.dups"
        """
        echo ________________________________________________
-       echo File_path: $cluster_option
        hostname
        echo ________________________________________________
        uniq -d $input > $out
