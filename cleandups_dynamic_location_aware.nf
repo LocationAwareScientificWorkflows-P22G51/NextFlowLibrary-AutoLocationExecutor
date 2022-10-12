@@ -147,7 +147,7 @@ process getIDs {
        echo job_id: $SLURM_JOB_ID
        echo job_node: $SLURM_JOB_NODELIST
        hostname
-       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
+       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids; then sleep 5;
        """    
 }
 
