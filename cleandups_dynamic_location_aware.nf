@@ -5,9 +5,7 @@
 
 params.data_dir = "/external/diskC/22P63/data1/*.bim"
 input_ch = Channel.fromPath("${params.data_dir}")
-node_suggestion = [:]      
-
-
+    
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
 // The weighting coefficient is used later to determine if its viable to execute on the storage nodes or not
 
@@ -88,11 +86,6 @@ def nodeOption(fname,other="") {
 }
 
 // Function that is called on the subscibe observing event whenever the input channel transfers data
-
-def updateNodes(it) {
-   println "\nUpdating node suggestion for: $it"
-   //node_suggestion[it.getName()]=nodeOption(it)  
-}
 
 //
 //
