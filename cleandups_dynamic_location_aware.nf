@@ -179,7 +179,7 @@ process sample {
 
 workflow {
    split = [400,500,600]
-   cluster_option = Channel.of('/external/diskC/22P63/data1/11.bim')
+   cluster_option = Channel.of("$params.data_dir" + input_ch.getName())
    getIDs(cluster_option, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
