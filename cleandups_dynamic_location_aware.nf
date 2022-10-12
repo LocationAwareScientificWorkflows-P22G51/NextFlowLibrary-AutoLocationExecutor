@@ -144,10 +144,10 @@ process getIDs {
        path "$input_ch", emit: orig_ch
     script:
        """
-       echo job_id: $SLURM_JOB_ID
-       echo job_node: $SLURM_JOB_NODELIST
-       echo cpu_per_task: $SLURM_CPUS_PER_TASK
-       echo gpu_per_task: $SLURM_GPUS_PER_TASK
+       echo SLURM_JOB_ID: $SLURM_JOB_ID
+       echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
+       echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
+       echo SLURM_JOB_NUM_NODES: $SLURM_JOB_NUM_NODES
        hostname
        cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
        """    
