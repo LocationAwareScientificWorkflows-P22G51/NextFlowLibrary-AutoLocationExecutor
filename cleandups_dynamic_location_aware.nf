@@ -3,7 +3,7 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-params.data_dir = "/external/diskC/22P63/data1/11.bim"
+params.data_dir = "/external/diskC/22P63/data1/*.bim"
 input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:]      
 
@@ -135,7 +135,6 @@ process removeDups {
        path "${badids.baseName}.bim", emit: cleaned_ch
     publishDir "output", pattern: "${badids.baseName}.bim",\
                   overwrite:true, mode:'copy'
-
     script:
        "grep -v -f $badids orig.bim > ${badids.baseName}.bim "
 }
@@ -146,19 +145,13 @@ process splitIDs  {
     each split
     output:
        path ("*-$split-*") 
-
     script:
        "split -l $split $bim ${bim.baseName}-$split- "
 }
 
 workflow {
    split = [400,500,600]
-   //cluster_option = Channel.fromPath("${params.data_dir}")
-                          // .map{it.toAbsolutePath() }
-                          // .view()
-   //cluster_option = Channel.of("$params.data_dir" + "$input_ch.first().getName()")
-   //cluster_option = Channel.of('/external/diskC/22P63/data1/11.bim')
-   getIDs(input_ch.map{it.toAbsolutePath() }, input_ch)
+   getIDs(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
    splitIDs(removeDups.out.cleaned_ch, split)
