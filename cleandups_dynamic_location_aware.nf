@@ -63,7 +63,7 @@ def getStatus(nodes) {
 }
 
 def updateNodes_lol(it) {
-   println "\nUpdating node suggestion for: $it" 
+   println "\nUpdating node suggestion for: $it ______________________________________" 
 }
 
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
