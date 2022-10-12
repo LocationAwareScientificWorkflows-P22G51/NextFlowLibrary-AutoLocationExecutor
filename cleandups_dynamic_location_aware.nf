@@ -62,7 +62,7 @@ def getStatus(nodes) {
   return [num_free,possible]
 }
 
-def updateNodes(it) {
+def updateNodes_lol(it) {
    //println "\nUpdating node suggestion for: $it" 
 }
 
