@@ -145,7 +145,6 @@ process fastqc {
    """
       mkdir $base
       fastqc $input_ch --outdir $base
-      hostname
    """
 }
 
