@@ -2,7 +2,6 @@ nextflow.enable.dsl=2
 
 
 process fastqc {
-   maxForks params.forks
    input:
       path f
    output:
