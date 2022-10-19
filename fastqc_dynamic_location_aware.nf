@@ -3,7 +3,7 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-params.data_dir = "/external/diskC/22P63/shotgun/*.fastq.gz"
+params.data_dir = "/external/diskC/22P63/shotgun/*gz"
 input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:] 
     
@@ -132,7 +132,6 @@ def updateNodes(it) {
 // Take note of the workflow execution, use as is for the initial process
 
 process fastqc {
-   maxForks params.forks
    clusterOptions {nodeOption(cluster_option)}
    input:
       val cluster_option
