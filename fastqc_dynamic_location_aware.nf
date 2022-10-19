@@ -142,7 +142,7 @@ process fastqc {
       base = f.simpleName
    """
       mkdir $base
-      fastqc $f --outdir $base
+      fastqc $input_ch --outdir $base
       hostname
    """
 }
