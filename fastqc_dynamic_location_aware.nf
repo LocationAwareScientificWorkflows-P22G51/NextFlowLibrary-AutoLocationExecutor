@@ -21,7 +21,7 @@ def getNodesInfo(fname) {
   // weighting setting
   fsize = fname.size()
   weighting = 1
-  cluster_speed = 100000   // 100kbs transfer speed
+  cluster_speed = 100000000000   // 100kbs transfer speed
   time_limit = 1           // time limit of 1 second for data transfer
   if (fsize > cluster_speed * time_limit )   // example where range of 100 kb is the limiter
      weighting += 1
@@ -101,6 +101,8 @@ def nodeOption(fname,other="") {
   weighting = info[1]
   possible=state[1]
   state_map=state[2]
+  println nodes
+  println state_map
   best_node = getBestNode(nodes,state_map)
   if ((possible.intersect(nodes)).size()<weighting)
   {
