@@ -139,7 +139,7 @@ process fastqc {
    output:
       file ("/{zip,html}")
    script:
-      base = f.simpleName
+      base = input_ch.simpleName
    """
       mkdir $base
       fastqc $input_ch --outdir $base
