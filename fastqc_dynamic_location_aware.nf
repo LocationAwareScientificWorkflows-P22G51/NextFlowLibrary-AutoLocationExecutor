@@ -137,7 +137,7 @@ process fastqc {
       val cluster_option
       path input_ch
    output:
-      file ("/{zip,html}")
+      file ("*/*{zip,html}")
    script:
       base = input_ch.simpleName
    """
