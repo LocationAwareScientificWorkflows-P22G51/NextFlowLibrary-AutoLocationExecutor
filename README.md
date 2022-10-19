@@ -18,6 +18,8 @@ Coding is to be done with Nextflow.
 
 ## **Summary:**
 
+In order to use the current version of the library, the sample of the library can be found in the file labeled as *LocAwareSample.nf*. Within the file there is comments guiding you how to integrate the library with your existing workflow.
+
 ## **Testing Results:**
 
 Tabulation of executional time results comparing using this location aware process within other workflows vs not
