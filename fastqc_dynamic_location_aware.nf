@@ -3,7 +3,7 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-params.data_dir = "/external/diskC/22P63/shotgun/*gz"
+params.data_dir = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz"
 input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:] 
     
@@ -134,6 +134,7 @@ def updateNodes(it) {
 // Take note of the workflow execution, use as is for the initial process
 
 process fastqc {
+   echo true
    clusterOptions {nodeOption(cluster_option)}
    input:
       val cluster_option
@@ -144,7 +145,11 @@ process fastqc {
       base = input_ch.simpleName
    """
       mkdir $base
-      fastqc $input_ch --outdir $base
+      /home/rjonker/FastQC/fastqc $input_ch --outdir $base
+      echo SLURM_JOB_ID: $SLURM_JOB_ID
+      echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
+      echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
+      hostname
    """
 }
 
