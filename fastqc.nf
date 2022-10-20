@@ -120,11 +120,11 @@ process fastqc1 {
    clusterOptions {nodeOption(cluster_option)}
    input:
       val cluster_option
-      path f
+      path data
    output:
       file ("*/*{zip,html}")
    script:
-      base = f.simpleName
+      base = data.simpleName
    """
       echo SLURM_JOB_ID: $SLURM_JOB_ID
       echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
@@ -134,7 +134,7 @@ process fastqc1 {
       echo File_path: $cluster_option
       hostname
       mkdir $base
-      /home/tlilford/FastQC/fastqc $f --outdir $base
+      /home/tlilford/FastQC/fastqc $data --outdir $base
    """
 }
 
