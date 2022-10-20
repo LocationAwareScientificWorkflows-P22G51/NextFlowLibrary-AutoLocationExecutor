@@ -142,5 +142,5 @@ Channel.fromPath(params.input)
 
 workflow() {
     data = Channel.fromPath(params.input) 
-    fastqc((params.input, data))
+    fastqc(Channel.fromPath("${params.input}").map{it.toAbsolutePath()}, data)
 }
