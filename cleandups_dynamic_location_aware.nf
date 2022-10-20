@@ -196,7 +196,5 @@ workflow {
    getIDs(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
    getDups(getIDs.out.id_ch)
    removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
-   splitIDs(removeDups.out.cleaned_ch, split)
-
-   
+   splitIDs(removeDups.out.cleaned_ch, split)  
 }

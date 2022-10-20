@@ -1,6 +1,6 @@
 #!/usr/bin/env nextflow
 
-//nextflow.enable.dsl=2
+nextflow.enable.dsl=2
 
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
