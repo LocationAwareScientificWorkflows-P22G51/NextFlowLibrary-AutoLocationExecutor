@@ -23,7 +23,5 @@ process fastqc {
 }
 
 workflow {
-    //data = Channel.fromPath("${params.data_dir}") 
-    //fastqc(data)
     fastqc(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
 }
