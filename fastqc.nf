@@ -13,7 +13,6 @@ node_suggestion = [:]
 // The weighting coefficient is used later to determine if its viable to execute on the storage nodes or not
 
 def getNodesInfo(fname) {
-
   // file configuration
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
   msg=cmd.execute().text;
@@ -118,11 +117,6 @@ def nodeOption(fname,other="") {
 }
 
 // Function that is called on the subscibe observing event whenever the input channel transfers data
-
-def updateNodes(it) {
-   println "\nUpdating node suggestion for: $it"
-   node_suggestion[it.getName()]=nodeOption(it)   
-}
 
 //
 //
