@@ -57,7 +57,7 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
+node_suggestion[key_fnames.getName()]=nodeOption(key_fnames)
 
 process fastqc {
    echo true
