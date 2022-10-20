@@ -21,7 +21,7 @@ def getNodesInfo(fname) {
   // weighting setting
   fsize = fname.size()
   weighting = 1
-  cluster_speed = 100000000000   // 100kbs transfer speed
+  cluster_speed = 1000000000000000000   // 100kbs transfer speed
   time_limit = 1           // time limit of 1 second for data transfer
   if (fsize > cluster_speed * time_limit )   // example where range of 100 kb is the limiter
      weighting += 1
