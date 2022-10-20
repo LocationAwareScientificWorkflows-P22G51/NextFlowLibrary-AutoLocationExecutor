@@ -18,7 +18,7 @@ nextflow.enable.dsl=2
 process fastqc {
    echo true
    maxForks params.forks
-   clusterOptions {nodeOption(cluster_option)}
+   //clusterOptions {nodeOption(cluster_option)}
    input:
       val cluster_option
       path f
@@ -39,7 +39,7 @@ process fastqc {
    """
 }
 
-//Channel.fromPath(params.input) 
+Channel.fromPath(params.input) 
 
 workflow {
     data = Channel.fromPath(params.input) 
