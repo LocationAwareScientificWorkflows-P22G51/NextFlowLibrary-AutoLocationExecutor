@@ -1,8 +1,8 @@
 nextflow.enable.dsl=2
 
 params.data_dir = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz"
-
-input_ch = Channel.fromPath("${params.data_dir}") 
+input_ch = Channel.fromPath("${params.data_dir}")
+node_suggestion = [:] 
 
 process fastqc {
    echo true
@@ -23,6 +23,7 @@ process fastqc {
 }
 
 workflow {
-    data = Channel.fromPath("${params.data_dir}") 
-    fastqc(data)
+    //data = Channel.fromPath("${params.data_dir}") 
+    //fastqc(data)
+    fastqc(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
 }
