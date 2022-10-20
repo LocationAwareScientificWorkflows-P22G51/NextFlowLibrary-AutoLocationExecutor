@@ -2,6 +2,7 @@ nextflow.enable.dsl=2
 
 
 process fastqc {
+   echo true
    input:
       path f
    output:
@@ -11,6 +12,12 @@ process fastqc {
    """
       mkdir $base
       /home/rjonker/FastQC/fastqc $f --outdir $base
+      echo SLURM_JOB_ID: $SLURM_JOB_ID
+      echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
+      echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
+      echo SLURM_JOB_NUM_NODES: $SLURM_JOB_NUM_NODES
+      echo SLURM_CLUSTER_NAME: $SLURM_CLUSTER_NAME
+      echo File_path: $cluster_option
       hostname
    """
 }
