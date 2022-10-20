@@ -23,5 +23,5 @@ process fastqc {
 }
 
 workflow {
-    fastqc(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
+    fastqc(input_ch)
 }
