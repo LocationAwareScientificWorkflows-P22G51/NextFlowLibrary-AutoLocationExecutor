@@ -10,7 +10,7 @@ process fastqc {
       base = f.simpleName
    """
       mkdir $base
-      /home/rjonker/fastqc $f --outdir $base
+      /home/rjonker/FastQC/fastqc $f --outdir $base
    """
 }
 
