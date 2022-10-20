@@ -1,19 +1,4 @@
-
-
 nextflow.enable.dsl=2
-
-
-
-// Function that is called on the subscibe observing event whenever the input channel transfers data
-
-//
-//
-//
-//
-//
-// Workflow code starts here
-// Only addition within your workflow code is that within the initial process clusterOptions needs to be set as below
-
 
 process fastqc {
    echo true
