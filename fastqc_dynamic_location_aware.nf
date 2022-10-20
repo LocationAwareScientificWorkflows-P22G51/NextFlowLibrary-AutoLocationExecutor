@@ -146,10 +146,7 @@ process fastqc {
    """
       mkdir $base
       /home/rjonker/FastQC/fastqc $input_ch --outdir $base
-      echo SLURM_JOB_ID: $SLURM_JOB_ID
-      echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
-      echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
-      hostname
+
    """
 }
 
