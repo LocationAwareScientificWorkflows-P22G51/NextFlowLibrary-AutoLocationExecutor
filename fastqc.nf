@@ -114,7 +114,7 @@ def nodeOption(fname,other="") {
 // Workflow code starts here
 // Only addition within your workflow code is that within the initial process clusterOptions needs to be set as below
 
-process fastqc {
+process fastqc1 {
    maxForks params.forks
    echo true
    clusterOptions {nodeOption(cluster_option)}
@@ -140,7 +140,7 @@ process fastqc {
 
 Channel.fromPath(params.input) 
 
-workflow() {
+workflow {
     data = Channel.fromPath(params.input) 
-    fastqc(Channel.fromPath("${params.input}").map{it.toAbsolutePath()}, data)
+    fastqc1(Channel.fromPath("${params.input}").map{it.toAbsolutePath()}, data)
 }
