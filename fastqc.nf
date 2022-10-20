@@ -1,5 +1,6 @@
 nextflow.enable.dsl=2
-
+input = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz"
+forks = 1
 node_suggestion = [:] 
     
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
