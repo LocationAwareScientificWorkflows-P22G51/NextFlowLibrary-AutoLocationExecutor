@@ -1,10 +1,6 @@
-#!/usr/bin/env nextflow
-
-// Set the path directory to your data files as shown in the example below
-// input_ch is the Channel that will input the data into the workflow processes.
-
-params.data_dir = "/external/diskC/22P63/data1/*.bim"
-input_ch = Channel.fromPath("${params.data_dir}")
+nextflow.enable.dsl=2
+input = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz"
+forks = 1
 node_suggestion = [:] 
     
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
@@ -101,7 +97,7 @@ def nodeOption(fname,other="") {
   weighting = info[1]
   possible=state[1]
   state_map=state[2]
-  best_node = getBestNode(nodes,state_map)
+  //best_node = getBestNode(nodes,state_map)
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
@@ -115,86 +111,36 @@ def nodeOption(fname,other="") {
   }
 }
 
-// Function that is called on the subscibe observing event whenever the input channel transfers data
-
-def updateNodes(it) {
-   println "\nUpdating node suggestion for: $it"
-   node_suggestion[it.getName()]=nodeOption(it)   
-}
-
-//
-//
-//
-//
-//
 // Workflow code starts here
 // Only addition within your workflow code is that within the initial process clusterOptions needs to be set as below
 
-process getIDs {
-    echo true
-    clusterOptions {nodeOption(cluster_option)}
-    input:
-       val cluster_option
-       path input_ch
-    output:
-       path "${input_ch.baseName}.ids", emit:  id_ch
-       path "$input_ch", emit: orig_ch
-    script:
-       """
-       echo SLURM_JOB_ID: $SLURM_JOB_ID
-       echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
-       echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
-       echo SLURM_JOB_NUM_NODES: $SLURM_JOB_NUM_NODES
-       echo SLURM_CLUSTER_NAME: $SLURM_CLUSTER_NAME
-       echo File_path: $cluster_option
-       hostname
-       cut -f 2 $input_ch | sort > ${input_ch.baseName}.ids
-       """    
+process fastqc1 {
+   maxForks params.forks
+   echo true
+   clusterOptions {nodeOption(cluster_option)}
+   input:
+      val cluster_option
+      path data
+   output:
+      file ("*/*{zip,html}")
+   script:
+      base = data.simpleName
+   """
+      echo SLURM_JOB_ID: $SLURM_JOB_ID
+      echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
+      echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
+      echo SLURM_JOB_NUM_NODES: $SLURM_JOB_NUM_NODES
+      echo SLURM_CLUSTER_NAME: $SLURM_CLUSTER_NAME
+      echo File_path: $cluster_option
+      hostname
+      mkdir $base
+      /home/tlilford/FastQC/fastqc $data --outdir $base
+   """
 }
 
-process getDups {
-    echo true
-    input:
-       path input
-    output:
-       path "${input.baseName}.dups" , emit: dups_ch
-    script:
-       out = "${input.baseName}.dups"
-       """
-       echo ________________________________________________
-       hostname
-       echo ________________________________________________
-       uniq -d $input > $out
-       touch ignore
-       """
-}
-
-process removeDups {
-    input:
-       path badids 
-       path "orig.bim" 
-    output:
-       path "${badids.baseName}.bim", emit: cleaned_ch
-    publishDir "output", pattern: "${badids.baseName}.bim",\
-                  overwrite:true, mode:'copy'
-    script:
-       "grep -v -f $badids orig.bim > ${badids.baseName}.bim "
-}
-
-process splitIDs  {
-    input:
-       path bim
-    each split
-    output:
-       path ("*-$split-*") 
-    script:
-       "split -l $split $bim ${bim.baseName}-$split- "
-}
+Channel.fromPath(params.input) 
 
 workflow {
-   split = [400,500,600]
-   getIDs(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
-   getDups(getIDs.out.id_ch)
-   removeDups(getDups.out.dups_ch, getIDs.out.orig_ch)
-   splitIDs(removeDups.out.cleaned_ch, split)  
+    data = Channel.fromPath(params.input) 
+    fastqc1(Channel.fromPath("${params.input}").map{it.toAbsolutePath()}, data)
 }
