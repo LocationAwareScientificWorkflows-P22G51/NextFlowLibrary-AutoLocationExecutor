@@ -155,5 +155,6 @@ process fastqc {
 }
 
 workflow {
+   Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}.view()
     fastqc(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
 }
