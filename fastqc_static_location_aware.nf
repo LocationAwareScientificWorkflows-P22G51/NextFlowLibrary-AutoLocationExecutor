@@ -80,5 +80,6 @@ process fastqc {
 }
 
 workflow {
+    input_ch = Channel.fromPath("/external/diskC/22P63/shotgun/SRR13061610.fastq.gz") 
     fastqc(input_ch)
 }
