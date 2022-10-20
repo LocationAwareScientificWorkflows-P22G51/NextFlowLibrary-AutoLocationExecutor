@@ -11,6 +11,7 @@ process fastqc {
    """
       mkdir $base
       /home/rjonker/FastQC/fastqc $f --outdir $base
+      hostname
    """
 }
 
