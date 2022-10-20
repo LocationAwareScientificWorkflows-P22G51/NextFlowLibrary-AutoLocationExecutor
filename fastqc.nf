@@ -5,7 +5,7 @@ process fastqc {
    input:
       path f
    output:
-      file ("*/*{zip,html}")
+      file ("/{zip,html}")
    script:
       base = f.simpleName
    """
