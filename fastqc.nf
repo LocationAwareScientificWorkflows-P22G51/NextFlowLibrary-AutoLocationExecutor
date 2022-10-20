@@ -97,7 +97,7 @@ def nodeOption(fname,other="") {
   weighting = info[1]
   possible=state[1]
   state_map=state[2]
-  best_node = getBestNode(nodes,state_map)
+  //best_node = getBestNode(nodes,state_map)
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
