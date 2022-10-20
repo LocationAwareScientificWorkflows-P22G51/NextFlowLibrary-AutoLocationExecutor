@@ -1,11 +1,8 @@
 nextflow.enable.dsl=2
 
 process fastqc {
-   echo true
    maxForks params.forks
-   //clusterOptions {nodeOption(cluster_option)}
    input:
-      val cluster_option
       path f
    output:
       file ("*/*{zip,html}")
