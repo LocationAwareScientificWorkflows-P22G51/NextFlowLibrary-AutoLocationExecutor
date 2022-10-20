@@ -139,7 +139,7 @@ process fastqc {
 
 Channel.fromPath(params.input) 
 
-workflow {
+workflow() {
     data = Channel.fromPath(params.input) 
     fastqc((params.input, data))
 }
