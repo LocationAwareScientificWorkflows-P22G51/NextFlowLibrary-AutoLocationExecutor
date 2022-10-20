@@ -3,7 +3,7 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-params.data_dir = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz"
+params.data_dir = "/external/diskC/22P63/shotgun/*gz"
 input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:] 
     

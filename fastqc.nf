@@ -1,6 +1,6 @@
 nextflow.enable.dsl=2
 
-params.data_dir = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz"
+params.data_dir = "/external/diskC/22P63/shotgun/*gz"
 input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:] 
 

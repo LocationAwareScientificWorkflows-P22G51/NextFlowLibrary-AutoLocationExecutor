@@ -3,7 +3,7 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-key_fnames = file("/external/diskC/22P63/shotgun/SRR13061610.fastq.gz")
+key_fnames = file("/external/diskC/22P63/shotgun/*gz")
 node_suggestion = [:] 
 
 def getNodesOfBricks(fname) {
@@ -57,7 +57,9 @@ def nodeOption(fname,aggression=1,other="") {
   }
 }
 
-node_suggestion[key_fnames.getName()]=nodeOption(key_fnames)
+//node_suggestion[key_fnames.getName()]=nodeOption(key_fnames)
+key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
+
 
 process fastqc {
    echo true
