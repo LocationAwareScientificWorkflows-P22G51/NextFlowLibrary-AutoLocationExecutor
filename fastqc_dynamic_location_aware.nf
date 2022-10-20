@@ -71,6 +71,7 @@ def getBestNode(nodes,state_map) {
    idles = []
    mixes = []
    allocs = []
+   empty= []
    for (n : nodes) {
       if (state_map[n] == 'idle') idles.add(n)
       if (state_map[n] == 'mix') mixes.add(n)
@@ -84,10 +85,13 @@ def getBestNode(nodes,state_map) {
       println "Best node/s for execution is: " + mixes ". They are mix."
       return mixes
    } 
-   else {
+   else if (allocs.size() > 0) {
       println "Best node/s for execution is: " + allocs ". They are allocs."
       return allocs
-   } 
+   }
+   else {
+      return empty
+   }
 }
 
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
@@ -101,14 +105,14 @@ def nodeOption(fname,other="") {
   weighting = info[1]
   possible=state[1]
   state_map=state[2]
-  //best_node = getBestNode(nodes,state_map)
+  best_node = getBestNode(nodes,state_map)
   if ((possible.intersect(nodes)).size()<weighting)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
     return "${other}"
   }
   else {
-    possible=possible - nodes;
+    possible=possible - best_node;
     options="--exclude="+possible.join(',')+" ${other}"
     println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
     return options
