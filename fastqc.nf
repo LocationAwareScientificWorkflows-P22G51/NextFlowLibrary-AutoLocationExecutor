@@ -1,12 +1,12 @@
 #!/usr/bin/env nextflow
 
-nextflow.enable.dsl=2
+//nextflow.enable.dsl=2
 
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
-params.data_dir = "/external/diskC/22P63/data1/*.bim"
-input_ch = Channel.fromPath("${params.data_dir}")
+//params.data_dir = "/external/diskC/22P63/data1/*.bim"
+//input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:] 
     
 // Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
@@ -157,7 +157,7 @@ process fastqc {
    """
 }
 
-Channel.fromPath(params.input) 
+//Channel.fromPath(params.input) 
 
 workflow {
     data = Channel.fromPath(params.input) 
