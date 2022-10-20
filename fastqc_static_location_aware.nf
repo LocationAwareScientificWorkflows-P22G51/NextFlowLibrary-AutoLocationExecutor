@@ -80,5 +80,5 @@ process fastqc {
 }
 
 workflow {
-    fastqc(Channel.fromPath(input_ch))
+    fastqc(input_ch)
 }
