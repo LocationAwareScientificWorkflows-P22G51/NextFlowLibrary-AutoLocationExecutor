@@ -101,8 +101,6 @@ def nodeOption(fname,other="") {
   weighting = info[1]
   possible=state[1]
   state_map=state[2]
-  println nodes
-  println state_map
   //best_node = getBestNode(nodes,state_map)
   if ((possible.intersect(nodes)).size()<weighting)
   {
