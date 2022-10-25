@@ -1,33 +1,31 @@
 #!/usr/bin/env nextflow
 
-// Set the path directory to your data files as shown in the example below
-// input_ch is the Channel that will input the data into the workflow processes.
+///////////////////////////////////////////////////////
+// PARAMETERS AND SETUP
+///////////////////////////////////////////////////////
 
-params.data_dir = "/external/diskC/22P63/shotgun/*gz"
-input_ch = Channel.fromPath("${params.data_dir}")
-node_suggestion = [:] 
-    
-// Function that determines on which nodes the input files are stored and determines the weighting coefficient based on the file size
-// The weighting coefficient is used later to determine if its viable to execute on the storage nodes or not
+params.data_dir = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz"// Set the path directory to your data files
+input_ch = Channel.fromPath("${params.data_dir}")// Input_ch is the Channel that will input the data into the workflow processes.
 
+///////////////////////////////////////////////////////
+// LOCATION AWARE SCIENTIFC WORKFLOW FUNCTIONS - SLURM
+///////////////////////////////////////////////////////
+
+//For the purpose of testing, in order to best understand and interpret execution results the SLURM queue should be printed when this job begins executing 
+def printCurrentJobQueue(){
+  cmd = "squeue -o %all"; 
+  queue_status = cmd.execute().text;
+  println queue_status;
+}
+
+// Function that determines on which nodes the input files are stored and the size of the file
 def getNodesInfo(fname) {
-
-  // file configuration
   cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
-  msg=cmd.execute().text;
+  msg = cmd.execute().text;
   def matcher = msg =~ /(<POSIX.*)/;
   def bricks = matcher[0][0].tokenize(" ")
 
-  // weighting setting
-  fsize = fname.size()
-  weighting = 1
-  cluster_speed = 1000000000000000000   // 100kbs transfer speed
-  time_limit = 1           // time limit of 1 second for data transfer
-  if (fsize > cluster_speed * time_limit )   // example where range of 100 kb is the limiter
-     weighting += 1
-  println "The file ${fname} has ${fsize} bytes, thus the node weighting is set ${weighting}" 
-
-  // data storage identification
+  // Data storage identification
   nodes = []
   for (b : bricks ) {
     if (b =~ /.*arbiter.*/) continue
@@ -35,22 +33,25 @@ def getNodesInfo(fname) {
     node = matcher[0][1]
     matcher = node  =~ /(.*?)\..*/;
     if (matcher)
-      node=matcher[0][1]
+      node = matcher[0][1]
     nodes << node
   }
   println "Data from that file is stored on the following nodes: " + nodes + "\n"
-  
-  return [nodes,weighting]
+
+  // Finding file size
+  fsize = fname.size()
+  println "The file ${fname} has ${fsize} bytes" 
+
+  return [nodes, fsize]
 }
 
-// Function that determines which nodes are currently available for processing and their respective states
-
+// Function that determines the state of the nodes identified 
 def getStatus(nodes) {
-  node_states ='sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
+  cmd = 'sinfo -p batch -O NodeHost,StateCompact'
+  node_states = cmd.execute().text.split("\n")
   state_map = [:]
   possible  = []
-  num_free  = 0
-  possible_states = ['idle','alloc','mix' ]
+  possible_states = ['idle','alloc','mix','allocated', 'allocated+']
   free_states = ['idle','mix']
   for (n : node_states) {
     line=n.split()
@@ -59,14 +60,12 @@ def getStatus(nodes) {
     state_map[the_node]=the_state
     if  (the_state in possible_states) possible << the_node
     if  ( !(the_node in nodes)) continue;
-    if  (the_state in free_states) num_free++;
   }
   println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
-  return [num_free,possible,state_map]
+  return [possible, state_map]
 }
 
 // Function to identify which of the nodes that have the data stored on them are the best suited to execute on
-
 def getBestNode(nodes,state_map) {
    idles = []
    mixes = []
@@ -119,18 +118,11 @@ def nodeOption(fname,other="") {
   }
 }
 
-// Function that is called on the subscibe observing event whenever the input channel transfers data
+///////////////////////////////////////////////////////
+// WORKFLOW PROCESSES
+///////////////////////////////////////////////////////
 
-def updateNodes(it) {
-   println "\nUpdating node suggestion for: $it"
-   node_suggestion[it.getName()]=nodeOption(it)   
-}
 
-//
-//
-//
-//
-//
 // Workflow code starts here
 // Only addition within your workflow code is that within the initial process clusterOptions needs to be set as below
 // Take note of the workflow execution, use as is for the initial process
@@ -153,6 +145,10 @@ process fastqc {
       hostname
    """
 }
+
+///////////////////////////////////////////////////////
+// WORKFLOW ENTRY POINT
+///////////////////////////////////////////////////////
 
 workflow {
    Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}.view()
