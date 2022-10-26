@@ -13,7 +13,7 @@ input_ch = Channel.fromPath("${params.data_dir}")// Input_ch is the Channel that
 
 //For the purpose of testing, in order to best understand and interpret execution results the SLURM queue should be printed when this job begins executing 
 def printCurrentClusterStatus(){
-  cmd = "squeue -o %all"
+  cmd = "squeue"
   queue_status = cmd.execute().text
   cmd = "sinfo"
   node_status = cmd.execute().text
@@ -92,7 +92,7 @@ def nodeOption(fname,other="") {
 
   if ((possible_nodes.intersect(nodes)).size()<100)
   {
-    println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
+    println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
     return "${other}"
   }
   else {
