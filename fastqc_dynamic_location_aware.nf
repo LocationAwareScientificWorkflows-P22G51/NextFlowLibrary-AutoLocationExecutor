@@ -154,8 +154,6 @@ process fastqc {
    """
       mkdir $base
       /home/tlilford/FastQC/fastqc $input_ch --outdir $base
-      echo SLURM_JOB_ID: $SLURM_JOB_ID
-      echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
       hostname
    """
 }
