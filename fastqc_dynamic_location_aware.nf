@@ -68,7 +68,7 @@ def getStatus(nodes) {
     the_node = line[0]
     the_state = line[1]
     state_map[the_node] = the_state
-    if  ((the_node in nodes) && (the_state in free_states))
+    if  ((the_state in free_states))
       possible << the_node;
       //else  if  ((the_node in nodes) && (the_state in busy_states))
       //  possible << getNodeQueueInfo(the_node, the_state)
