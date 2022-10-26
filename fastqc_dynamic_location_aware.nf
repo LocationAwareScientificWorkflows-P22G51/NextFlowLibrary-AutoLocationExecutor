@@ -49,9 +49,9 @@ def getNodesInfo(fname) {
 }
 
 def getNodeQueueInfo(the_node, the_state){
-  //cmd = "squeue -w, --nodelist=${the_node}"
-  //node_queue_info = cmd.execute().text.split("\n");
-  //println "${node_queue_info}"
+  cmd = "squeue -w, --nodelist=${the_node}"
+  node_queue_info = cmd.execute().text.split("\n");
+  println "${node_queue_info}"
   return the_node
 }
 
@@ -70,8 +70,8 @@ def getStatus(nodes) {
     state_map[the_node] = the_state
     if  ((the_node in nodes) && (the_state in free_states))
       possible << the_node;
-      else  if  ((the_node in nodes) && (the_state in busy_states))
-        possible << getNodeQueueInfo(the_node, the_state)
+      //else  if  ((the_node in nodes) && (the_state in busy_states))
+      //  possible << getNodeQueueInfo(the_node, the_state)
 
   }
 
