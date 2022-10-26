@@ -51,7 +51,7 @@ def getNodesInfo(fname) {
 def getNodeQueueInfo(the_node, the_state){
   cmd = "squeue -w, --nodelist=${the_node}"
   node_queue_info = cmd.execute().text.split("\n");
-  println node_queue_info
+  println "${node_queue_info}"
   return the_node
 }
 
