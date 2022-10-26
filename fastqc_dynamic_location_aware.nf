@@ -87,7 +87,7 @@ def getIdealNode(nodes,state_map){
   } 
   else if (busy.size() > 0) {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     for (n : busy) {
-      node_queue_info = "squeue -w, --nodelist=${n}".execute().text.split("\n");
+      node_queue_info = "squeue -w, --nodelist=n03".execute().text.split("\n");
       println "${node_queue_info}"   
     }
    return busy
