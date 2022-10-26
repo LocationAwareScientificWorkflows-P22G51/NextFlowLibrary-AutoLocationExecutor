@@ -13,7 +13,7 @@ input_ch = Channel.fromPath("${params.data_dir}")// Input_ch is the Channel that
 
 //For the purpose of testing, in order to best understand and interpret execution results the SLURM queue should be printed when this job begins executing 
 def printCurrentClusterStatus(){
-  cmd = "squeue"
+  cmd = "squeue -o %i,%.9P,%.8j,%u,%.2t,%L,%.6D %R"
   queue_status = cmd.execute().text
   cmd = "sinfo"
   node_status = cmd.execute().text
