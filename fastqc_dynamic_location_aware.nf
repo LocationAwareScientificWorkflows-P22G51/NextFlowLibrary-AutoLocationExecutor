@@ -69,7 +69,7 @@ def getClusterStatus() {
 def getIdealNode(nodes,state_map){
   free_states = ['idle','mix']
 
-  if !(state_map[nodes] in free_states){
+  if (!(state_map[nodes] in free_states)){
     cmd = "squeue -w, --nodelist=${the_node}"
     node_queue_info = cmd.execute().text.split("\n");
     println "${node_queue_info}"
