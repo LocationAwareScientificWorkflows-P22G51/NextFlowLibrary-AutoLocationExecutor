@@ -17,8 +17,8 @@ def printCurrentClusterStatus(){
   queue_status = cmd.execute().text
   cmd = "sinfo"
   node_status = cmd.execute().text
-  println queue_status + "\n"
-  println node_status + "\n"
+  println "${queue_status}" + "\n"
+  println "${node_status}" + "\n"
 }
 
 // Function that determines on which nodes the input files are stored and the size of the file
@@ -49,7 +49,7 @@ def getNodesInfo(fname) {
 }
 
 def getNodeQueueInfo(the_node, the_state){
-  cmd = "squeue -w, --nodelist=<${the_node}>"
+  cmd = "squeue -w, --nodelist=${the_node}"
   node_queue_info = cmd.execute().text.split("\n");
   println node_queue_info
   return the_node
