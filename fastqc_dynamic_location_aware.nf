@@ -68,14 +68,31 @@ def getClusterStatus() {
 
 def getIdealNode(nodes,state_map){
   free_states = ['idle','mix']
+  idles = []
+  mixes = []
+  busy = []
+  for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
+    if (state_map[n] == 'idle') idles.add(n)
+    if (state_map[n] == 'mix') mixes.add(n)
+    if (!(state_map[n] in free_states)) busy.add(n)
+  }
 
-  if (!(state_map[nodes] in free_states)){
+  if (idles.size() > 0) {
+    println "Best node/s for execution is: " + idles + ". They are idle."
+    return idles
+  } 
+  else if (mixes.size() > 0) {
+    println "Best node/s for execution is: " + mixes + ". They are mix."
+    return mixes
+  } 
+  else if (busy.size() > 0) {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
+    println "Best node/s for execution is: " + busy + ". They are allocs."
     cmd = "squeue -w, --nodelist=${the_node}"
     node_queue_info = cmd.execute().text.split("\n");
     println "${node_queue_info}"
+    return busy
   }
 
-  return the_node
 }
 
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
@@ -87,10 +104,8 @@ def nodeOption(fname,other="") {
   file_size = getNodesInfo(fname)[1]
   possible_nodes = getClusterStatus()[0]
   state_map = getClusterStatus()[1]
-
   ideal_node = getIdealNode(nodes,state_map)
-
-  if ((possible_nodes.intersect(nodes)).size()<100)
+  if ((possible_nodes.intersect(nodes)).size()<1)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
     return "${other}"
