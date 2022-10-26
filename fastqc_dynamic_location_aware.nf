@@ -141,6 +141,7 @@ process fastqc {
    """
       mkdir $base
       /home/tlilford/FastQC/fastqc $input_ch --outdir $base
+      echo File: $cluster_option
       hostname
    """
 }
