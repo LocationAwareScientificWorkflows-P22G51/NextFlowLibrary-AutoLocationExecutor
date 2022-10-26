@@ -48,63 +48,34 @@ def getNodesInfo(fname) {
   return [nodes, fsize]
 }
 
-def getNodeQueueInfo(the_node, the_state){
-  cmd = "squeue -w, --nodelist=${the_node}"
-  node_queue_info = cmd.execute().text.split("\n");
-  println "${node_queue_info}"
-  return the_node
-}
-
-// Function that determines the state of the nodes identified 
-def getStatus(nodes) {
-  cmd = 'sinfo -p batch -O NodeHost,StateCompact'
-  node_states = cmd.execute().text.split("\n")
+// Function that determines which nodes are available for execution
+def getClusterStatus() {
+  node_states = 'sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
   state_map = [:]
   possible  = []
-  busy_states = ['alloc','allocated','allocated+','completing']
-  free_states = ['idle','mix']
+  possible_states = ['idle','mix','alloc','allocated','allocated+','completing']
   for (n : node_states) {
     line = n.split()
     the_node = line[0]
     the_state = line[1]
     state_map[the_node] = the_state
-    if  ((the_state in free_states))
-      possible << the_node;
-      //else  if  ((the_node in nodes) && (the_state in busy_states))
-      //  possible << getNodeQueueInfo(the_node, the_state)
-
+    if  (the_state in possible_states) possible << the_node
   }
 
   println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
   return [possible, state_map]
 }
 
-// Function to identify which of the nodes that have the data stored on them are the best suited to execute on
-def getBestNode(nodes,state_map) {
-   idles = []
-   mixes = []
-   allocs = []
-   empty= []
-   for (n : nodes) {
-      if (state_map[n] == 'idle') idles.add(n)
-      if (state_map[n] == 'mix') mixes.add(n)
-      if (state_map[n] == 'alloc') allocs.add(n)
-   }
-   if (idles.size() > 0) {
-      println "Best node/s for execution is: " + idles + ". They are idle."
-      return idles
-   } 
-   else if (mixes.size() > 0) {
-      println "Best node/s for execution is: " + mixes ". They are mix."
-      return mixes
-   } 
-   else if (allocs.size() > 0) {
-      println "Best node/s for execution is: " + allocs ". They are allocs."
-      return allocs
-   }
-   else {
-      return empty
-   }
+def getIdealNode(nodes,state_map){
+  free_states = ['idle','mix']
+
+  if !(state_map[nodes] in free_states){
+    cmd = "squeue -w, --nodelist=${the_node}"
+    node_queue_info = cmd.execute().text.split("\n");
+    println "${node_queue_info}"
+  }
+
+  return the_node
 }
 
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
@@ -112,20 +83,20 @@ def getBestNode(nodes,state_map) {
 // This function returns the nodes to be excluded during execution set within the clusterOptions in the initial process.
 
 def nodeOption(fname,other="") {
-  info = getNodesInfo(fname)
-  state = getStatus(nodes)
-  nodes = info[0]
-  weighting = info[1]
-  possible=state[1]
-  state_map=state[2]
-  best_node = getBestNode(nodes,state_map)
-  if ((possible.intersect(nodes)).size()<weighting)
+  node_location = getNodesInfo(fname)[0]
+  file_size = getNodesInfo(fname)[1]
+  possible_nodes = getClusterStatus()[0]
+  state_map = getClusterStatus()[1]
+
+  ideal_node = getIdealNode(nodes,state_map)
+
+  if ((possible_nodes.intersect(nodes)).size()<100)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than " + weighting + "\n"
     return "${other}"
   }
   else {
-    possible=possible - best_node;
+    possible = possible_nodes - ideal_node;
     options="--exclude="+possible.join(',')+" ${other}"
     println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
     return options
