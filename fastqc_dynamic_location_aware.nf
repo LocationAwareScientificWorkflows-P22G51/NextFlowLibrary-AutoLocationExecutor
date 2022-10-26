@@ -12,26 +12,29 @@ input_ch = Channel.fromPath("${params.data_dir}")// Input_ch is the Channel that
 ///////////////////////////////////////////////////////
 
 //For the purpose of testing, in order to best understand and interpret execution results the SLURM queue should be printed when this job begins executing 
-def printCurrentJobQueue(){
-  cmd = "squeue -o %all"; 
-  queue_status = cmd.execute().text;
-  println queue_status;
+def printCurrentClusterStatus(){
+  cmd = "squeue -o %all"
+  queue_status = cmd.execute().text
+  cmd = "sinfo"
+  node_status = cmd.execute().text
+  println queue_status + "\n"
+  println node_status + "\n"
 }
 
 // Function that determines on which nodes the input files are stored and the size of the file
 def getNodesInfo(fname) {
-  cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}";
-  msg = cmd.execute().text;
-  def matcher = msg =~ /(<POSIX.*)/;
+  cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}"
+  msg = cmd.execute().text
+  def matcher = msg =~ /(<POSIX.*)/
   def bricks = matcher[0][0].tokenize(" ")
 
   // Data storage identification
   nodes = []
   for (b : bricks ) {
     if (b =~ /.*arbiter.*/) continue
-    matcher  = b =~ /.*:(.*):.*/; 
+    matcher  = b =~ /.*:(.*):.*/ 
     node = matcher[0][1]
-    matcher = node  =~ /(.*?)\..*/;
+    matcher = node  =~ /(.*?)\..*/
     if (matcher)
       node = matcher[0][1]
     nodes << node
@@ -45,22 +48,33 @@ def getNodesInfo(fname) {
   return [nodes, fsize]
 }
 
+def getNodeQueueInfo(the_node, the_state){
+  cmd = "squeue -w, --nodelist=<${the_node}>"
+  node_queue_info = cmd.execute().text.split("\n");
+  println node_queue_info
+  return the_node
+}
+
 // Function that determines the state of the nodes identified 
 def getStatus(nodes) {
   cmd = 'sinfo -p batch -O NodeHost,StateCompact'
   node_states = cmd.execute().text.split("\n")
   state_map = [:]
   possible  = []
-  possible_states = ['idle','alloc','mix','allocated', 'allocated+']
+  busy_states = ['alloc','allocated','allocated+','completing']
   free_states = ['idle','mix']
   for (n : node_states) {
-    line=n.split()
-    the_node=line[0]
-    the_state=line[1]
-    state_map[the_node]=the_state
-    if  (the_state in possible_states) possible << the_node
-    if  ( !(the_node in nodes)) continue;
+    line = n.split()
+    the_node = line[0]
+    the_state = line[1]
+    state_map[the_node] = the_state
+    if  ((the_node in nodes) && (the_state in free_states))
+      possible << the_node;
+      else  if  ((the_node in nodes) && (the_state in busy_states))
+        possible << getNodeQueueInfo(the_node, the_state)
+
   }
+
   println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
   return [possible, state_map]
 }
