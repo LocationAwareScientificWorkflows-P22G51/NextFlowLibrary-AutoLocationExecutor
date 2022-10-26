@@ -93,7 +93,7 @@ def getIdealNode(nodes,state_map){
       node_queue_info = "squeue -w, --nodelist=n03".execute().text.split("\n");
       println "${node_queue_info}"   
     }
-   return busy
+  }
 
 }
 
