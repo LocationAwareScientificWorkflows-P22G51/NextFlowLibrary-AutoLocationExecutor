@@ -86,12 +86,11 @@ def getIdealNode(nodes,state_map){
     return mixes
   } 
   else if (busy.size() > 0) {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
-    println "Best node/s for execution is: " + busy + ". They are allocs."
-    cmd = "squeue -w, --nodelist=${the_node}"
-    node_queue_info = cmd.execute().text.split("\n");
-    println "${node_queue_info}"
-    return busy
-  }
+    for (n : busy) {
+      node_queue_info = "squeue -w, --nodelist=${n}".execute().text.split("\n");
+      println "${node_queue_info}"   
+    }
+   return busy
 
 }
 
