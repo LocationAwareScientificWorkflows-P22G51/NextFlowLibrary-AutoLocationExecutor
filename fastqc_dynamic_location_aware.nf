@@ -71,9 +71,9 @@ def getIdealNode(nodes,state_map, file_size){
   idles = []
   mixes = []
   busy = []
-  node_queue_info = "squeue -w, --nodelist=n03 -O, --Format=StateCompact".execute().text
+  node_queue_info = "squeue -w, --nodelist=n03 -O, --Format=StateCompact".execute().text.split("\n");
   //line = node_queue_info.split()
-  println "${node_queue_info}"   
+  //println "${node_queue_info}"   
 
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
