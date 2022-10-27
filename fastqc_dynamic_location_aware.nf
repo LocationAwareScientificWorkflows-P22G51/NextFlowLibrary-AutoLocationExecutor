@@ -71,7 +71,7 @@ def getIdealNode(nodes,state_map, file_size){
   idles = []
   mixes = []
   busy = []
-  node_queue_info = "squeue -w, --nodelist=n03".execute().text.split("\n");
+  node_queue_info = "squeue -w, --nodelist=n03".execute();
   line = node_queue_info.split()
   println "${line[5]}"   
 
