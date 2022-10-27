@@ -73,7 +73,7 @@ def getIdealNode(nodes,state_map, file_size){
   busy = []
   node_queue_info = "squeue -w, --nodelist=n03".execute().text.split("\n");
   line = node_queue_info.split()
-  println "${line}"   
+  println "${line[5]}"   
 
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
@@ -91,8 +91,9 @@ def getIdealNode(nodes,state_map, file_size){
   } 
   else if (busy.size() > 0) {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     for (n : busy) {
-      node_queue_info = "squeue -w, --nodelist=${n}".execute().text.split("\n");
-      //println "${node_queue_info[4]}"   
+      //node_queue_info = "squeue -w, --nodelist=${n}".execute().text.split("\n");
+      //println "${node_queue_info[4]}"  
+      return busy 
     }
   }
 
