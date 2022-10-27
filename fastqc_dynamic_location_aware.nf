@@ -13,7 +13,7 @@ input_ch = Channel.fromPath("${params.data_dir}")// Input_ch is the Channel that
 
 //For the purpose of testing, in order to best understand and interpret execution results the SLURM queue should be printed when this job begins executing 
 def printCurrentClusterStatus(){
-  cmd = "squeue -o %i,%.9P,%.8j,%u,%.2t,%L,%.6D %R"
+  cmd = "squeue"
   queue_status = cmd.execute().text
   cmd = "sinfo"
   node_status = cmd.execute().text
@@ -66,7 +66,7 @@ def getClusterStatus() {
   return [possible, state_map]
 }
 
-def getIdealNode(nodes,state_map){
+def getIdealNode(nodes,state_map, file_size){
   free_states = ['idle','mix']
   idles = []
   mixes = []
@@ -90,8 +90,8 @@ def getIdealNode(nodes,state_map){
   } 
   else if (busy.size() > 0) {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     for (n : busy) {
-      node_queue_info = "squeue -w, --nodelist=n03".execute().text.split("\n");
-      println "${node_queue_info}"   
+      node_queue_info = "squeue -w, --nodelist=${n}".execute().text.split("\n");
+      println "${node_queue_info[4]}"   
     }
   }
 
@@ -106,7 +106,7 @@ def nodeOption(fname,other="") {
   file_size = getNodesInfo(fname)[1]
   possible_nodes = getClusterStatus()[0]
   state_map = getClusterStatus()[1]
-  ideal_node = getIdealNode(nodes,state_map)
+  ideal_node = getIdealNode(nodes,state_map, file_size)
   if ((possible_nodes.intersect(nodes)).size()<1)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
