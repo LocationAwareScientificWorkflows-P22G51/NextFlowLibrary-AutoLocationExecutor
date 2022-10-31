@@ -190,7 +190,7 @@ printCurrentClusterStatus()
 // Only addition within your workflow code is that of clusterOptions which needs to be set as below
 process fastqc {
    echo true
-   clusterOptions {nodeOption(cluster_option)}
+   clusterOptions {cluster_option}
    input:
       val cluster_option
       path input_ch
@@ -206,11 +206,25 @@ process fastqc {
    """
 }
 
+
+process getclusteroptions {
+  input:
+   cluster_option
+   path input_ch
+  output:
+   val cluster_option_str, emit: cluster_ch
+   path file_ch, emit: path_ch
+  script:
+    cluster_option_str = nodeOption(cluster_option)
+    file_ch = input_ch
+}
+
+
 ///////////////////////////////////////////////////////
 // WORKFLOW ENTRY POINT
 ///////////////////////////////////////////////////////
 
 workflow {
-   Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}.view()
-    fastqc(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
+  getclusteroptions(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
+  fastqc(getclusteroptions.out.cluster_ch, getclusteroptions.out.path_ch)
 }
