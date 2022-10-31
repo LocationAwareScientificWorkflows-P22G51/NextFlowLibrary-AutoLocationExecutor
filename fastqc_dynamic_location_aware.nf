@@ -66,29 +66,37 @@ def getClusterStatus() {
   return [possible, state_map]
 }
 
-def getIdealNode(nodes,state_map, file_size){
+def getIdealNode(nodes,state_map, file_size, possible_nodes){
   free_states = ['idle','mix']
   idles = []
   mixes = []
   busy = []
-  node_queue_info = "squeue -w, --nodelist=n04 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')
+  if (file_size > 10000000000){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
+    node_queue_info = "squeue -w, --nodelist=n04 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
     for (jobs : node_queue_info) {
       line = jobs.split()
       counter = 0
       println "There are ${line.size()-1} Jobs allocated to the node" 
       if (line.size()-1 < 5){
-        for(job_details : line){
-          if (counter > 0){
+        for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
+          if (counter > 0){//first line skipped as is variable headers
             line = job_details.split() 
             str = line.toString()  
             single_val = str.split(',')
             println "${single_val[0]}"
+
+            
+            node_info = "sinfo -n, --node=n04 -o, --format=%c".execute().text.split('/n').split().toString()
+            println "${node_info}"
           }
           counter = counter + 1
         }
       } 
     }
     counter = 0
+  } else {//use another node
+    return possible_nodes
+  }
 
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
@@ -106,8 +114,6 @@ def getIdealNode(nodes,state_map, file_size){
   } 
   else if (busy.size() > 0) {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     for (n : busy) {
-      //node_queue_info = "squeue -w, --nodelist=${n}".execute().text.split("\n");
-      //println "${node_queue_info[4]}"  
       return busy 
     }
   }
@@ -123,7 +129,7 @@ def nodeOption(fname,other="") {
   file_size = getNodesInfo(fname)[1]
   possible_nodes = getClusterStatus()[0]
   state_map = getClusterStatus()[1]
-  ideal_node = getIdealNode(nodes,state_map, file_size)
+  ideal_node = getIdealNode(nodes,state_map, file_size, possible_nodes)
   if ((possible_nodes.intersect(nodes)).size()<1)
   {
     println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
