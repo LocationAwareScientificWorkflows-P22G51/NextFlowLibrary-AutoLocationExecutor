@@ -80,7 +80,7 @@ def getIdealNode(nodes,state_map, file_size){
       valuer = str.split()   
       println "${valuer}"
       for(str2 : valuer){
-        finals = str2.split()
+        finals = str2.split(',')
         println "${finals}"
       }
     }
