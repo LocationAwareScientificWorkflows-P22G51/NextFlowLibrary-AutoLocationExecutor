@@ -13,12 +13,16 @@ input_ch = Channel.fromPath("${params.data_dir}")// Input_ch is the Channel that
 
 //For the purpose of testing, in order to best understand and interpret execution results the SLURM queue should be printed when this job begins executing 
 def printCurrentClusterStatus(){
+  try {
   cmd = "squeue"
   queue_status = cmd.execute().text
   cmd = "sinfo"
   node_status = cmd.execute().text
   println "${queue_status}" + "\n"
   println "${node_status}" + "\n"
+  } catch {
+    println "Error: cluster squeue and/or sinfo unavailble"
+  }
 }
 
 // Function that determines on which nodes the input files are stored and the size of the file
@@ -71,12 +75,17 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
   idles = []
   mixes = []
   busy = []
-  busy_checks = [false,false,false]
+  busy_checks = [:]
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
     if (state_map[n] == 'mix') mixes.add(n)
     if (!(state_map[n] in free_states)) busy.add(n)
   }
+  if (idles.size() > 0) {
+//////////////////////////
+try {
+for (n : idles) {
+busy_checks[n] = true
 if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
     cpu_count = "sinfo -n, --node=n04 -o, --format=%c".execute().text.split('/n').toString().split()
     println "There are ${cpu_count[1]} cpu's on node " 
@@ -95,10 +104,8 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
             single_val = str.split(',')
             println "${single_val}"
             if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10)) { 
-              busy_checks[counter] = false
-            } else {
-              busy_checks[counter] = true
-            }
+              busy_checks[n] = false
+            } 
           }
           counter = counter + 1
         }
@@ -110,15 +117,16 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
     return possible_nodes
   }
 
-  if ((busy_checks[1] == false) && (busy_checks[2] == false)){
+  if ((busy_checks[idles[0]] == false) && (busy_checks[idles[1]] == false)){
     return possible_nodes
   } else {
     return idles
   }
-
-
-
-  if (idles.size() > 0) {
+}
+} catch() {
+  return possible_nodes
+}
+///////////////////////
     println "Best node/s for execution is: " + idles + ". They are idle."
     return idles
   } 
