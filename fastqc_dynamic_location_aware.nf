@@ -103,10 +103,13 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
             str = str.replace("]", "")
             single_val = str.split(',')
             println "${single_val}"
-            if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10)) { 
+            single_val[3].replaceAll("G", "000")
+            if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000)) { 
               println "Job is large"
               is_busy = true
-            } 
+            } else {
+              println "Job is small"  
+            }
           }
           counter = counter + 1
         }
@@ -128,7 +131,7 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
   return possible_nodes
 }
 println "Node is too busy, utilising another node"
-return possible_nodes
+return (possible_nodes - busy)
 
 ///////////////////////
     //println "Best node/s for execution is: " + idles + ". They are idle."
