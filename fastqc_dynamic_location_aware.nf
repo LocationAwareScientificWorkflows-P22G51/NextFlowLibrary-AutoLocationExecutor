@@ -119,9 +119,10 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
   }
 
   if ((busy_checks[idles[0]] == false) && (busy_checks[idles[1]] == false)){
-    println "node is too busy, utilising another node"
+    println "Node is too busy, utilising another node"
     return possible_nodes
   } else {
+    println "Using node with data"
     return idles
   }
 }
@@ -130,8 +131,8 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
   return possible_nodes
 }
 ///////////////////////
-    println "Best node/s for execution is: " + idles + ". They are idle."
-    return idles
+    //println "Best node/s for execution is: " + idles + ". They are idle."
+    //return idles
   } 
   else if (mixes.size() > 0) {
     println "Best node/s for execution is: " + mixes + ". They are mix."
