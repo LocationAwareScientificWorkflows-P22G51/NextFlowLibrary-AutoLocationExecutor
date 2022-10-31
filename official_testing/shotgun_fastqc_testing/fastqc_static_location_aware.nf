@@ -3,6 +3,19 @@
 // Set the path directory to your data files as shown in the example below
 // input_ch is the Channel that will input the data into the workflow processes.
 
+def printCurrentClusterStatus(){
+  try {
+    cmd = "squeue"
+    queue_status = cmd.execute().text
+    cmd = "sinfo"
+    node_status = cmd.execute().text
+    println "${queue_status}" + "\n"
+    println "${node_status}" + "\n"
+  }catch(Exception ex){
+    println "Error: cluster squeue and/or sinfo unavailble"
+  }
+}
+
 key_fnames = file("/external/diskC/22P63/shotgun/*gz")
 node_suggestion = [:] 
 
@@ -58,6 +71,7 @@ def nodeOption(fname,aggression=1,other="") {
 }
 
 //node_suggestion[key_fnames.getName()]=nodeOption(key_fnames)
+printCurrentClusterStatus()
 key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 
