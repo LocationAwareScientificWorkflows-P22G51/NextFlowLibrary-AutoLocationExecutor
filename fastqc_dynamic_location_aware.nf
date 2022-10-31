@@ -83,7 +83,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
   }
   if (idles.size() > 0) {
 //////////////////////////
-//try {
+try {
 for (n : idles) {
 busy_checks[n] = true
 if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
@@ -104,6 +104,7 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
             single_val = str.split(',')
             println "${single_val}"
             if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10)) { 
+              println "Job is large"
               busy_checks[n] = false
             } 
           }
@@ -118,14 +119,16 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
   }
 
   if ((busy_checks[idles[0]] == false) && (busy_checks[idles[1]] == false)){
+    println "node is too busy, utilising another node"
     return possible_nodes
   } else {
     return idles
   }
 }
-//} catch() {
-  //return possible_nodes
-//}
+} catch(Exception ex) {
+  println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
+  return possible_nodes
+}
 ///////////////////////
     println "Best node/s for execution is: " + idles + ". They are idle."
     return idles
