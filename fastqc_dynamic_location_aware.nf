@@ -79,8 +79,9 @@ def getIdealNode(nodes,state_map, file_size){
     for(str : line){
       valuer = str.split()   
       println "${valuer[0]}"
-      //finals = valuer.split(',')
-      //println "${finals[0]}"
+      finals = valuer.split(',')
+      for(val : finals )
+      println "${val}"
       
     }
    }
