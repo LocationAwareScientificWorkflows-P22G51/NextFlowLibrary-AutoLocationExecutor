@@ -87,9 +87,9 @@ try {
 for (n : idles) {
 is_busy = false
 if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
-    cpu_count = "sinfo -n, --node=n04 -o, --format=%c".execute().text.split('/n').toString().split()
+    cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
     println "There are ${cpu_count[1]} cpu's on node " 
-    node_queue_info = "squeue -w, --nodelist=n04 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
+    node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
     for (jobs : node_queue_info) {
       line = jobs.split()
       counter = 0
