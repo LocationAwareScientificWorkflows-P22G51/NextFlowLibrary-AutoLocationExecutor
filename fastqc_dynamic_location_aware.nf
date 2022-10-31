@@ -101,8 +101,9 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
           counter = counter + 1
         }
       } 
-    
+    }
     counter = 0
+    
   } else {//use another node
     return possible_nodes
   }
