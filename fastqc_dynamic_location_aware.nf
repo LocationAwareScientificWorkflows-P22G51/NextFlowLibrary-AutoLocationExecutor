@@ -70,13 +70,13 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
   free_states = ['idle','mix']
   idles = []
   mixes = []
-  busy = [false,false,false]
+  busy = []
+  busy_checks = [false,false,false]
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
     if (state_map[n] == 'mix') mixes.add(n)
     if (!(state_map[n] in free_states)) busy.add(n)
   }
-busy_checks = []
 if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
     cpu_count = "sinfo -n, --node=n04 -o, --format=%c".execute().text.split('/n').toString().split()
     println "There are ${cpu_count[1]} cpu's on node " 
