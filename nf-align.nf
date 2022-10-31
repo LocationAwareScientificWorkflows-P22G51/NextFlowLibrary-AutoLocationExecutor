@@ -2,7 +2,7 @@
 nextflow.enable.dsl=2
 
 // ===== PARAMETERS
-params.outdir        = "/home/rjonker"
+params.outdir        = "/home/rjonker/nf-align"
 
 // ===== assign CHANNELS
 outdir               = file(params.outdir, type: 'dir')
