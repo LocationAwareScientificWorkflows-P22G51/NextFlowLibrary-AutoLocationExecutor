@@ -105,7 +105,7 @@ workflow PREP_DATA {
     take:
         images
     main:
-        downloadImages(images)
+        //downloadImages(images)
         downloadDdata()
 }
 
