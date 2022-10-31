@@ -19,6 +19,7 @@ process downloadImages {
     each image
 
     """
+    mkdir /home/rjonker/nf-align-cont/
     apptainer pull --force --dir /home/rjonker/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
     """
 }
