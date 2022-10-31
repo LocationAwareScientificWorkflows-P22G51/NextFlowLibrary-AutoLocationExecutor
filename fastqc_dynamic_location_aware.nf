@@ -20,10 +20,9 @@ def printCurrentClusterStatus(){
   node_status = cmd.execute().text
   println "${queue_status}" + "\n"
   println "${node_status}" + "\n"
-  }catch(ExceptionName e1){
+  }catch(exception ex){
     println "Error: cluster squeue and/or sinfo unavailble"
   }
-}
 
 // Function that determines on which nodes the input files are stored and the size of the file
 def getNodesInfo(fname) {
