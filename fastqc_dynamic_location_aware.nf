@@ -75,6 +75,7 @@ def getIdealNode(nodes,state_map, file_size){
    for (s : node_queue_info) {
     line = s.split()
     println "${line[1]}" 
+    println "${line.size()}" 
    }
 
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
