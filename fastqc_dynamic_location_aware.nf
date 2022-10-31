@@ -94,7 +94,7 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
             str = str.replace("]", "")
             single_val = str.split(',')
             println "${single_val}"
-            if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replace("G", "").toInteger() > 10)) { 
+            if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]".toInteger() > 10)) { 
               busy_checks[counter] = true
             } else {
               busy_checks[counter] = false
