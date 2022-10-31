@@ -83,7 +83,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
   }
   if (idles.size() > 0) {
 //////////////////////////
-try {
+//try {
 for (n : idles) {
 busy_checks[n] = true
 if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
@@ -123,9 +123,9 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
     return idles
   }
 }
-} catch() {
-  return possible_nodes
-}
+//} catch() {
+  //return possible_nodes
+//}
 ///////////////////////
     println "Best node/s for execution is: " + idles + ". They are idle."
     return idles
