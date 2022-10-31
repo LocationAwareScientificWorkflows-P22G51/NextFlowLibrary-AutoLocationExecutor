@@ -44,11 +44,11 @@ def getNodesInfo(fname) {
         node = matcher[0][1]
       nodes << node
     }
-    println "Data from that file is stored on the following nodes: " + nodes + "\n"
+   // println "Data from that file is stored on the following nodes: " + nodes + "\n"
 
     // Finding file size
     fsize = fname.size()
-    println "The file ${fname} has ${fsize} bytes" 
+    //println "The file ${fname} has ${fsize} bytes" 
 
     return [nodes, fsize]
   }catch(Exception ex){
@@ -71,7 +71,7 @@ def getClusterStatus() {
       if  (the_state in possible_states) possible << the_node
     }
 
-    println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
+    //println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
     return [possible, state_map]
   }catch(Exception ex){
     println "Error: cant determine possible node for execution"
@@ -90,11 +90,11 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     if (!(state_map[n] in free_states)) busy.add(n)
   }
   if (idles.size() > 0) {
-    println "Best node/s for execution is: " + idles + ". They are idle."
+    //println "Best node/s for execution is: " + idles + ". They are idle."
     return idles
   } 
   else if (mixes.size() > 0) {
-    println "Best node/s for execution is: " + mixes + ". They are mix."
+    //println "Best node/s for execution is: " + mixes + ". They are mix."
     return mixes
   } 
   else {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
@@ -103,12 +103,12 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
         is_busy = false
         if (file_size > 50000000000){//if the file is less than 5Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
-          println "There are ${cpu_count[1]} cpu's on node $n" 
+          //println "There are ${cpu_count[1]} cpu's on node $n" 
           node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
           for (jobs : node_queue_info) {
             line = jobs.split()
             counter = 0
-            println "There are ${line.size()-1} Jobs allocated to the node" 
+            //println "There are ${line.size()-1} Jobs allocated to the node" 
             if (line.size()-1 < 3){//if there are 3 jobs queued use another node
               for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
                 if (counter > 0){//first line skipped as is variable headers
@@ -121,10 +121,10 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   single_val[3].replaceAll("G", "000")
                   if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000)) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
-                    println "Job is large"
+                    //println "Job is large"
                     is_busy = true
                   } else {
-                    println "Job is small"  
+                    //println "Job is small"  
                   }
                 }
                 counter = counter + 1
@@ -137,7 +137,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
          return (possible_nodes - busy)
         }
       if (is_busy == false){
-        println "WAITING to use node with data" 
+        //println "WAITING to use node with data" 
         return n
       } 
       }
@@ -145,7 +145,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
       return (possible_nodes - busy)
     }
-    println "Node is too busy, utilising another node"
+    //println "Node is too busy, utilising another node"
     return (possible_nodes - busy)
   }
 }
@@ -165,13 +165,13 @@ def nodeOption(fname,other="") {
     ideal_node = getIdealNode(nodes,state_map, file_size, possible_nodes)
     if ((possible_nodes.intersect(nodes)).size()<1)
     {
-      println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
+      //println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
       return "${other}"
     }
     else {
       possible = possible_nodes - ideal_node;
       options="--exclude="+possible.join(',')+" ${other}"
-      println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
+      //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
     }
   }catch(Exception ex){
