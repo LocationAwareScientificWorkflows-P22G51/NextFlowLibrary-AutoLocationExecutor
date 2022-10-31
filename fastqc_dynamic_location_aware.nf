@@ -23,6 +23,7 @@ def printCurrentClusterStatus(){
   }catch(exception ex){
     println "Error: cluster squeue and/or sinfo unavailble"
   }
+}
 
 // Function that determines on which nodes the input files are stored and the size of the file
 def getNodesInfo(fname) {
