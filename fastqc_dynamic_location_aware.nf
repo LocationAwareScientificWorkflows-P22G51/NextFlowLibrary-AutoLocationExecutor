@@ -88,13 +88,13 @@ for (n : idles) {
 is_busy = false
 if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
     cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
-    println "There are ${cpu_count[1]} cpu's on node " 
+    println "There are ${cpu_count[1]} cpu's on node $n" 
     node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
     for (jobs : node_queue_info) {
       line = jobs.split()
       counter = 0
       println "There are ${line.size()-1} Jobs allocated to the node" 
-      if (line.size()-1 < 5){
+      if (line.size()-1 < 3){
         for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
           if (counter > 0){//first line skipped as is variable headers
             line = job_details.split() 
@@ -113,12 +113,14 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
           }
           counter = counter + 1
         }
+      } else {
+        is_busy = true
       } 
     }
     counter = 0
     
   } else {//use another node
-    return possible_nodes
+    return (possible_nodes - idles)
   }
 
   if (is_busy == false){
@@ -128,7 +130,7 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
 }
 } catch(Exception ex) {
   println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
-  return possible_nodes
+  return (possible_nodes - idles)
 }
 println "Node is too busy, utilising another node"
 return (possible_nodes - idles)
@@ -178,11 +180,8 @@ printCurrentClusterStatus()
 // WORKFLOW PROCESSES
 ///////////////////////////////////////////////////////
 
-
 // Workflow code starts here
-// Only addition within your workflow code is that within the initial process clusterOptions needs to be set as below
-// Take note of the workflow execution, use as is for the initial process
-
+// Only addition within your workflow code is that of clusterOptions which needs to be set as below
 process fastqc {
    echo true
    clusterOptions {nodeOption(cluster_option)}
