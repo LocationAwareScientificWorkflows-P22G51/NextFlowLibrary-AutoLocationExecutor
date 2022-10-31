@@ -12,16 +12,16 @@ outdir.mkdir()
 
 // ===== START PIPELINE
 
-process downloadImages {
-    tag { "download_images" }
+// process downloadImages {
+//     tag { "download_images" }
     
-    input:
-    each image
+//     input:
+//     each image
 
-    """
-    singularity pull --force --dir \$HOME/.singularity/cache/ docker://phelelani/nf-rnaseqcount:${image} --disable-cache 
-    """
-}
+//     """
+//     singularity pull --force --dir \$HOME/.singularity/cache/ docker://phelelani/nf-rnaseqcount:${image}
+//     """
+// }
 
 process downloadDdata {
     tag { "dawnload_data" }
