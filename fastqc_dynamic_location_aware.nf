@@ -76,7 +76,7 @@ def getIdealNode(nodes,state_map, file_size){
       line = jobs.split()
       counter = 0
       println "There are ${line.size()-1} Jobs allocated to the node" 
-      if (line.size()-1 < 3){
+      if (line.size()-1 < 5){
         for(job_details : line){
           if (counter > 0){
             line = job_details.split() 
@@ -89,7 +89,7 @@ def getIdealNode(nodes,state_map, file_size){
       } 
     }
     counter = 0
-    
+
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
     if (state_map[n] == 'mix') mixes.add(n)
