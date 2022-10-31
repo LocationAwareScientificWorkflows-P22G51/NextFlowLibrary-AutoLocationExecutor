@@ -2,7 +2,7 @@
 nextflow.enable.dsl=2
 
 // ===== PARAMETERS
-params.outdir        = "/home/phelelani/projects/slurm_test"
+params.outdir        = "/home/rjonker/nf-align"
 
 // ===== assign CHANNELS
 outdir               = file(params.outdir, type: 'dir')
@@ -72,7 +72,7 @@ process doQC {
     tuple val(sample), path("${sample}*.html"), path("${sample}*.zip"), emit: qc_out
     
     """
-    fastqc ${reads.findAll().join(' ') } --threads ${task.cpus} --noextract
+    /home/rjonker/FastQC/fastqc ${reads.findAll().join(' ') } --threads ${task.cpus} --noextract
     """
 }
 
