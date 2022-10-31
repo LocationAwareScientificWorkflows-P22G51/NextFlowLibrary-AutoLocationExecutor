@@ -82,6 +82,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
     println "Best node/s for execution is: " + idles + ". They are idle."
       if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
     cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
+    println "There are ${cpu_count} cpu's on node ${n}" 
     node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
     for (jobs : node_queue_info) {
       line = jobs.split()
@@ -93,7 +94,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
             line = job_details.split() 
             str = line.toString()  
             single_val = str.split(',')
-            println "${single_val[0]}"
+            println "here"
             if ((single_val[0] > cpu_count.toInteger()/2) || (single_val[3] > 1000)) { 
               return possible_nodes //rather processs on another node and let the Slurm scheduler decide
             } else {
