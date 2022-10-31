@@ -20,7 +20,7 @@ def printCurrentClusterStatus(){
   node_status = cmd.execute().text
   println "${queue_status}" + "\n"
   println "${node_status}" + "\n"
-  } catch() {
+  }catch(ExceptionName e1){
     println "Error: cluster squeue and/or sinfo unavailble"
   }
 }
