@@ -2,7 +2,7 @@
 nextflow.enable.dsl=2
 
 // ===== PARAMETERS
-params.outdir        = "/home/phelelani/projects/slurm_test"
+params.outdir        = "/home/rjonker"
 
 // ===== assign CHANNELS
 outdir               = file(params.outdir, type: 'dir')
