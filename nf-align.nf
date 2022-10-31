@@ -19,7 +19,7 @@ process downloadImages {
     each image
 
     """
-    singularity pull --force --dir /home/rjonker/.singularity/cache/ docker://phelelani/nf-rnaseqcount:${image}
+    apptainer pull --force --dir /home/rjonker/.singularity/cache/ docker://phelelani/nf-rnaseqcount:${image}
     """
 }
 
@@ -123,8 +123,8 @@ workflow RUN_ALIGNMENT {
 }
 
 // WORKFLOW DATA
-// images = ["star", "bowtie2", "fastqc"]
-images = ["star"]
+images = ["star", "bowtie2", "fastqc"]
+// images = ["star"]
 genome = file(params.outdir + '/data/genome.fa', type: 'file')
 genes  = file(params.outdir + '/data/genes.gtf', type: 'file')
 reads  = Channel.fromFilePairs(params.outdir + "/data/*{R1,R2}.fastq.gz", size:2)
