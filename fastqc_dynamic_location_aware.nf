@@ -113,7 +113,7 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
   if ((busy_checks[1] == false) && (busy_checks[2] == false)){
     return possible_nodes
   } else {
-    return idle
+    return idles
   }
 
 
