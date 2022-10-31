@@ -87,7 +87,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
 
             
             node_info = "sinfo -n, --node=n04 -o, --format=%c".execute().text.split('/n').toString()
-            println "${node_info[0]}"
+            println "${node_info}"
           }
           counter = counter + 1
         }
