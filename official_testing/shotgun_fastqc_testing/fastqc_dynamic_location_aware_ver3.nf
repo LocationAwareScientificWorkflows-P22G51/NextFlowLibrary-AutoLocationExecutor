@@ -155,8 +155,8 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
 // This function returns the nodes to be excluded during execution set within the clusterOptions in the initial process.
 
 def nodeOption(fname,other="") {
-  location = "hostname".execute().text
-  println  "LOCATION IS FOUND using $location"
+  //location = "hostname".execute().text
+  //println  "LOCATION IS FOUND using $location"
   try {
     node_location = getNodesInfo(fname)[0]
     file_size = getNodesInfo(fname)[1]
