@@ -77,13 +77,10 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
     if (!(state_map[n] in free_states)) busy.add(n)
   }
 
-  if (idles.size() > 0) {
-    for (n:idles){
-    println "Best node/s for execution is: " + idles + ". They are idle."
-      if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
-    cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
+if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
+    cpu_count = "sinfo -n, --node=n03 -o, --format=%c".execute().text.split('/n').toString().split()
     println "There are ${cpu_count} cpu's on node ${n}" 
-    node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
+    node_queue_info = "squeue -w, --nodelist=n03 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
     for (jobs : node_queue_info) {
       line = jobs.split()
       counter = 0
@@ -109,8 +106,12 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
   } else {//use another node
     return possible_nodes
   }
+
+
+
+  if (idles.size() > 0) {
+    println "Best node/s for execution is: " + idles + ". They are idle."
     return idles
-    }
   } 
   else if (mixes.size() > 0) {
     println "Best node/s for execution is: " + mixes + ". They are mix."
