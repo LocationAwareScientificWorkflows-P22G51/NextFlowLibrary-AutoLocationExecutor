@@ -14,12 +14,12 @@ input_ch = Channel.fromPath("${params.data_dir}")// Input_ch is the Channel that
 //For the purpose of testing, in order to best understand and interpret execution results the SLURM queue should be printed when this job begins executing 
 def printCurrentClusterStatus(){
   try {
-  cmd = "squeue"
-  queue_status = cmd.execute().text
-  cmd = "sinfo"
-  node_status = cmd.execute().text
-  println "${queue_status}" + "\n"
-  println "${node_status}" + "\n"
+    cmd = "squeue"
+    queue_status = cmd.execute().text
+    cmd = "sinfo"
+    node_status = cmd.execute().text
+    println "${queue_status}" + "\n"
+    println "${node_status}" + "\n"
   }catch(Exception ex){
     println "Error: cluster squeue and/or sinfo unavailble"
   }
@@ -27,47 +27,55 @@ def printCurrentClusterStatus(){
 
 // Function that determines on which nodes the input files are stored and the size of the file
 def getNodesInfo(fname) {
-  cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}"
-  msg = cmd.execute().text
-  def matcher = msg =~ /(<POSIX.*)/
-  def bricks = matcher[0][0].tokenize(" ")
+  try {
+    cmd = "getfattr -n glusterfs.pathinfo -e text ${fname}"
+    msg = cmd.execute().text
+    def matcher = msg =~ /(<POSIX.*)/
+    def bricks = matcher[0][0].tokenize(" ")
 
-  // Data storage identification
-  nodes = []
-  for (b : bricks ) {
-    if (b =~ /.*arbiter.*/) continue
-    matcher  = b =~ /.*:(.*):.*/ 
-    node = matcher[0][1]
-    matcher = node  =~ /(.*?)\..*/
-    if (matcher)
+    // Data storage identification
+    nodes = []
+    for (b : bricks ) {
+      if (b =~ /.*arbiter.*/) continue
+      matcher  = b =~ /.*:(.*):.*/ 
       node = matcher[0][1]
-    nodes << node
+      matcher = node  =~ /(.*?)\..*/
+      if (matcher)
+        node = matcher[0][1]
+      nodes << node
+    }
+    println "Data from that file is stored on the following nodes: " + nodes + "\n"
+
+    // Finding file size
+    fsize = fname.size()
+    println "The file ${fname} has ${fsize} bytes" 
+
+    return [nodes, fsize]
+  }catch(Exception ex){
+    println "Error: cant locate node where data resides"
   }
-  println "Data from that file is stored on the following nodes: " + nodes + "\n"
-
-  // Finding file size
-  fsize = fname.size()
-  println "The file ${fname} has ${fsize} bytes" 
-
-  return [nodes, fsize]
 }
 
 // Function that determines which nodes are available for execution
 def getClusterStatus() {
-  node_states = 'sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
-  state_map = [:]
-  possible  = []
-  possible_states = ['idle','mix','alloc','allocated','allocated+','completing']
-  for (n : node_states) {
-    line = n.split()
-    the_node = line[0]
-    the_state = line[1]
-    state_map[the_node] = the_state
-    if  (the_state in possible_states) possible << the_node
-  }
+  try {
+    node_states = 'sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
+    state_map = [:]
+    possible  = []
+    possible_states = ['idle','mix','alloc','allocated','allocated+','completing']
+    for (n : node_states) {
+      line = n.split()
+      the_node = line[0]
+      the_state = line[1]
+      state_map[the_node] = the_state
+      if  (the_state in possible_states) possible << the_node
+    }
 
-  println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
-  return [possible, state_map]
+    println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
+    return [possible, state_map]
+  }catch(Exception ex){
+    println "Error: cant determine possible node for execution"
+  }
 }
 
 def getIdealNode(nodes,state_map, file_size,possible_nodes){
@@ -147,21 +155,26 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
 // This function returns the nodes to be excluded during execution set within the clusterOptions in the initial process.
 
 def nodeOption(fname,other="") {
-  node_location = getNodesInfo(fname)[0]
-  file_size = getNodesInfo(fname)[1]
-  possible_nodes = getClusterStatus()[0]
-  state_map = getClusterStatus()[1]
-  ideal_node = getIdealNode(nodes,state_map, file_size, possible_nodes)
-  if ((possible_nodes.intersect(nodes)).size()<1)
-  {
-    println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
-    return "${other}"
-  }
-  else {
-    possible = possible_nodes - ideal_node;
-    options="--exclude="+possible.join(',')+" ${other}"
-    println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
-    return options
+  try {
+    node_location = getNodesInfo(fname)[0]
+    file_size = getNodesInfo(fname)[1]
+    possible_nodes = getClusterStatus()[0]
+    state_map = getClusterStatus()[1]
+    ideal_node = getIdealNode(nodes,state_map, file_size, possible_nodes)
+    if ((possible_nodes.intersect(nodes)).size()<1)
+    {
+      println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
+      return "${other}"
+    }
+    else {
+      possible = possible_nodes - ideal_node;
+      options="--exclude="+possible.join(',')+" ${other}"
+      println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
+      return options
+    }
+  }catch(Exception ex){
+    println "Error: cant determine cluster options"
+    return other
   }
 }
 
