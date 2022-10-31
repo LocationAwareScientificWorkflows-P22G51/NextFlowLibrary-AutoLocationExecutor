@@ -137,7 +137,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
          return (possible_nodes - busy)
         }
       if (is_busy == false){
-        println "Using node with data" 
+        println "WAITING to use node with data" 
         return n
       } 
       }
@@ -188,7 +188,8 @@ printCurrentClusterStatus()
 // Only addition within your workflow code is that of clusterOptions which needs to be set as below
 process fastqc {
    echo true
-   clusterOptions {nodeOption(cluster_option)}
+   cluster_options_str = nodeOption(cluster_option)
+   clusterOptions {cluster_options_str}
    input:
       val cluster_option
       path input_ch
@@ -200,6 +201,7 @@ process fastqc {
       mkdir $base
       /home/tlilford/FastQC/fastqc $input_ch --outdir $base
       echo File: $cluster_option
+      echo File is stored on $cluster_options_str
       hostname
    """
 }
