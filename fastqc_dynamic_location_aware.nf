@@ -81,15 +81,18 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
     cpu_count = "sinfo -n, --node=n03 -o, --format=%c".execute().text.split('/n').toString().split()
     println "There are ${cpu_count[1]} cpu's on node " 
     node_queue_info = "squeue -w, --nodelist=n03 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
-      jobs = node_queue_info.split()
+    for (jobs : node_queue_info) {
+      line = jobs.split()
       counter = 0
-      println "There are ${jobs.size()-1} Jobs allocated to the node" 
-      if (jobs.size()-1 < 5){
-        for(job_details : jobs){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
+      println "There are ${line.size()-1} Jobs allocated to the node" 
+      if (line.size()-1 < 5){
+        for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
           if (counter > 0){//first line skipped as is variable headers
-            job_val = job_details.toString().split()
-            println "${job_val}"
-            if ((job_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3] > 1000)) { 
+            line = job_details.split() 
+            str = line.toString()  
+            single_val = str.split()
+            println "${single_val[0]}"
+            if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3] > 1000)) { 
               return possible_nodes //rather processs on another node and let the Slurm scheduler decide
             } else {
               return idle
