@@ -19,7 +19,7 @@ process downloadImages {
     each image
 
     """
-    apptainer pull --force --dir /home/rjonker/.singularity/cache/ docker://phelelani/nf-rnaseqcount:${image}
+    apptainer pull --force --dir /home/rjonker/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
     """
 }
 
