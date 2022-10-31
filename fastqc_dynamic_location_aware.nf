@@ -79,7 +79,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
 
 if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
     cpu_count = "sinfo -n, --node=n03 -o, --format=%c".execute().text.split('/n').toString().split()
-    println "There are ${cpu_count} cpu's on node " 
+    println "There are ${cpu_count[1]} cpu's on node " 
     node_queue_info = "squeue -w, --nodelist=n03 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
     for (jobs : node_queue_info) {
       line = jobs.split()
@@ -92,7 +92,7 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
             str = line.toString()  
             single_val = str.split(',')
             println "here"
-            if ((single_val[0] > cpu_count.toInteger()/2) || (single_val[3] > 1000)) { 
+            if ((single_val[0] > cpu_count[1].toInteger()/2) || (single_val[3] > 1000)) { 
               return possible_nodes //rather processs on another node and let the Slurm scheduler decide
             } else {
               return idle
