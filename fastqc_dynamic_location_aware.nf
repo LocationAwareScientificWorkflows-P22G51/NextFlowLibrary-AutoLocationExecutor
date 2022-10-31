@@ -72,18 +72,24 @@ def getIdealNode(nodes,state_map, file_size){
   mixes = []
   busy = []
   node_queue_info = "squeue -w, --nodelist=n04 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')
-   for (jobs : node_queue_info) {
-    line = jobs.split()
-    println "There are ${line.size()-1} Jobs allocated to the node" 
-    for(job_details : line){
-      line = job_details.split() 
-      str = line.toString()  
-      single_val = str.split(',')
-      println "${single_val[0]}"
-      
+    for (jobs : node_queue_info) {
+      line = jobs.split()
+      counter = 0
+      println "There are ${line.size()-1} Jobs allocated to the node" 
+      if (line.size()-1 < 3){
+        for(job_details : line){
+          if (counter > 0){
+            line = job_details.split() 
+            str = line.toString()  
+            single_val = str.split(',')
+            println "${single_val[0]}"
+          }
+          counter = counter + 1
+        }
+      } 
     }
-   }
-
+    counter = 0
+    
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
     if (state_map[n] == 'mix') mixes.add(n)
