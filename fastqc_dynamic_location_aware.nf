@@ -78,6 +78,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
   }
 
   if (idles.size() > 0) {
+    for (n:idles){
     println "Best node/s for execution is: " + idles + ". They are idle."
       if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
     cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
@@ -108,6 +109,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
     return possible_nodes
   }
     return idles
+    }
   } 
   else if (mixes.size() > 0) {
     println "Best node/s for execution is: " + mixes + ". They are mix."
