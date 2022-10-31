@@ -93,7 +93,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
             str = line.toString()  
             single_val = str.split(',')
             println "${single_val[0]}"
-            if ((single_val[0] > cpu_count/2) || (single_val[3] > 1000)) { 
+            if ((single_val[0] > cpu_count.toInteger()/2) || (single_val[3] > 1000)) { 
               return possible_nodes //rather processs on another node and let the Slurm scheduler decide
             } else {
               return idle
