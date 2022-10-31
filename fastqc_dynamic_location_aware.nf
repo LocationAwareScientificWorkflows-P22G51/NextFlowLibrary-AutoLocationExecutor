@@ -71,7 +71,16 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
   idles = []
   mixes = []
   busy = []
-  if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
+  for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
+    if (state_map[n] == 'idle') idles.add(n)
+    if (state_map[n] == 'mix') mixes.add(n)
+    if (!(state_map[n] in free_states)) busy.add(n)
+  }
+
+  if (idles.size() > 0) {
+    println "Best node/s for execution is: " + idles + ". They are idle."
+      if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
+    cpu_count = "sinfo -n, --node=n04 -o, --format=%c".execute().text.split('/n').toString().split()
     node_queue_info = "squeue -w, --nodelist=n04 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
     for (jobs : node_queue_info) {
       line = jobs.split()
@@ -84,10 +93,11 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
             str = line.toString()  
             single_val = str.split(',')
             println "${single_val[0]}"
-
-            
-            node_info = "sinfo -n, --node=n04 -o, --format=%c".execute().text.split('/n').toString().split()
-            println "${node_info[1]}"
+            if ((single_val[0] > cpu_count/2) || (single_val[3] > 1000)) { 
+              return possible_nodes //rather processs on another node and let the Slurm scheduler decide
+            } else {
+              return idle
+            }
           }
           counter = counter + 1
         }
@@ -97,15 +107,6 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
   } else {//use another node
     return possible_nodes
   }
-
-  for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
-    if (state_map[n] == 'idle') idles.add(n)
-    if (state_map[n] == 'mix') mixes.add(n)
-    if (!(state_map[n] in free_states)) busy.add(n)
-  }
-
-  if (idles.size() > 0) {
-    println "Best node/s for execution is: " + idles + ". They are idle."
     return idles
   } 
   else if (mixes.size() > 0) {
