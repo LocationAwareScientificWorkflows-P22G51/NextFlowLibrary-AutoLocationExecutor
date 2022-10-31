@@ -213,10 +213,10 @@ process getclusteroptions {
    path input_ch
   output:
    val cluster_option_str, emit: cluster_ch
-   path file_ch, emit: path_ch
+   //path file_ch, emit: path_ch
   script:
     cluster_option_str = nodeOption(cluster_option)
-    file_ch = input_ch
+    //file_ch = input_ch
 }
 
 
@@ -226,5 +226,5 @@ process getclusteroptions {
 
 workflow {
   getclusteroptions(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
-  fastqc(getclusteroptions.out.cluster_ch, getclusteroptions.out.path_ch)
+  fastqc(getclusteroptions.out.cluster_ch, input_ch)
 }
