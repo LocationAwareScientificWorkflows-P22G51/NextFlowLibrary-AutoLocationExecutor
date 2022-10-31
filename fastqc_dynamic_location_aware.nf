@@ -83,7 +83,7 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
     node_queue_info = "squeue -w, --nodelist=n03 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
       jobs = node_queue_info.split()
       counter = 0
-      println "There are ${line.size()-1} Jobs allocated to the node" 
+      println "There are ${jobs.size()-1} Jobs allocated to the node" 
       if (jobs.size()-1 < 5){
         for(job_details : jobs){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
           if (counter > 0){//first line skipped as is variable headers
