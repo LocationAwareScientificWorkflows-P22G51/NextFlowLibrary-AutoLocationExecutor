@@ -74,7 +74,7 @@ def getIdealNode(nodes,state_map, file_size){
   node_queue_info = "squeue -w, --nodelist=n04 -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')
    for (s : node_queue_info) {
     line = s.split()
-    println "${line[0]}" 
+    println "${line[2]}" 
     println "${line}" 
    }
 
