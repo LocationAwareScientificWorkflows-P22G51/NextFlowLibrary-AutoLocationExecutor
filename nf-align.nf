@@ -12,16 +12,16 @@ outdir.mkdir()
 
 // ===== START PIPELINE
 
-// process downloadImages {
-//     tag { "download_images" }
+process downloadImages {
+    tag { "download_images" }
     
-//     input:
-//     each image
+    input:
+    each image
 
-//     """
-//     singularity pull --force --dir \$HOME/.singularity/cache/ docker://phelelani/nf-rnaseqcount:${image}
-//     """
-// }
+    """
+    singularity pull --force --dir \$HOME/.singularity/cache/ docker://phelelani/nf-rnaseqcount:${image}
+    """
+}
 
 process downloadDdata {
     tag { "dawnload_data" }
@@ -105,7 +105,7 @@ workflow PREP_DATA {
     take:
         images
     main:
-        //downloadImages(images)
+        downloadImages(images)
         downloadDdata()
 }
 
