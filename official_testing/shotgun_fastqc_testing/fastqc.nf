@@ -1,5 +1,18 @@
 nextflow.enable.dsl=2
 
+def printCurrentClusterStatus(){
+  try {
+    cmd = "squeue"
+    queue_status = cmd.execute().text
+    cmd = "sinfo"
+    node_status = cmd.execute().text
+    println "${queue_status}" + "\n"
+    println "${node_status}" + "\n"
+  }catch(Exception ex){
+    println "Error: cluster squeue and/or sinfo unavailble"
+  }
+}
+
 params.data_dir = "/external/diskC/22P63/shotgun/*gz"
 input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:] 
@@ -21,6 +34,8 @@ process fastqc {
       hostname
    """
 }
+
+printCurrentClusterStatus()
 
 workflow {
     fastqc(input_ch)
