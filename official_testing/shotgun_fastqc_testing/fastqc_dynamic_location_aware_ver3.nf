@@ -190,8 +190,7 @@ printCurrentClusterStatus()
 // Only addition within your workflow code is that of clusterOptions which needs to be set as below
 process fastqc {
    echo true
-   cluster_options_str = nodeOption(cluster_option)
-   clusterOptions {cluster_options_str}
+   clusterOptions {nodeOption(cluster_option)}
    input:
       val cluster_option
       path input_ch
@@ -203,7 +202,6 @@ process fastqc {
       mkdir $base
       /home/tlilford/FastQC/fastqc $input_ch --outdir $base
       echo File: $cluster_option
-      echo File is stored on $cluster_options_str
       hostname
    """
 }
