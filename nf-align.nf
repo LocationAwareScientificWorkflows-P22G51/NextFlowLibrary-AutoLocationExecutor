@@ -19,7 +19,7 @@ process downloadImages {
     each image
 
     """
-    singularity pull docker://phelelani/nf-rnaseqcount:${image}
+    singularity pull --dir \$HOME/.singularity/cache/ docker://phelelani/nf-rnaseqcount:${image}
     """
 }
 
