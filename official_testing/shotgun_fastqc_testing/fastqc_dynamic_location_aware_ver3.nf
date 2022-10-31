@@ -103,12 +103,12 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
         is_busy = false
         if (file_size > 50000000000){//if the file is less than 5Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
-          println "There are ${cpu_count[1]} cpu's on node $n" 
+          //println "There are ${cpu_count[1]} cpu's on node $n" 
           node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
           for (jobs : node_queue_info) {
             line = jobs.split()
             counter = 0
-            println "There are ${line.size()-1} Jobs allocated to the node" 
+            //println "There are ${line.size()-1} Jobs allocated to the node" 
             if (line.size()-1 < 3){//if there are 3 jobs queued use another node
               for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
                 if (counter > 0){//first line skipped as is variable headers
@@ -121,10 +121,10 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   single_val[3].replaceAll("G", "000")
                   if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000)) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
-                    println "Job is large"
+                    //println "Job is large"
                     is_busy = true
                   } else {
-                    println "Job is small"  
+                    //println "Job is small"  
                   }
                 }
                 counter = counter + 1
@@ -155,8 +155,8 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
 // This function returns the nodes to be excluded during execution set within the clusterOptions in the initial process.
 
 def nodeOption(fname,other="") {
-  location = "hostname".execute().text
-  println  "LOCATION IS FOUND using $location"
+  //location = "hostname".execute().text
+  //println  "LOCATION IS FOUND using $location"
   try {
     node_location = getNodesInfo(fname)[0]
     file_size = getNodesInfo(fname)[1]
@@ -190,7 +190,7 @@ printCurrentClusterStatus()
 // Only addition within your workflow code is that of clusterOptions which needs to be set as below
 process fastqc {
    echo true
-   clusterOptions {cluster_option}
+   clusterOptions {nodeOption(cluster_option)}
    input:
       val cluster_option
       path input_ch
@@ -206,25 +206,11 @@ process fastqc {
    """
 }
 
-
-process getclusteroptions {
-  input:
-   val cluster_option
-   path input_ch
-  output:
-   val cluster_option_str, emit: cluster_ch
-   //path file_ch, emit: path_ch
-  script:
-    cluster_option_str = nodeOption(cluster_option)
-    //file_ch = input_ch
-}
-
-
 ///////////////////////////////////////////////////////
 // WORKFLOW ENTRY POINT
 ///////////////////////////////////////////////////////
 
 workflow {
-  getclusteroptions(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
-  fastqc(getclusteroptions.out.cluster_ch, input_ch)
+   Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}.view()
+    fastqc(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
 }
