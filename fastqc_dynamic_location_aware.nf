@@ -92,7 +92,7 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
             str = line.toString()  
             single_val = str.split(',')
             println "here"
-            if ((single_val[0] > cpu_count[1].toInteger()/2) || (single_val[3] > 1000)) { 
+            if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3] > 1000)) { 
               return possible_nodes //rather processs on another node and let the Slurm scheduler decide
             } else {
               return idle
