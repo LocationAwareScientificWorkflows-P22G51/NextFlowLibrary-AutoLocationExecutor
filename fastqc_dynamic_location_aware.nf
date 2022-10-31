@@ -70,13 +70,13 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
   free_states = ['idle','mix']
   idles = []
   mixes = []
-  busy = []
+  busy = [false,false,false]
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
     if (state_map[n] == 'mix') mixes.add(n)
     if (!(state_map[n] in free_states)) busy.add(n)
   }
-
+busy_checks = []
 if (file_size > 100){//if the file is over 10Gb otherwise most likely more efficient to transfer data to another node for computation
     cpu_count = "sinfo -n, --node=n04 -o, --format=%c".execute().text.split('/n').toString().split()
     println "There are ${cpu_count[1]} cpu's on node " 
@@ -94,10 +94,10 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
             str = str.replace("]", "")
             single_val = str.split(',')
             println "${single_val}"
-            if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3] > 1000)) { 
-              return possible_nodes //rather processs on another node and let the Slurm scheduler decide
+            if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replace("G", "").toInteger() > 10)) { 
+              busy_checks[counter] = true
             } else {
-              return idle
+              busy_checks[counter] = false
             }
           }
           counter = counter + 1
@@ -108,6 +108,12 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
     
   } else {//use another node
     return possible_nodes
+  }
+
+  if ((busy_check[1] == false) && (busy_check[2] == false)){
+    return possible_nodes
+  } else {
+    return idle
   }
 
 
