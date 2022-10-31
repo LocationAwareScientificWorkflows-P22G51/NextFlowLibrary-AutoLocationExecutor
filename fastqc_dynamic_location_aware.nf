@@ -131,7 +131,7 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
   return possible_nodes
 }
 println "Node is too busy, utilising another node"
-return (possible_nodes - busy)
+return (possible_nodes - idles)
 
 ///////////////////////
     //println "Best node/s for execution is: " + idles + ". They are idle."
