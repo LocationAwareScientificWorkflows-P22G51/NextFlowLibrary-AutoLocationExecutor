@@ -90,7 +90,9 @@ if (file_size > 100){//if the file is over 10Gb otherwise most likely more effic
           if (counter > 0){//first line skipped as is variable headers
             line = job_details.split() 
             str = line.toString()  
-            single_val = str.split()
+            str = str.replace("[", "")
+            str = str.replace("]", "")
+            single_val = str.split(',')
             println "${single_val[0]}"
             if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3] > 1000)) { 
               return possible_nodes //rather processs on another node and let the Slurm scheduler decide
