@@ -160,6 +160,8 @@ process doQC {
     
     """
     /home/rjonker/FastQC/fastqc ${reads.findAll().join(' ') } --threads ${task.cpus} --noextract
+    echo File: $cluster_option
+    hostname
     """
 }
 
