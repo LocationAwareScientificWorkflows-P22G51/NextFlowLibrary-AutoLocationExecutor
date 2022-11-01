@@ -195,7 +195,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
       if (is_busy == false){
         //println "WAITING to use node with data" 
          println "________________________alloc______________________________"
-        return n
+        return busy
       }
       }
     } catch(Exception ex) {
