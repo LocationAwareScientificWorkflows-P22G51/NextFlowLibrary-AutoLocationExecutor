@@ -117,7 +117,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   str = str.replace("[", "")
                   str = str.replace("]", "")
                   single_val = str.split(',')
-                  println "${single_val}"
+                  //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
                   if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000)) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
@@ -211,6 +211,5 @@ process fastqc {
 ///////////////////////////////////////////////////////
 
 workflow {
-   Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}.view()
     fastqc(Channel.fromPath("${params.data_dir}").map{it.toAbsolutePath()}, input_ch)
 }
