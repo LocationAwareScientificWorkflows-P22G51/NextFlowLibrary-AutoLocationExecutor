@@ -62,7 +62,7 @@ def getClusterStatus() {
     node_states = 'sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
     state_map = [:]
     possible  = []
-    possible_states = ['idle','mix','alloc','allocated','allocated+','completing']
+    possible_states = ['idle','mix','alloc']
     for (n : node_states) {
       line = n.split()
       the_node = line[0]
@@ -79,7 +79,6 @@ def getClusterStatus() {
 }
 
 def getIdealNode(nodes,state_map, file_size,possible_nodes){
-  free_states = ['idle','mix']
   idles = []
   mixes = []
   busy = []
@@ -87,7 +86,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
     if (state_map[n] == 'mix') mixes.add(n)
-    if (!(state_map[n] in free_states)) busy.add(n)
+    if ((state_map[n] == 'alloc')) busy.add(n)
   }
   if (idles.size() > 0) {
     //println "Best node/s for execution is: " + idles + ". They are idle."
@@ -116,7 +115,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   single_val = str.split(',')
                   //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 4) ) {  
+                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 4)) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
                     println "________________________JOBLARGE______________________________"
