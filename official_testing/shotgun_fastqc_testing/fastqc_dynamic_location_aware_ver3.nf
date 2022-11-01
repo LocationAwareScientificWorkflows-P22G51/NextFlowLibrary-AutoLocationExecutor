@@ -173,7 +173,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   single_val = str.split(',')
                   //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000) || (single_val[5].length() > 4) ) {  
+                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 4) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
                     println "________________________JOBLARGE______________________________"
