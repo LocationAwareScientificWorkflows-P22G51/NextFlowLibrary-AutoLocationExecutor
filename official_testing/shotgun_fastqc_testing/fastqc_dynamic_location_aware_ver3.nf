@@ -156,13 +156,13 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
         if (file_size > 300000000){//if the file is less than 0.3Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
           //println "There are ${cpu_count[1]} cpu's on node $n" 
-          node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
+          node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
           for (jobs : node_queue_info) {
             line = jobs.split()
             counter = 0
             //println "There are ${line.size()-1} Jobs allocated to the node" 
             if (line.size()-1 < 6){//if there are 6 jobs queued use another node
-              for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
+              for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,TimeUsed
                 if (counter > 0){//first line skipped as is variable headers
                   line = job_details.split() 
                   str = line.toString()  
@@ -171,7 +171,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   single_val = str.split(',')
                   //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000)) {  
+                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000) || (single_val[5].length() > 4) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
                     is_busy = true
