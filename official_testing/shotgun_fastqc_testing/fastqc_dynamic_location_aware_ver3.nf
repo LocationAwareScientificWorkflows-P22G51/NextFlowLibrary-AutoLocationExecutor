@@ -223,6 +223,10 @@ def nodeOption(fname,other="") {
     if (((possible_nodes.intersect(nodes)).size()<1 )|| (ideal_node == "" ))
     {
       //println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
+      possible = 'n20';
+      options="--exclude="+possible.join(',')+" ${other}"
+      //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
+      return options
       return "${other}"
     }
     else {
