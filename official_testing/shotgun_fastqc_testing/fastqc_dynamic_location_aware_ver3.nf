@@ -203,6 +203,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
       return ("")
     }    
   }
+   println "________________________UNSURE______________________________"
   return ("")
 }
 
