@@ -93,6 +93,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     return idles
   } 
   else if (mixes.size() > 0) {
+    return mixes
     //println "Best node/s for execution is: " + mixes + ". They are mix."
     try {
       for (n : mixes) {
