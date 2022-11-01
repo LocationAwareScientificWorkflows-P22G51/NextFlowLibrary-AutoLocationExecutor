@@ -48,7 +48,7 @@ def getNodesInfo(fname) {
 
     // Finding file size
     fsize = fname.size()
-    //println "The file ${fname} has ${fsize} bytes" 
+    println "The file ${fname} has ${fsize} bytes" 
 
     return [nodes, fsize]
   }catch(Exception ex){
