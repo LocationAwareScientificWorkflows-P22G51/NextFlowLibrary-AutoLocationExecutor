@@ -136,6 +136,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
         }
       if (is_busy == false){
         //println "WAITING to use node with data" 
+        println "________________________mix______________________________"
         return n
       } 
       }
@@ -143,8 +144,8 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
       return ("")
     }
-    //println "Node is too busy, utilising another node"
-    //return mixes
+    println "Node is too busy, utilising another node"
+    return mixes
   } 
   else {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     try {
@@ -188,6 +189,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
         }
       if (is_busy == false){
         //println "WAITING to use node with data" 
+         println "________________________alloc______________________________"
         return n
       } 
       }
@@ -196,7 +198,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
       return ("")
     }
     //println "Node is too busy, utilising another node"
-    //return ("")
+    return ("")
     //
   }
 }
