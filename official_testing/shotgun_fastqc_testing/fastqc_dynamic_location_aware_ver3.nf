@@ -230,7 +230,7 @@ def nodeOption(fname,other="") {
     }
     else {
       possible = possible_nodes - ideal_node;
-      options="--exclude=n20"+possible.join(',')+" ${other}"
+      options="--exclude=n20,"+possible.join(',')+" ${other}"
       //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
     }
