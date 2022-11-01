@@ -147,6 +147,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     }
     //println "Node is too busy, utilising another node"
     return (possible_nodes - busy)
+    //
   }
 }
 
