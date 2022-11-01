@@ -102,7 +102,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
         if (file_size > 300000000){//if the file is less than 0.3Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
           //println "There are ${cpu_count[1]} cpu's on node $n" 
-          node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
+          node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
           for (jobs : node_queue_info) {
             line = jobs.split()
             counter = 0
@@ -115,9 +115,14 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   str = str.replace("[", "")
                   str = str.replace("]", "")
                   single_val = str.split(',')
+                                    println "_________XXXXXXX_________"
+                  println "_________${single_val}_________"
+                  println "_________XXXXXXX_________"
+                  println "_________${single_val[5]}_________"
+                  println "_________XXXXXXX_________"
                   //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000)) {  
+                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000) || (single_val[5].length() > 4) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
                     println "________________________JOBLARGE______________________________"
@@ -171,7 +176,6 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   str = str.replace("[", "")
                   str = str.replace("]", "")
                   single_val = str.split(',')
-                  println "_________${single_val[5]}_________"
                   single_val[3].replaceAll("G", "000")
                   if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 4) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
