@@ -97,7 +97,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     try {
       for (n : mixes) {
         is_busy = false
-        if (file_size > 300000000){//if the file is less than 0.3Gb most likely more efficient to transfer data to another node for computation
+        if (file_size > 9000000000){//if the file is less than 0.3Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
           //println "There are ${cpu_count[1]} cpu's on node $n" 
           node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
@@ -153,7 +153,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     try {
       for (n : busy) {     
         is_busy = false
-        if (file_size > 3000000000){//if the file is less than 0.3Gb most likely more efficient to transfer data to another node for computation
+        if (file_size > 9000000000){//if the file is less than 0.3Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
           //println "There are ${cpu_count[1]} cpu's on node $n" 
           node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
