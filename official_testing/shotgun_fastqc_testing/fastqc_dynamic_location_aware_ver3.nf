@@ -161,7 +161,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
             line = jobs.split()
             counter = 0
             //println "There are ${line.size()-1} Jobs allocated to the node" 
-            if (line.size()-1 < 3){//if there are 3 jobs queued use another node
+            if (line.size()-1 < 6){//if there are 5 jobs queued use another node
               for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
                 if (counter > 0){//first line skipped as is variable headers
                   line = job_details.split() 
