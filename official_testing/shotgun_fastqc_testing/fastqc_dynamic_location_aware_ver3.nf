@@ -223,14 +223,14 @@ def nodeOption(fname,other="") {
     {
       //println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
       possible = "n20";
-      options="--exclude="+possible.join(',')+" ${other}"
+      options="--exclude=n20"
       //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
       return "${other}"
     }
     else {
-      possible = possible_nodes - ideal_node + "n20";
-      options="--exclude="+possible.join(',')+" ${other}"
+      possible = possible_nodes - ideal_node;
+      options="--exclude=n20"+possible.join(',')+" ${other}"
       //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
     }
