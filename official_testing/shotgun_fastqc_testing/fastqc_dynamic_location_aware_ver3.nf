@@ -97,7 +97,6 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     //println "Best node/s for execution is: " + mixes + ". They are mix."
     try {
       for (n : mixes) {
-        
         is_busy = false
         if (file_size > 300000000){//if the file is less than 0.3Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
@@ -115,18 +114,14 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   str = str.replace("[", "")
                   str = str.replace("]", "")
                   single_val = str.split(',')
-                                    println "_________XXXXXXX_________"
-                  println "_________${single_val}_________"
-                  println "_________XXXXXXX_________"
-                  println "_________${single_val[5]}_________"
-                  println "_________XXXXXXX_________"
                   //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000) || (single_val[5].length() > 4) ) {  
+                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 4) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
                     println "________________________JOBLARGE______________________________"
                     is_busy = true
+                    break
                   } else {
                     //println "Job is small"  
                   }
@@ -135,26 +130,25 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
               }
             } else {
                println "________________________QUEUEBIG______________________________"
-              is_busy = true
+               is_busy = true
             } 
           }
         } else {//use another node
-        println "________________________mixFileSize______________________________"
-         return ("")
+          println "________________________mixFileSize______________________________"
+          return ""
         }
       if (is_busy == false){
         //println "WAITING to use node with data" 
         println "________________________mix______________________________"
-        return n
-      } else {
-        println "________________________MixNotWorth______________________________"
-        return ("")
-      } 
+        return mixes
+      }
       }
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
-      return ("")
+      return ""
     }
+    println "________________________MixNotWorth______________________________"
+    return ""
   } 
   else {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     try {
@@ -182,6 +176,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                     //println "Job is large"
                     println "________________________JOBLARGE______________________________"
                     is_busy = true
+                    break
                   } else {
                     //println "Job is small"  
                   }
@@ -195,24 +190,21 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
           }
         } else {//use another node
         println "________________________allocFIleSIze______________________________"
-         return ("")
+         return ""
         }
       if (is_busy == false){
         //println "WAITING to use node with data" 
          println "________________________alloc______________________________"
         return n
-      }else{
-        println "________________________AllocNotWorth______________________________"
-        return ("")
-      } 
+      }
       }
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
-      return ("")
+      return ""
     }    
   }
-   println "________________________UNSURE______________________________"
-  return ("")
+  println "________________________UNSURE______________________________"
+  return ""
 }
 
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
