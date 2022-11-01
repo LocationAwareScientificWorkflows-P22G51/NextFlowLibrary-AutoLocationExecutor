@@ -132,25 +132,26 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
             } 
           }
         } else {//use another node
+        println "________________________mixFileSize______________________________"
          return ("")
         }
       if (is_busy == false){
         //println "WAITING to use node with data" 
         println "________________________mix______________________________"
         return n
+      } else {
+        println "________________________MixNotWorth______________________________"
+        return ("")
       } 
       }
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
       return ("")
     }
-    println "Node is too busy, utilising another node"
-    return mixes
   } 
   else {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     try {
-      for (n : busy) {
-        
+      for (n : busy) {     
         is_busy = false
         if (file_size > 300000000){//if the file is less than 0.3Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
@@ -185,21 +186,22 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
             } 
           }
         } else {//use another node
+        println "________________________allocFIleSIze______________________________"
          return ("")
         }
       if (is_busy == false){
         //println "WAITING to use node with data" 
          println "________________________alloc______________________________"
         return n
+      }else{
+        println "________________________AllocNotWorth______________________________"
+        return ("")
       } 
       }
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
       return ("")
-    }
-    //println "Node is too busy, utilising another node"
-    return ("")
-    //
+    }   
   }
 }
 
@@ -210,7 +212,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
 def nodeOption(fname,other="") {
   //location = "hostname".execute().text
   //println  "LOCATION IS FOUND using $location"
-  try {
+  //try {
     node_location = getNodesInfo(fname)[0]
     file_size = getNodesInfo(fname)[1]
     possible_nodes = getClusterStatus()[0]
@@ -227,10 +229,10 @@ def nodeOption(fname,other="") {
       //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
     }
-  }catch(Exception ex){
-    println "Error: cant determine cluster options"
-    return other
-  }
+  // }catch(Exception ex){
+  //   println "Error: cant determine cluster options"
+  //   return other
+  // }
 }
 
 printCurrentClusterStatus()
