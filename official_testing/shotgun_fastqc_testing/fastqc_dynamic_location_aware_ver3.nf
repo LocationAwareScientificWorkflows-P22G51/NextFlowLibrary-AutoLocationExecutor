@@ -120,6 +120,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000)) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
+                    println "________________________JOBLARGE______________________________"
                     is_busy = true
                   } else {
                     //println "Job is small"  
@@ -128,6 +129,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                 counter = counter + 1
               }
             } else {
+               println "________________________QUEUEBIG______________________________"
               is_busy = true
             } 
           }
@@ -174,6 +176,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000) || (single_val[5].length() > 4) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
+                    println "________________________JOBLARGE______________________________"
                     is_busy = true
                   } else {
                     //println "Job is small"  
@@ -182,6 +185,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                 counter = counter + 1
               }
             } else {
+              println "________________________QUEUEBIG______________________________"
               is_busy = true
             } 
           }
