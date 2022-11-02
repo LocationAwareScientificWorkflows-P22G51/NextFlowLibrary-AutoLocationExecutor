@@ -115,7 +115,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   single_val = str.split(',')
                   //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) ) {  
+                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 5) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
                     println "________________________JOBLARGE______________________________"
@@ -161,7 +161,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
             line = jobs.split()
             counter = 0
             //println "There are ${line.size()-1} Jobs allocated to the node" 
-            if (line.size()-1 < 3){//if there are 3 jobs queued use another node
+            if (line.size()-1 < 6){//if there are 3 jobs queued use another node
               for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,TimeUsed
                 if (counter > 0){//first line skipped as is variable headers
                   line = job_details.split() 
@@ -170,7 +170,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   str = str.replace("]", "")
                   single_val = str.split(',')
                   single_val[3].replaceAll("G", "000")
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) ) {  
+                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 5) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
                     println "________________________JOBLARGE______________________________"
