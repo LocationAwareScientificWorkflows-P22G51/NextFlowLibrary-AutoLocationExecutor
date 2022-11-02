@@ -2,7 +2,7 @@
 nextflow.enable.dsl=2
 
 // ===== PARAMETERS
-params.outdir        = "/home/rjonker/nf-align"
+params.outdir        = "/home/tlilford/nf-align"
 
 // ===== assign CHANNELS
 outdir               = file(params.outdir, type: 'dir')
@@ -19,7 +19,7 @@ process downloadImages {
     each image
 
     """
-    apptainer pull --force --dir /home/rjonker/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
+    apptainer pull --force --dir /home/tlilford/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
     """
 }
 
@@ -72,7 +72,7 @@ process doQC {
     tuple val(sample), path("${sample}*.html"), path("${sample}*.zip"), emit: qc_out
     
     """
-    /home/rjonker/FastQC/fastqc ${reads.findAll().join(' ') } --threads ${task.cpus} --noextract
+    /home/tlilford/FastQC/fastqc ${reads.findAll().join(' ') } --threads ${task.cpus} --noextract
     """
 }
 
