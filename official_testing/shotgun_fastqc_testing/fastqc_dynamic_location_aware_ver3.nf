@@ -153,7 +153,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     try {
       for (n : busy) {     
         is_busy = false
-        if (file_size > 10000000000){//if the file is less than 10Gb most likely more efficient to transfer data to another node for computation
+        if (file_size > 20000000000){//if the file is less than 10Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
           //println "There are ${cpu_count[1]} cpu's on node $n" 
           node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
@@ -189,7 +189,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
           }
         } else {//use another node
         println "________________________allocFIleSIze______________________________"
-         return possible_nodes - busy
+         return ""
         }
       if (is_busy == false){
         //println "WAITING to use node with data" 
@@ -199,7 +199,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
       }
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
-      return possible_nodes - busy
+      return ""
     }    
   }
   println "________________________UNSURE______________________________"
