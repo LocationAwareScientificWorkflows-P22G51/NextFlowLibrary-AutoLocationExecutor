@@ -2,7 +2,7 @@
 nextflow.enable.dsl=2
 
 // ===== PARAMETERS
-params.outdir        = "/home/phelelani/projects/slurm_test"
+params.outdir        = "/home/rjonker/nf-align"
 
 // ===== assign CHANNELS
 outdir               = file(params.outdir, type: 'dir')
@@ -19,7 +19,7 @@ process downloadImages {
     each image
 
     """
-    singularity pull --force --dir \$HOME/.singularity/cache/ docker://phelelani/nf-rnaseqcount:${image} 
+    apptainer pull --force --dir /home/rjonker/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
     """
 }
 
@@ -72,7 +72,7 @@ process doQC {
     tuple val(sample), path("${sample}*.html"), path("${sample}*.zip"), emit: qc_out
     
     """
-    fastqc ${reads.findAll().join(' ') } --threads ${task.cpus} --noextract
+    /home/rjonker/FastQC/fastqc ${reads.findAll().join(' ') } --threads ${task.cpus} --noextract
     """
 }
 
@@ -124,6 +124,7 @@ workflow RUN_ALIGNMENT {
 
 // WORKFLOW DATA
 images = ["star", "bowtie2", "fastqc"]
+// images = ["star"]
 genome = file(params.outdir + '/data/genome.fa', type: 'file')
 genes  = file(params.outdir + '/data/genes.gtf', type: 'file')
 reads  = Channel.fromFilePairs(params.outdir + "/data/*{R1,R2}.fastq.gz", size:2)
