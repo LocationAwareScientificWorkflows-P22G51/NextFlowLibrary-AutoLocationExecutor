@@ -153,7 +153,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     try {
       for (n : busy) {     
         is_busy = false
-        if (file_size > 30000000){//if the file is less than 0.03Gb most likely more efficient to transfer data to another node for computation
+        if (file_size > 10000000000){//if the file is less than 10Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
           //println "There are ${cpu_count[1]} cpu's on node $n" 
           node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
@@ -161,7 +161,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
             line = jobs.split()
             counter = 0
             //println "There are ${line.size()-1} Jobs allocated to the node" 
-            if (line.size()-1 < 6){//if there are 3 jobs queued use another node
+            if (line.size()-1 < 3){//if there are 2 jobs queued use another node
               for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,TimeUsed
                 if (counter > 0){//first line skipped as is variable headers
                   line = job_details.split() 
@@ -189,7 +189,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
           }
         } else {//use another node
         println "________________________allocFIleSIze______________________________"
-         return ""
+         return possible_nodes - busy
         }
       if (is_busy == false){
         //println "WAITING to use node with data" 
@@ -199,7 +199,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
       }
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
-      return ""
+      return possible_nodes - busy
     }    
   }
   println "________________________UNSURE______________________________"
