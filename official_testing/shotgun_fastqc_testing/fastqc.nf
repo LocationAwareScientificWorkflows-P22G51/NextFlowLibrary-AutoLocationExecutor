@@ -17,7 +17,7 @@ params.data_dir = "/external/diskC/22P63/shotgun/SRR1306161*.fastq.gz"
 input_ch = Channel.fromPath("${params.data_dir}")
 params.data_dir2 = "/external/diskC/22P63/shotgun/SRR1306162*.fastq.gz"
 input_ch2 = Channel.fromPath("${params.data_dir2}")
-input_ch.join(input_ch2)
+
 node_suggestion = [:] 
 
 process fastqc {
@@ -41,5 +41,5 @@ process fastqc {
 printCurrentClusterStatus()
 
 workflow {
-    fastqc(input_ch)
+    fastqc(input_ch.join(input_ch2))
 }
