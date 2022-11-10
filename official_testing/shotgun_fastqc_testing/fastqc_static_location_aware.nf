@@ -16,7 +16,7 @@ def printCurrentClusterStatus(){
   }
 }
 
-key_fnames = file("/external/diskC/22P63/shotgun/SRR130616*.fastq.gz")
+key_fnames = file("/external/diskC/22P63/shotgun/*gz")
 node_suggestion = [:] 
 
 def getNodesOfBricks(fname) {
@@ -94,6 +94,6 @@ process fastqc {
 }
 
 workflow {
-    input_ch = Channel.fromPath("/external/diskC/22P63/shotgun/SRR130616*.fastq.gz") 
+    input_ch = Channel.fromPath("/external/diskC/22P63/shotgun/*gz") 
     fastqc(input_ch)
 }
