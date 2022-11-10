@@ -4,7 +4,7 @@
 // PARAMETERS AND SETUP
 ///////////////////////////////////////////////////////
 
-params.data_dir = "/external/diskC/22P63/shotgun/*.gz"// Set the path directory to your data files
+params.data_dir = "/external/diskC/22P63/shotgun/SRR13061610.gz"// Set the path directory to your data files
 input_ch = Channel.fromPath("${params.data_dir}")// Input_ch is the Channel that will input the data into the workflow processes.
 
 ///////////////////////////////////////////////////////
