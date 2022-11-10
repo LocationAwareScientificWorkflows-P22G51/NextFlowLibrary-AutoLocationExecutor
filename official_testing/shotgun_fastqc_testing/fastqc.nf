@@ -17,7 +17,7 @@ params.data_dir1 = "/external/diskC/22P63/shotgun/SRR1306161*.fastq.gz"
 input_ch1 = Channel.fromPath("${params.data_dir1}")
 params.data_dir2 = "/external/diskC/22P63/shotgun/SRR1306162*.fastq.gz"
 input_ch2 = Channel.fromPath("${params.data_dir2}")
-input_ch = input_ch1.merge(input_ch2)
+input_ch = input_ch1.join(input_ch2)
 node_suggestion = [:] 
 
 process fastqc {
