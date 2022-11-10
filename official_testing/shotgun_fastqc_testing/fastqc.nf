@@ -14,13 +14,16 @@ def printCurrentClusterStatus(){
 }
 //"/external/diskC/22P63/shotgun/SRR13061610.fastq.gz" + 
 params.data_dir = "/external/diskC/22P63/shotgun/SRR13061611.fastq.gz"
-input_ch = Channel.fromPath("${params.data_dir}", maxDepth: 10)
+input_ch = Channel.fromPath("${params.data_dir}")
+params.data_dir1 = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz"
+input_ch1 = Channel.fromPath("${params.data_dir1}")
 node_suggestion = [:] 
 
 process fastqc {
    echo true
    input:
       path input_ch
+      path input_ch1
    output:
       file ("*/*{zip,html}")
    script:
@@ -38,5 +41,5 @@ process fastqc {
 printCurrentClusterStatus()
 
 workflow {
-    fastqc(input_ch)
+    fastqc(input_ch, input_ch1)
 }
