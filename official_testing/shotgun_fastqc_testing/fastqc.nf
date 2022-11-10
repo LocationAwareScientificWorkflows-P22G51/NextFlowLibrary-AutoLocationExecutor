@@ -12,8 +12,8 @@ def printCurrentClusterStatus(){
     println "Error: cluster squeue and/or sinfo unavailble"
   }
 }
-//"/external/diskC/22P63/shotgun/SRR13061610.fastq.gz" + 
-params.data_dir = "/external/diskC/22P63/shotgun/SRR1306161*.fastq.gz"
+
+params.data_dir = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz"
 input_ch = Channel.fromPath("${params.data_dir}")
 
 node_suggestion = [:] 
