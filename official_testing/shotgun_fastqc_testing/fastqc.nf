@@ -13,7 +13,7 @@ def printCurrentClusterStatus(){
   }
 }
 
-params.data_dir = "/external/diskC/22P63/shotgun/*gz"
+params.data_dir = "/external/diskC/22P63/shotgun/SRR13061610.fastq.gz" + "/external/diskC/22P63/shotgun/SRR13061611.fastq.gz"
 input_ch = Channel.fromPath("${params.data_dir}", maxDepth: 10)
 node_suggestion = [:] 
 
