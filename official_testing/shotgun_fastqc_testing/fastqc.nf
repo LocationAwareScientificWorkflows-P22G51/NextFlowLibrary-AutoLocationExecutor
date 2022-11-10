@@ -28,9 +28,11 @@ process fastqc {
       file ("*/*{zip,html}")
    script:
       base = input_ch.simpleName
+      base1 = input_ch1.simpleName
    """
       mkdir $base
       /home/rjonker/FastQC/fastqc $input_ch --outdir $base
+      /home/rjonker/FastQC/fastqc $input_ch1 --outdir $base1
       echo SLURM_JOB_ID: $SLURM_JOB_ID
       echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
       echo SLURM_SUBMIT_DIR: $SLURM_SUBMIT_DIR
