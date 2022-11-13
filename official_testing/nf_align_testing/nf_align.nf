@@ -19,7 +19,7 @@ process downloadImages {
     each image
 
     """
-    apptainer pull --disable-cache --force --dir /external/diskC/22P63/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
+    apptainer pull -F, --force --dir /external/diskC/22P63/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
     """
 }
 
