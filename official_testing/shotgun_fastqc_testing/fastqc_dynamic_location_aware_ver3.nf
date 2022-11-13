@@ -132,7 +132,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                 }
                 counter = counter + 1
               }
-              if((totalCPU > cpu_count[1].toInteger()*3/4) || (totalMem/(line.size()-1) > 5000)){
+              if((totalCPU > cpu_count[1].toInteger()*1/2) || (totalMem/(line.size()-1) > 5000)){
                 is_busy = true
               }
             } else {
