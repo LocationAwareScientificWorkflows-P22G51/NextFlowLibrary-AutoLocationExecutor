@@ -267,7 +267,7 @@ process fastqc {
       base = input_ch.simpleName
    """
       mkdir $base
-      /home/tlilford/FastQC/fastqc $input_ch --outdir $base
+      /home/rjonker/FastQC/fastqc $input_ch --outdir $base
       echo File: $cluster_option
       hostname
    """
