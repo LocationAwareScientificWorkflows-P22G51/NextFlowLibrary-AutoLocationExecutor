@@ -2,7 +2,7 @@
 nextflow.enable.dsl=2
 
 // ===== PARAMETERS
-params.outdir        = "/home/tlilford/nf-align"
+params.outdir        = "/external/diskC/22P63/nf-align"
 
 // ===== assign CHANNELS
 outdir               = file(params.outdir, type: 'dir')
@@ -19,7 +19,7 @@ process downloadImages {
     each image
 
     """
-    apptainer pull --force --dir /home/tlilford/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
+    apptainer pull --force --dir /external/diskC/22P63/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
     """
 }
 
