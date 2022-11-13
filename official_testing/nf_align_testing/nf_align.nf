@@ -19,14 +19,13 @@ process downloadImages {
     each image
 
     """
-    apptainer pull --force --dir /external/diskC/22P63/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
+    apptainer pull --disable-cache, --force --dir /external/diskC/22P63/nf-align-cont/ docker://phelelani/nf-rnaseqcount:${image}
     """
 }
 
 process downloadDdata {
     tag { "dawnload_data" }
     publishDir "${outdir}/data", mode: 'move', overwrite: true
-
     output:
     tuple val('data'), path("*"), emit: data
     
