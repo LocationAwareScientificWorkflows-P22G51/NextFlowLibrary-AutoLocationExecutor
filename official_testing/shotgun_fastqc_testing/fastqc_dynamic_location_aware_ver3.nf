@@ -97,7 +97,8 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     try {
       for (n : mixes) {
         totalCPU = 0
-        totalRAM = 0
+        totalMem = 0
+    
         is_busy = false
         if (file_size > 30000000){//if the file is less than 0.03Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
@@ -118,7 +119,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
                   totalCPU = totalCPU + single_val[0].toInteger()
-                  totalRAM = totalRAM + single_val[3].replaceAll("[^\\d.]", "").toInteger()
+                  totalMem= totalMem + single_val[3].replaceAll("[^\\d.]", "").toInteger()
                   if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 5) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
@@ -130,6 +131,9 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   }
                 }
                 counter = counter + 1
+              }
+              if((totalCPU > cpu_count[1].toInteger()*3/4) || (totalMem/(line.size()-1) > 5000)){
+                is_busy = true
               }
             } else {
                println "________________________QUEUEBIG______________________________"
