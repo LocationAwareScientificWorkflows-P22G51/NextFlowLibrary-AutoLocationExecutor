@@ -34,8 +34,7 @@ def printCurrentClusterStatus(){
   }
 }
 
-key_fnames = file(params.outdir + "/data/*R1.fastq.gz")
-key_fnames2 = file(params.outdir + "/data/*R2.fastq.gz")
+key_fnames = file(params.outdir + "/data/*.fastq.gz")
 node_suggestion = [:] 
 
 def getNodesOfBricks(fname) {
@@ -92,7 +91,6 @@ def nodeOption(fname,aggression=1,other="") {
 //node_suggestion[key_fnames.getName()]=nodeOption(key_fnames)
 printCurrentClusterStatus()
 key_fnames.each { node_suggestion[it.getName()]=nodeOption(it) }
-key_fnames2.each { node_suggestion[it.getName()]=nodeOption(it) }
 
 ///////////////////////////////////////////////////////
 // WORKFLOW PROCESSES
