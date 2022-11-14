@@ -153,13 +153,13 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
   } 
   else if (mixes.size() > 0) {
     //println "Best node/s for execution is: " + mixes + ". They are mix."
-    try {
+    //try {
     return jobAnalysis(mixes, file_size, 30000000, 6)
 
-    } catch(Exception ex) {
-      println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
-      return ""
-    }
+    //} catch(Exception ex) {
+    //  println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
+    //  return ""
+    //}
     println "________________________MixNotWorth______________________________"
     return ""
   } 
