@@ -44,11 +44,11 @@ def getNodesInfo(fname) {
         node = matcher[0][1]
       nodes << node
     }
-   // println "Data from that file is stored on the following nodes: " + nodes + "\n"
+    println "Data from that file is stored on the following nodes: " + nodes + "\n"
 
     // Finding file size
     fsize = fname.size()
-    //println "The file ${fname} has ${fsize} bytes" 
+    println "The file ${fname} has ${fsize} bytes" 
 
     return [nodes, fsize]
   }catch(Exception ex){
@@ -70,8 +70,7 @@ def getClusterStatus() {
       state_map[the_node] = the_state
       if  (the_state in possible_states) possible << the_node
     }
-
-    //println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
+    println "The following nodes are currently available for execution on the cluster: " + possible + "\n"
     return [possible, state_map]
   }catch(Exception ex){
     println "Error: cant determine possible node for execution"
@@ -82,16 +81,15 @@ def jobAnalysis(nodes, file_size, size, job_no){
         for (n : nodes) {
         totalCPU = 0
         totalMem = 0
-    
         is_busy = false
         if (file_size > size){//if the file is less than 0.03Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
-          //println "There are ${cpu_count[1]} cpu's on node $n" 
+          println "There are ${cpu_count[1]} cpu's on node $n" 
           node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
           for (jobs : node_queue_info) {
             line = jobs.split()
             counter = 0
-            //println "There are ${line.size()-1} Jobs allocated to the node" 
+            println "There are ${line.size()-1} Jobs allocated to the node" 
             if (line.size()-1 < job_no){//if there are 5 jobs queued use another node
               for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
                 if (counter > 0){//first line skipped as is variable headers
@@ -100,18 +98,16 @@ def jobAnalysis(nodes, file_size, size, job_no){
                   str = str.replace("[", "")
                   str = str.replace("]", "")
                   single_val = str.split(',')
-                  //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
                   totalCPU = totalCPU + single_val[0].toInteger()
                   totalMem= totalMem + single_val[3].replaceAll("[^\\d.]", "").toInteger()
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 5) ) {  
+                  if ((single_val[5].length() > 5)) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
-                    //println "Job is large"
                     println "________________________JOBLARGE______________________________"
                     is_busy = true
                     break
                   } else {
-                    //println "Job is small"  
+                    println "Job is small"  
                   }
                 }
                 counter = counter + 1
@@ -139,11 +135,10 @@ def jobAnalysis(nodes, file_size, size, job_no){
       }
 }
 
-def getIdealNode(nodes,state_map, file_size,possible_nodes){
+def getIdealNode(nodes,state_map, file_size, possible_nodes){
   idles = []
   mixes = []
   busy = []
-  busy_checks = [:]
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
     if (state_map[n] == 'mix') mixes.add(n)
@@ -154,18 +149,18 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     return idles
   } 
   else if (mixes.size() > 0) {
-    //println "Best node/s for execution is: " + mixes + ". They are mix."
-    //try {
-    return jobAnalysis(mixes, file_size, 30000000, 6)
+    println "Best node/s for execution is: " + mixes + ". They are mix."
+    try {
+     return jobAnalysis(mixes, file_size, 30000000, 6)
 
-    //} catch(Exception ex) {
-    //  println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
-    //  return ""
-    //}
+    } catch(Exception ex) {
+      println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
+      return ""
+    }
     println "________________________MixNotWorth______________________________"
     return ""
   } 
-  else {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
+  else if (busy.size() > 0) {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     try {
       return jobAnalysis(busy, file_size, 5000000000, 3)
     } catch(Exception ex) {
