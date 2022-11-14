@@ -96,6 +96,9 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     //println "Best node/s for execution is: " + mixes + ". They are mix."
     try {
       for (n : mixes) {
+        totalCPU = 0
+        totalMem = 0
+    
         is_busy = false
         if (file_size > 30000000){//if the file is less than 0.03Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
@@ -115,6 +118,8 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   single_val = str.split(',')
                   //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
+                  totalCPU = totalCPU + single_val[0].toInteger()
+                  totalMem= totalMem + single_val[3].replaceAll("[^\\d.]", "").toInteger()
                   if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 5) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
@@ -126,6 +131,9 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   }
                 }
                 counter = counter + 1
+              }
+              if((totalCPU > cpu_count[1].toInteger()*1/2) || (totalMem/(line.size()-1) > 5000)){
+                is_busy = true
               }
             } else {
                println "________________________QUEUEBIG______________________________"
@@ -153,7 +161,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
     try {
       for (n : busy) {     
         is_busy = false
-        if (file_size > 30000000){//if the file is less than 0.03Gb most likely more efficient to transfer data to another node for computation
+        if (file_size > 20000000000){//if the file is less than 10Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
           //println "There are ${cpu_count[1]} cpu's on node $n" 
           node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
@@ -161,7 +169,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
             line = jobs.split()
             counter = 0
             //println "There are ${line.size()-1} Jobs allocated to the node" 
-            if (line.size()-1 < 6){//if there are 3 jobs queued use another node
+            if (line.size()-1 < 3){//if there are 2 jobs queued use another node
               for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,TimeUsed
                 if (counter > 0){//first line skipped as is variable headers
                   line = job_details.split() 
@@ -259,7 +267,7 @@ process fastqc {
       base = input_ch.simpleName
    """
       mkdir $base
-      /home/tlilford/FastQC/fastqc $input_ch --outdir $base
+      /home/rjonker/FastQC/fastqc $input_ch --outdir $base
       echo File: $cluster_option
       hostname
    """
