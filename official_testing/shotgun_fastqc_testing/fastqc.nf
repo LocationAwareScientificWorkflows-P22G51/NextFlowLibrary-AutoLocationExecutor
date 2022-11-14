@@ -19,6 +19,7 @@ node_suggestion = [:]
 
 process fastqc {
    echo true
+   clusterOptions {"--exclude=n20"}
    input:
       path input_ch
    output:
