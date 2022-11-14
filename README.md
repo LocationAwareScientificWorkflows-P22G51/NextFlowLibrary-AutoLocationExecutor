@@ -11,7 +11,7 @@ A Nextflow library that can be used on any existing workflow. This library reduc
 
 This repository entails the design and implementation of a location aware scientific workflow in Nextflow. The full development process along with weekly Sprints' documentation is found within this repository.
 
-<u> A breakdown of the filing structure of this repository: <u>
+**A breakdown of the filing structure of this repository:**
 
 - coding_templates
 
