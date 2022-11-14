@@ -86,7 +86,7 @@ process fastqc {
       base = input_ch.simpleName
    """
       mkdir $base
-      /home/tlilford/FastQC/fastqc $input_ch --outdir $base
+      /home/rjonker/FastQC/fastqc $input_ch --outdir $base
       echo SLURM_JOB_ID: $SLURM_JOB_ID
       echo SLURM_JOB_NODELIST: $SLURM_JOB_NODELIST
       hostname
@@ -94,6 +94,6 @@ process fastqc {
 }
 
 workflow {
-    input_ch = Channel.fromPath("/external/diskC/22P63/shotgun/*.gz") 
+    input_ch = Channel.fromPath("/external/diskC/22P63/shotgun/*gz") 
     fastqc(input_ch)
 }
