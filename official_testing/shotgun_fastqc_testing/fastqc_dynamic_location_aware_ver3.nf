@@ -78,13 +78,13 @@ def getClusterStatus() {
   }
 }
 
-def jobAnalysis(nodes){
+def jobAnalysis(nodes, size, job_no){
         for (n : nodes) {
         totalCPU = 0
         totalMem = 0
     
         is_busy = false
-        if (file_size > 30000000){//if the file is less than 0.03Gb most likely more efficient to transfer data to another node for computation
+        if (file_size > size){//if the file is less than 0.03Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
           //println "There are ${cpu_count[1]} cpu's on node $n" 
           node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
@@ -92,7 +92,7 @@ def jobAnalysis(nodes){
             line = jobs.split()
             counter = 0
             //println "There are ${line.size()-1} Jobs allocated to the node" 
-            if (line.size()-1 < 6){//if there are 5 jobs queued use another node
+            if (line.size()-1 < job_no){//if there are 5 jobs queued use another node
               for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
                 if (counter > 0){//first line skipped as is variable headers
                   line = job_details.split() 
@@ -116,7 +116,8 @@ def jobAnalysis(nodes){
                 }
                 counter = counter + 1
               }
-              if((totalCPU > cpu_count[1].toInteger()*1/2) || (totalMem/(line.size()-1) > 5000)){
+              if((totalCPU > cpu_count[1].toInteger()*3/4) || (totalMem/(line.size()-1) > 5000)){
+                println "________________________PROCESSORBUSY______________________________"
                 is_busy = true
               }
             } else {
@@ -131,7 +132,7 @@ def jobAnalysis(nodes){
       if (is_busy == false){
         //println "WAITING to use node with data" 
         println "________________________mix______________________________"
-        return mixes
+        return nodes
       }
       }
 }
@@ -153,7 +154,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
   else if (mixes.size() > 0) {
     //println "Best node/s for execution is: " + mixes + ". They are mix."
     try {
-    return jobAnalysis(mixes)
+    return jobAnalysis(mixes, 30000000, 6)
 
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
@@ -164,52 +165,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
   } 
   else {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     try {
-      for (n : busy) {     
-        is_busy = false
-        if (file_size > 20000000000){//if the file is less than 10Gb most likely more efficient to transfer data to another node for computation
-          cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
-          //println "There are ${cpu_count[1]} cpu's on node $n" 
-          node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
-          for (jobs : node_queue_info) {
-            line = jobs.split()
-            counter = 0
-            //println "There are ${line.size()-1} Jobs allocated to the node" 
-            if (line.size()-1 < 3){//if there are 2 jobs queued use another node
-              for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,TimeUsed
-                if (counter > 0){//first line skipped as is variable headers
-                  line = job_details.split() 
-                  str = line.toString()  
-                  str = str.replace("[", "")
-                  str = str.replace("]", "")
-                  single_val = str.split(',')
-                  single_val[3].replaceAll("G", "000")
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 5)) {  
-                    //in the case more than half cpu's in use and min RAM is over 10000MB
-                    //println "Job is large"
-                    println "________________________JOBLARGE______________________________"
-                    is_busy = true
-                    break
-                  } else {
-                    //println "Job is small"  
-                  }
-                }
-                counter = counter + 1
-              }
-            } else {
-              println "________________________QUEUEBIG______________________________"
-              is_busy = true
-            } 
-          }
-        } else {//use another node
-        println "________________________allocFIleSIze______________________________"
-         return ""
-        }
-      if (is_busy == false){
-        //println "WAITING to use node with data" 
-         println "________________________alloc______________________________"
-        return busy
-      }
-      }
+      return jobAnalysis(busy, 5000000000, 3)
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
       return ""
