@@ -185,15 +185,14 @@ def nodeOption(fname,other="") {
     ideal_node = getIdealNode(nodes,state_map, file_size, possible_nodes)
     if (((possible_nodes.intersect(nodes)).size()<1 )|| (ideal_node == "" ))
     {
-      //println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
+      println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
       options=""
-      //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
     }
     else {
       possible = possible_nodes - ideal_node;
       options="--exclude="+possible.join(',')+" ${other}"
-      //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
+      println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
     }
   }catch(Exception ex){
