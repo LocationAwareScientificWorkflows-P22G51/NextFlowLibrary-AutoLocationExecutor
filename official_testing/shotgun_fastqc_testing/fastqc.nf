@@ -15,6 +15,7 @@ def printCurrentClusterStatus(){
 
 params.data_dir = "/external/diskC/22P63/shotgun/*gz"
 input_ch = Channel.fromPath("${params.data_dir}")
+
 node_suggestion = [:] 
 
 process fastqc {

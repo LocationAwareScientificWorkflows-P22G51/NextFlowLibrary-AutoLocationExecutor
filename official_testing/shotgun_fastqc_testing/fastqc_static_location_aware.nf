@@ -94,6 +94,6 @@ process fastqc {
 }
 
 workflow {
-    input_ch = Channel.fromPath("/external/diskC/22P63/shotgun/*.gz") 
+    input_ch = Channel.fromPath("/external/diskC/22P63/shotgun/*gz") 
     fastqc(input_ch)
 }
