@@ -8,9 +8,10 @@ A Nextflow library that can be used on any existing workflow. This library reduc
 | Robin Jonker | 
 
 ## **Description:**
+
 This repository entails the design and implementation of a location aware scientific workflow in Nextflow. The full development process along with weekly Sprints' documentation is found within this repository.
 
-A breakdown of the filing structure of this repository:
+<u> A breakdown of the filing structure of this repository: <u>
 
 - coding_templates
 
@@ -63,6 +64,8 @@ The average execution time for the different versions under the different condit
 | Dynamic version      | 269  | 
 
 This shows that the dynamic version is the best version.
+
+### **Execution consistency:**
 
 In each run the number of idle, mixed and allocated nodes were noted as well as the execution time. During all tests the number of idle, mixed and allocated nodes were fairly consistent. The highest standard deviation of a node in a certain state was 1,07. This demonstrates the consistency within the testing process.
 
