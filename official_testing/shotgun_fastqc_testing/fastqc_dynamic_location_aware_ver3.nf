@@ -78,7 +78,7 @@ def getClusterStatus() {
   }
 }
 
-def jobAnalysis(nodes, size, job_no){
+def jobAnalysis(nodes, file_size, size, job_no){
         for (n : nodes) {
         totalCPU = 0
         totalMem = 0
@@ -154,7 +154,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
   else if (mixes.size() > 0) {
     //println "Best node/s for execution is: " + mixes + ". They are mix."
     try {
-    return jobAnalysis(mixes, 30000000, 6)
+    return jobAnalysis(mixes, file_size, 30000000, 6)
 
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
@@ -165,7 +165,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
   } 
   else {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     try {
-      return jobAnalysis(busy, 5000000000, 3)
+      return jobAnalysis(busy, file_size, 5000000000, 3)
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
       return ""
