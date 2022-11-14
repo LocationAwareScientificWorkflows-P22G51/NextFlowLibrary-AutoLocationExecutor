@@ -78,24 +78,8 @@ def getClusterStatus() {
   }
 }
 
-def getIdealNode(nodes,state_map, file_size,possible_nodes){
-  idles = []
-  mixes = []
-  busy = []
-  busy_checks = [:]
-  for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
-    if (state_map[n] == 'idle') idles.add(n)
-    if (state_map[n] == 'mix') mixes.add(n)
-    if ((state_map[n] == 'alloc')) busy.add(n)
-  }
-  if (idles.size() > 0) {
-    //println "Best node/s for execution is: " + idles + ". They are idle."
-    return idles
-  } 
-  else if (mixes.size() > 0) {
-    //println "Best node/s for execution is: " + mixes + ". They are mix."
-    try {
-      for (n : mixes) {
+def jobAnalysis(nodes){
+        for (n : nodes) {
         totalCPU = 0
         totalMem = 0
     
@@ -150,6 +134,27 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
         return mixes
       }
       }
+}
+
+def getIdealNode(nodes,state_map, file_size,possible_nodes){
+  idles = []
+  mixes = []
+  busy = []
+  busy_checks = [:]
+  for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
+    if (state_map[n] == 'idle') idles.add(n)
+    if (state_map[n] == 'mix') mixes.add(n)
+    if ((state_map[n] == 'alloc')) busy.add(n)
+  }
+  if (idles.size() > 0) {
+    //println "Best node/s for execution is: " + idles + ". They are idle."
+    return idles
+  } 
+  else if (mixes.size() > 0) {
+    //println "Best node/s for execution is: " + mixes + ". They are mix."
+    try {
+    return jobAnalysis(mixes)
+
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
       return ""
