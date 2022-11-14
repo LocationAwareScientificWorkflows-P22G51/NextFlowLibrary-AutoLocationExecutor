@@ -116,9 +116,11 @@ def jobAnalysis(nodes, file_size, size, job_no){
                 }
                 counter = counter + 1
               }
-              if((totalCPU > cpu_count[1].toInteger()*3/4) || (totalMem/(line.size()-1) > 5000)){
-                println "________________________PROCESSORBUSY______________________________"
-                is_busy = true
+              if (line.size()-1 > 0){
+                if((totalCPU > cpu_count[1].toInteger()*3/4) || (totalMem/(line.size()-1) > 5000)){
+                  println "________________________PROCESSORBUSY______________________________"
+                  is_busy = true
+                }
               }
             } else {
                println "________________________QUEUEBIG______________________________"
