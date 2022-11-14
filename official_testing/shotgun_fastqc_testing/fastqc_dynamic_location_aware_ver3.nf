@@ -62,7 +62,7 @@ def getClusterStatus() {
     node_states = 'sinfo -p batch -O NodeHost,StateCompact'.execute().text.split("\n")
     state_map = [:]
     possible  = []
-    possible_states = ['idle','mix','alloc','allocated','allocated+','completing']
+    possible_states = ['idle','mix','alloc']
     for (n : node_states) {
       line = n.split()
       the_node = line[0]
@@ -79,7 +79,6 @@ def getClusterStatus() {
 }
 
 def getIdealNode(nodes,state_map, file_size,possible_nodes){
-  free_states = ['idle','mix']
   idles = []
   mixes = []
   busy = []
@@ -87,7 +86,7 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
   for (n : nodes) {//Gluster stores files in 2 instances on 2 seperate nodes and as such 1 node may be more ideal to use
     if (state_map[n] == 'idle') idles.add(n)
     if (state_map[n] == 'mix') mixes.add(n)
-    if (!(state_map[n] in free_states)) busy.add(n)
+    if ((state_map[n] == 'alloc')) busy.add(n)
   }
   if (idles.size() > 0) {
     //println "Best node/s for execution is: " + idles + ". They are idle."
@@ -95,21 +94,21 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
   } 
   else if (mixes.size() > 0) {
     //println "Best node/s for execution is: " + mixes + ". They are mix."
-    return mixes
-  } 
-  else {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
     try {
-      for (n : busy) {
+      for (n : mixes) {
+        totalCPU = 0
+        totalMem = 0
+    
         is_busy = false
-        if (file_size > 50000000000){//if the file is less than 5Gb most likely more efficient to transfer data to another node for computation
+        if (file_size > 30000000){//if the file is less than 0.03Gb most likely more efficient to transfer data to another node for computation
           cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
           //println "There are ${cpu_count[1]} cpu's on node $n" 
-          node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%S".execute().text.split('/n')//retreive all jobs for allocated node
+          node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
           for (jobs : node_queue_info) {
             line = jobs.split()
             counter = 0
             //println "There are ${line.size()-1} Jobs allocated to the node" 
-            if (line.size()-1 < 3){//if there are 3 jobs queued use another node
+            if (line.size()-1 < 6){//if there are 5 jobs queued use another node
               for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,Start_time
                 if (counter > 0){//first line skipped as is variable headers
                   line = job_details.split() 
@@ -119,10 +118,72 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                   single_val = str.split(',')
                   //println "${single_val}"
                   single_val[3].replaceAll("G", "000")
-                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 10000)) {  
+                  totalCPU = totalCPU + single_val[0].toInteger()
+                  totalMem= totalMem + single_val[3].replaceAll("[^\\d.]", "").toInteger()
+                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 5) ) {  
                     //in the case more than half cpu's in use and min RAM is over 10000MB
                     //println "Job is large"
+                    println "________________________JOBLARGE______________________________"
                     is_busy = true
+                    break
+                  } else {
+                    //println "Job is small"  
+                  }
+                }
+                counter = counter + 1
+              }
+              if((totalCPU > cpu_count[1].toInteger()*1/2) || (totalMem/(line.size()-1) > 5000)){
+                is_busy = true
+              }
+            } else {
+               println "________________________QUEUEBIG______________________________"
+               is_busy = true
+            } 
+          }
+        } else {//use another node
+          println "________________________mixFileSize______________________________"
+          return ""
+        }
+      if (is_busy == false){
+        //println "WAITING to use node with data" 
+        println "________________________mix______________________________"
+        return mixes
+      }
+      }
+    } catch(Exception ex) {
+      println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
+      return ""
+    }
+    println "________________________MixNotWorth______________________________"
+    return ""
+  } 
+  else {//Dertermine if its worth it to process on a node thats currently busy or rather use an available node.
+    try {
+      for (n : busy) {     
+        is_busy = false
+        if (file_size > 20000000000){//if the file is less than 10Gb most likely more efficient to transfer data to another node for computation
+          cpu_count = "sinfo -n, --node=$n -o, --format=%c".execute().text.split('/n').toString().split()
+          //println "There are ${cpu_count[1]} cpu's on node $n" 
+          node_queue_info = "squeue -w, --nodelist=$n -o, --format=%C,%h,%L,%m,%p,%M".execute().text.split('/n')//retreive all jobs for allocated node
+          for (jobs : node_queue_info) {
+            line = jobs.split()
+            counter = 0
+            //println "There are ${line.size()-1} Jobs allocated to the node" 
+            if (line.size()-1 < 3){//if there are 2 jobs queued use another node
+              for(job_details : line){//Order of job details are CPU_used,Over_sbucribe,Time_left,Min_memory,Priority,TimeUsed
+                if (counter > 0){//first line skipped as is variable headers
+                  line = job_details.split() 
+                  str = line.toString()  
+                  str = str.replace("[", "")
+                  str = str.replace("]", "")
+                  single_val = str.split(',')
+                  single_val[3].replaceAll("G", "000")
+                  if ((single_val[0].toInteger() > cpu_count[1].toInteger()/2) || (single_val[3].replaceAll("[^\\d.]", "").toInteger() > 5000) || (single_val[5].length() > 5)) {  
+                    //in the case more than half cpu's in use and min RAM is over 10000MB
+                    //println "Job is large"
+                    println "________________________JOBLARGE______________________________"
+                    is_busy = true
+                    break
                   } else {
                     //println "Job is small"  
                   }
@@ -130,24 +191,27 @@ def getIdealNode(nodes,state_map, file_size,possible_nodes){
                 counter = counter + 1
               }
             } else {
+              println "________________________QUEUEBIG______________________________"
               is_busy = true
             } 
           }
         } else {//use another node
-         return (possible_nodes - busy)
+        println "________________________allocFIleSIze______________________________"
+         return ""
         }
       if (is_busy == false){
         //println "WAITING to use node with data" 
-        return n
-      } 
+         println "________________________alloc______________________________"
+        return busy
+      }
       }
     } catch(Exception ex) {
       println "ERROR: node is too busy, SLURM scheduler is to choose nodes from those possible"
-      return (possible_nodes - busy)
-    }
-    //println "Node is too busy, utilising another node"
-    return (possible_nodes - busy)
+      return ""
+    }    
   }
+  println "________________________UNSURE______________________________"
+  return ""
 }
 
 // Function that calls getNodesInfo & getStatus to check if there are any nodes available that have the input files data stored on it.
@@ -163,14 +227,17 @@ def nodeOption(fname,other="") {
     possible_nodes = getClusterStatus()[0]
     state_map = getClusterStatus()[1]
     ideal_node = getIdealNode(nodes,state_map, file_size, possible_nodes)
-    if ((possible_nodes.intersect(nodes)).size()<1)
+    if (((possible_nodes.intersect(nodes)).size()<1 )|| (ideal_node == "" ))
     {
       //println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
+      options="--exclude=n20"
+      //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
+      return options
       return "${other}"
     }
     else {
       possible = possible_nodes - ideal_node;
-      options="--exclude="+possible.join(',')+" ${other}"
+      options="--exclude=n20,"+possible.join(',')+" ${other}"
       //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
     }
