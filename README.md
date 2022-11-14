@@ -13,14 +13,23 @@ This repository entails the design and implementation of a location aware scient
 A breakdown of the filing structure of this repository:
 
 - coding_templates
+
 The final dynamic version of the library in an easy to use template can be found in the coding_templates folder along with the initial iteration of the static version.
+
 - documentation
+
 The project's meeting minutes, project conventions, project plan and scrum boards can be found in the documentation folder.
+
 - official_testing
+
 The official testing of two different workflows can be found in the official_testing folder.
+
 - basic_model_testing
+
 The different versions of our code as we incrementally made changes to it along with testing with other workflows can be found in the basic_model_testing folder.
+
 - data
+
 The data required for one of the workflows within the basic_model_testing folder can be found in the data folder.
 
 ## **Development:**
