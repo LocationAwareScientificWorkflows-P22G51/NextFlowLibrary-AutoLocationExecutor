@@ -19,7 +19,7 @@ input_ch = Channel.fromPath("${params.data_dir}")
 node_suggestion = [:] 
 
 process fastqc {
-   {nodeOption("--exclude=n20")}
+    clusterOptions {("--exclude=n20")}
    echo true
    input:
       path input_ch
