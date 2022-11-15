@@ -145,7 +145,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
     if ((state_map[n] == 'alloc')) busy.add(n)
   }
   if (idles.size() > 0) {
-    //println "Best node/s for execution is: " + idles + ". They are idle."
+    println "________________________NodeIdle______________________________"
     return idles
   } 
   else if (mixes.size() > 0) {
