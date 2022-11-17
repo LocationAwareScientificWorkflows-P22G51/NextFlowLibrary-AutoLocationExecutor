@@ -145,7 +145,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
     if ((state_map[n] == 'alloc')) busy.add(n)
   }
   if (idles.size() > 0) {
-    //println "Best node/s for execution is: " + idles + ". They are idle."
+    println "________________________NodeIdle______________________________"
     return idles
   } 
   else if (mixes.size() > 0) {
@@ -177,9 +177,7 @@ def getIdealNode(nodes,state_map, file_size, possible_nodes){
 // This function returns the nodes to be excluded during execution set within the clusterOptions in the initial process.
 
 def nodeOption(fname,other="") {
-  //location = "hostname".execute().text
-  //println  "LOCATION IS FOUND using $location"
-  //try {
+  try {
     node_location = getNodesInfo(fname)[0]
     file_size = getNodesInfo(fname)[1]
     possible_nodes = getClusterStatus()[0]
@@ -187,22 +185,20 @@ def nodeOption(fname,other="") {
     ideal_node = getIdealNode(nodes,state_map, file_size, possible_nodes)
     if (((possible_nodes.intersect(nodes)).size()<1 )|| (ideal_node == "" ))
     {
-      //println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
+      println "The job is executed regardless of location as the amount of available nodes that have the data stored on them is less than "
       options="--exclude=n20"
-      //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
-      return "${other}"
     }
     else {
       possible = possible_nodes - ideal_node;
       options="--exclude=n20,"+possible.join(',')+" ${other}"
-      //println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
+      println "Job execution can occur on the available storage nodes. \nThe following nodes should be excluded during execution: " + options + "\n"
       return options
     }
-  //}catch(Exception ex){
-  // println "Error: cant determine cluster options"
-  //  return other
-  //}
+  }catch(Exception ex){
+   println "Error: cant determine cluster options"
+    return other
+  }
 }
 
 printCurrentClusterStatus()
